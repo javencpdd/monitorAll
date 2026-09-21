@@ -68,3 +68,253 @@
 2026/09/22 03:10:50 ERR [API] path already exists
 2026/09/22 03:11:04 ERR [API] path already exists
 2026/09/22 03:11:10 ERR [API] path already exists
+2026/09/22 03:26:14 ERR [API] path already exists
+2026/09/22 03:26:14 INF [HLS] [session bca8317a] created by 127.0.0.1:40554
+2026/09/22 03:26:14 INF [path live/lite3] [RTMP source] started on demand
+2026/09/22 03:26:16 INF [path live/lite3] stream is available and online, 1 track (H264)
+2026/09/22 03:26:16 INF [HLS] [muxer live/lite3] created (requested by 127.0.0.1:40554)
+2026/09/22 03:26:16 INF [HLS] [muxer live/lite3] is converting into HLS, 1 track (H264)
+2026/09/22 03:26:16 INF [HLS] [session bca8317a] is reading from muxer 'live/lite3'
+2026/09/22 03:26:27 ERR [API] path already exists
+2026/09/22 03:26:40 ERR [API] path already exists
+2026/09/22 03:26:53 ERR [API] path already exists
+2026/09/22 03:27:06 ERR [API] path already exists
+2026/09/22 03:27:19 ERR [API] path already exists
+2026/09/22 03:27:32 ERR [API] path already exists
+2026/09/22 03:27:39 ERR [API] path already exists
+2026/09/22 03:27:39 INF [HLS] [session 3f0909e7] created by 127.0.0.1:40554
+2026/09/22 03:27:39 INF [HLS] [session 3f0909e7] is reading from muxer 'live/lite3'
+2026/09/22 03:27:45 INF [WebRTC] [session ce05a339] created by 127.0.0.1:35502
+2026/09/22 03:27:45 INF [WebRTC] [session ce05a339] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/55958
+2026/09/22 03:27:45 INF [WebRTC] [session ce05a339] is reading from path 'live/lite3', 1 track (H264)
+2026/09/22 03:27:52 ERR [API] path already exists
+2026/09/22 03:28:05 ERR [API] path already exists
+2026/09/22 03:28:06 INF [HLS] [session bca8317a] closed: inactive
+2026/09/22 03:28:18 ERR [API] path already exists
+2026/09/22 03:28:19 INF [HLS] [session 3f0909e7] closed: inactive
+2026/09/22 03:28:31 ERR [API] path already exists
+2026/09/22 03:28:44 ERR [API] path already exists
+2026/09/22 03:28:56 INF [HLS] [muxer live/lite3] destroyed: not used anymore
+2026/09/22 03:28:57 ERR [API] path already exists
+2026/09/22 03:29:10 ERR [API] path already exists
+2026/09/22 03:29:23 ERR [API] path already exists
+2026/09/22 03:29:36 ERR [API] path already exists
+2026/09/22 03:29:49 ERR [API] path already exists
+2026/09/22 03:30:02 ERR [API] path already exists
+2026/09/22 03:30:15 ERR [API] path already exists
+2026/09/22 03:30:28 ERR [API] path already exists
+2026/09/22 03:30:41 ERR [API] path already exists
+2026/09/22 03:30:54 ERR [API] path already exists
+2026/09/22 03:31:07 ERR [API] path already exists
+2026/09/22 03:31:20 ERR [API] path already exists
+2026/09/22 03:31:33 ERR [API] path already exists
+2026/09/22 03:31:46 ERR [API] path already exists
+2026/09/22 03:31:59 ERR [API] path already exists
+2026/09/22 03:32:12 ERR [API] path already exists
+2026/09/22 03:32:25 ERR [API] path already exists
+2026/09/22 03:32:38 ERR [API] path already exists
+2026/09/22 03:32:51 ERR [API] path already exists
+2026/09/22 03:33:04 ERR [API] path already exists
+2026/09/22 03:33:17 ERR [API] path already exists
+2026/09/22 03:33:31 ERR [API] path already exists
+2026/09/22 03:33:44 ERR [API] path already exists
+2026/09/22 03:33:57 ERR [API] path already exists
+2026/09/22 03:34:10 INF reloading configuration (API request)
+2026/09/22 03:34:10 ERR [API] path already exists
+2026/09/22 03:34:10 ERR [API] path already exists
+2026/09/22 03:34:17 INF [WebRTC] [session 69b570f8] created by 127.0.0.1:49820
+2026/09/22 03:34:17 INF [path live/autocar] [RTMP source] started on demand
+2026/09/22 03:34:19 INF [path live/autocar] stream is available and online, 2 tracks (H264, MPEG-4 Audio)
+2026/09/22 03:34:19 WAR [WebRTC] [session 69b570f8] skipping track 2 (MPEG-4 Audio)
+2026/09/22 03:34:19 INF [WebRTC] [session 69b570f8] peer connection established, local candidate: host/udp/172.18.0.1/8189, remote candidate: prflx/udp/127.0.0.1/46076
+2026/09/22 03:34:19 INF [WebRTC] [session 69b570f8] is reading from path 'live/autocar', 1 track (H264)
+2026/09/22 03:34:21 INF [WebRTC] [session 69b570f8] closed: peer connection closed
+2026/09/22 03:34:21 INF [WebRTC] [session 02d2d2fe] created by 127.0.0.1:49820
+2026/09/22 03:34:21 WAR [WebRTC] [session 02d2d2fe] skipping track 2 (MPEG-4 Audio)
+2026/09/22 03:34:21 INF [WebRTC] [session 02d2d2fe] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/39903
+2026/09/22 03:34:21 INF [WebRTC] [session 02d2d2fe] is reading from path 'live/autocar', 1 track (H264)
+2026/09/22 03:34:23 ERR [API] path already exists
+2026/09/22 03:34:36 ERR [API] path already exists
+2026/09/22 03:34:49 ERR [API] path already exists
+2026/09/22 03:35:02 ERR [API] path already exists
+2026/09/22 03:35:16 ERR [API] path already exists
+2026/09/22 03:35:29 ERR [API] path already exists
+2026/09/22 03:35:42 ERR [API] path already exists
+2026/09/22 03:35:49 INF [WebRTC] [session 02d2d2fe] closed: peer connection closed
+2026/09/22 03:35:49 INF [HLS] [session 5f74b2c5] created by 127.0.0.1:41470
+2026/09/22 03:35:49 INF [HLS] [muxer live/autocar] created (requested by 127.0.0.1:41470)
+2026/09/22 03:35:49 INF [HLS] [muxer live/autocar] is converting into HLS, 2 tracks (H264, MPEG-4 Audio)
+2026/09/22 03:35:49 INF [HLS] [session 5f74b2c5] is reading from muxer 'live/autocar'
+2026/09/22 03:35:55 ERR [API] path already exists
+2026/09/22 03:35:56 INF [WebRTC] [session 7e3a5703] created by 127.0.0.1:39024
+2026/09/22 03:35:56 WAR [WebRTC] [session 7e3a5703] skipping track 2 (MPEG-4 Audio)
+2026/09/22 03:35:56 INF [WebRTC] [session 7e3a5703] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/53955
+2026/09/22 03:35:56 INF [WebRTC] [session 7e3a5703] is reading from path 'live/autocar', 1 track (H264)
+2026/09/22 03:36:08 ERR [API] path already exists
+2026/09/22 03:36:21 ERR [API] path already exists
+2026/09/22 03:36:27 WAR [HLS] [muxer live/autocar] part duration changed from 200ms to 240ms - this will cause an error in iOS clients
+2026/09/22 03:36:29 INF [HLS] [session 5f74b2c5] closed: inactive
+2026/09/22 03:36:34 ERR [API] path already exists
+2026/09/22 03:36:34 WAR [HLS] [muxer live/autocar] part duration changed from 240ms to 200ms - this will cause an error in iOS clients
+2026/09/22 03:36:47 ERR [API] path already exists
+2026/09/22 03:37:00 ERR [API] path already exists
+2026/09/22 03:37:09 INF [HLS] [muxer live/autocar] destroyed: not used anymore
+2026/09/22 03:37:13 ERR [API] path already exists
+2026/09/22 03:37:26 ERR [API] path already exists
+2026/09/22 03:37:39 ERR [API] path already exists
+2026/09/22 03:37:52 ERR [API] path already exists
+2026/09/22 03:38:05 ERR [API] path already exists
+2026/09/22 03:38:18 ERR [API] path already exists
+2026/09/22 03:38:31 ERR [API] path already exists
+2026/09/22 03:38:44 ERR [API] path already exists
+2026/09/22 03:38:57 ERR [API] path already exists
+2026/09/22 03:39:10 ERR [API] path already exists
+2026/09/22 03:39:10 ERR [API] path already exists
+2026/09/22 03:39:11 ERR [API] path already exists
+2026/09/22 03:39:21 ERR [API] path already exists
+2026/09/22 03:39:23 ERR [API] path already exists
+2026/09/22 03:39:36 ERR [API] path already exists
+2026/09/22 03:39:49 ERR [API] path already exists
+2026/09/22 03:39:51 INF [WebRTC] [session ce05a339] closed: peer connection closed
+2026/09/22 03:39:51 INF [WebRTC] [session 7e3a5703] closed: peer connection closed
+2026/09/22 03:39:51 ERR [API] path already exists
+2026/09/22 03:39:51 ERR [API] path already exists
+2026/09/22 03:39:51 INF [WebRTC] [session c5f0ea33] created by 127.0.0.1:35118
+2026/09/22 03:39:51 INF [WebRTC] [session 0ecc965b] created by 127.0.0.1:35108
+2026/09/22 03:39:51 INF [WebRTC] [session c5f0ea33] peer connection established, local candidate: host/udp/10.61.133.61/8189, remote candidate: prflx/udp/127.0.0.1/46277
+2026/09/22 03:39:51 INF [WebRTC] [session c5f0ea33] is reading from path 'live/lite3', 1 track (H264)
+2026/09/22 03:39:51 INF [WebRTC] [session 0ecc965b] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/48095
+2026/09/22 03:39:51 INF [WebRTC] [session 0ecc965b] is reading from path 'live/lite3', 1 track (H264)
+2026/09/22 03:39:55 INF [WebRTC] [session 0ecc965b] closed: peer connection closed
+2026/09/22 03:40:01 INF [path live/autocar] [RTMP source] stopped: not needed by anyone
+2026/09/22 03:40:02 ERR [API] path already exists
+2026/09/22 03:40:02 INF [WebRTC] [session c5f0ea33] closed: peer connection closed
+2026/09/22 03:40:12 INF [path live/lite3] [RTMP source] stopped: not needed by anyone
+2026/09/22 03:40:31 ERR [API] path already exists
+2026/09/22 03:40:42 ERR [API] path already exists
+2026/09/22 03:40:56 ERR [API] path already exists
+2026/09/22 03:41:08 ERR [API] path already exists
+2026/09/22 03:41:22 ERR [API] path already exists
+2026/09/22 03:41:26 ERR [API] path already exists
+2026/09/22 03:41:39 ERR [API] path already exists
+2026/09/22 03:41:52 ERR [API] path already exists
+2026/09/22 03:42:05 ERR [API] path already exists
+2026/09/22 03:45:13 ERR [API] path already exists
+2026/09/22 03:45:13 ERR [API] path already exists
+2026/09/22 03:45:52 ERR [API] path already exists
+2026/09/22 03:46:50 INF [HLS] [session 1d9d577a] created by 127.0.0.1:56402
+2026/09/22 03:46:50 INF [path live/lite3] [RTMP source] started on demand
+2026/09/22 03:46:52 INF [path live/lite3] stream is available and online, 1 track (H264)
+2026/09/22 03:46:52 INF [HLS] [muxer live/lite3] created (requested by 127.0.0.1:56402)
+2026/09/22 03:46:52 INF [HLS] [muxer live/lite3] is converting into HLS, 1 track (H264)
+2026/09/22 03:46:52 INF [HLS] [session 1d9d577a] is reading from muxer 'live/lite3'
+2026/09/22 03:47:21 ERR [API] path already exists
+2026/09/22 03:47:21 INF [HLS] [session cccd8bab] created by 127.0.0.1:56402
+2026/09/22 03:47:21 INF [HLS] [session cccd8bab] is reading from muxer 'live/lite3'
+2026/09/22 03:47:29 ERR [API] path already exists
+2026/09/22 03:47:39 ERR [API] path already exists
+2026/09/22 03:47:39 INF [HLS] [session 2e9f46bf] created by 127.0.0.1:39658
+2026/09/22 03:47:39 INF [HLS] [session 2e9f46bf] is reading from muxer 'live/lite3'
+2026/09/22 03:47:43 ERR [API] path already exists
+2026/09/22 03:47:43 ERR [API] path already exists
+2026/09/22 03:47:43 INF [HLS] [session 9b6a7bdb] created by 127.0.0.1:39658
+2026/09/22 03:47:43 INF [HLS] [session 9b6a7bdb] is reading from muxer 'live/lite3'
+2026/09/22 03:47:52 INF [HLS] [session 1d9d577a] closed: inactive
+2026/09/22 03:47:52 ERR [API] path already exists
+2026/09/22 03:47:54 INF [WebRTC] [session d1b5c4f1] created by 127.0.0.1:34356
+2026/09/22 03:47:54 INF [WebRTC] [session d1b5c4f1] peer connection established, local candidate: host/udp/10.42.0.1/8189, remote candidate: prflx/udp/127.0.0.1/49684
+2026/09/22 03:47:54 INF [WebRTC] [session d1b5c4f1] is reading from path 'live/lite3', 1 track (H264)
+2026/09/22 03:48:03 INF [WebRTC] [session d1b5c4f1] closed: peer connection closed
+2026/09/22 03:48:03 INF [HLS] [session e6c54678] created by 127.0.0.1:48536
+2026/09/22 03:48:03 INF [HLS] [session e6c54678] is reading from muxer 'live/lite3'
+2026/09/22 03:48:05 ERR [API] path already exists
+2026/09/22 03:48:11 INF [HLS] [session cccd8bab] closed: inactive
+2026/09/22 03:48:12 INF [WebRTC] [session cbf868b2] created by 127.0.0.1:34356
+2026/09/22 03:48:12 INF [WebRTC] [session cbf868b2] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/43953
+2026/09/22 03:48:12 INF [WebRTC] [session cbf868b2] is reading from path 'live/lite3', 1 track (H264)
+2026/09/22 03:48:14 INF [WebRTC] [session cbf868b2] closed: peer connection closed
+2026/09/22 03:48:15 INF [HLS] [session 322f3cde] created by 127.0.0.1:39658
+2026/09/22 03:48:15 INF [HLS] [session 322f3cde] is reading from muxer 'live/lite3'
+2026/09/22 03:48:18 ERR [API] path already exists
+2026/09/22 03:48:23 INF [HLS] [session 9b6a7bdb] closed: inactive
+2026/09/22 03:48:29 INF [HLS] [session 2e9f46bf] closed: inactive
+2026/09/22 03:48:31 ERR [API] path already exists
+2026/09/22 03:48:43 INF [HLS] [session e6c54678] closed: inactive
+2026/09/22 03:48:44 ERR [API] path already exists
+2026/09/22 03:48:57 ERR [API] path already exists
+2026/09/22 03:49:10 ERR [API] path already exists
+2026/09/22 03:49:23 ERR [API] path already exists
+2026/09/22 03:49:36 ERR [API] path already exists
+2026/09/22 03:49:49 ERR [API] path already exists
+2026/09/22 03:50:02 ERR [API] path already exists
+2026/09/22 03:50:15 ERR [API] path already exists
+2026/09/22 03:50:28 ERR [API] path already exists
+2026/09/22 03:50:41 ERR [API] path already exists
+2026/09/22 03:50:54 ERR [API] path already exists
+2026/09/22 03:51:07 ERR [API] path already exists
+2026/09/22 03:51:20 ERR [API] path already exists
+2026/09/22 03:51:33 ERR [API] path already exists
+2026/09/22 03:51:46 ERR [API] path already exists
+2026/09/22 03:51:59 ERR [API] path already exists
+2026/09/22 03:52:12 ERR [API] path already exists
+2026/09/22 03:52:24 ERR [API] path already exists
+2026/09/22 03:52:37 ERR [API] path already exists
+2026/09/22 03:52:51 ERR [API] path already exists
+2026/09/22 03:53:04 ERR [API] path already exists
+2026/09/22 03:53:17 ERR [API] path already exists
+2026/09/22 03:53:30 ERR [API] path already exists
+2026/09/22 03:53:43 ERR [API] path already exists
+2026/09/22 03:53:56 ERR [API] path already exists
+2026/09/22 03:54:08 ERR [API] path already exists
+2026/09/22 03:54:21 ERR [API] path already exists
+2026/09/22 03:54:34 ERR [API] path already exists
+2026/09/22 03:54:47 ERR [API] path already exists
+2026/09/22 03:55:00 ERR [API] path already exists
+2026/09/22 03:55:13 ERR [API] path already exists
+2026/09/22 03:55:27 ERR [API] path already exists
+2026/09/22 03:55:40 ERR [API] path already exists
+2026/09/22 03:55:53 ERR [API] path already exists
+2026/09/22 03:56:06 ERR [API] path already exists
+2026/09/22 03:56:08 ERR [API] path already exists
+2026/09/22 03:56:19 ERR [API] path already exists
+2026/09/22 03:56:31 ERR [API] path already exists
+2026/09/22 03:56:44 ERR [API] path already exists
+2026/09/22 03:56:58 ERR [API] path already exists
+2026/09/22 03:57:11 ERR [API] path already exists
+2026/09/22 03:57:23 ERR [API] path already exists
+2026/09/22 03:57:36 ERR [API] path already exists
+2026/09/22 03:57:49 ERR [API] path already exists
+2026/09/22 03:58:03 ERR [API] path already exists
+2026/09/22 03:58:16 ERR [API] path already exists
+2026/09/22 03:58:29 ERR [API] path already exists
+2026/09/22 03:58:42 ERR [API] path already exists
+2026/09/22 03:58:55 ERR [API] path already exists
+2026/09/22 03:59:08 ERR [API] path already exists
+2026/09/22 03:59:21 ERR [API] path already exists
+2026/09/22 03:59:34 ERR [API] path already exists
+2026/09/22 03:59:47 ERR [API] path already exists
+2026/09/22 03:59:49 ERR [API] path already exists
+2026/09/22 03:59:57 ERR [API] path already exists
+2026/09/22 03:59:57 INF [WebRTC] [session 5eb0f5c2] created by 10.42.0.1:35114
+2026/09/22 03:59:57 INF [WebRTC] [session 5eb0f5c2] peer connection established, local candidate: host/udp/10.42.0.1/8189, remote candidate: prflx/udp/127.0.0.1/58226
+2026/09/22 03:59:57 INF [WebRTC] [session 5eb0f5c2] is reading from path 'live/lite3', 1 track (H264)
+2026/09/22 04:00:10 ERR [API] path already exists
+2026/09/22 04:00:21 ERR [API] path already exists
+2026/09/22 04:00:21 INF [HLS] [session e398950a] created by 10.42.0.116:3714
+2026/09/22 04:00:21 INF [HLS] [session e398950a] is reading from muxer 'live/lite3'
+2026/09/22 04:00:23 ERR [API] path already exists
+2026/09/22 04:00:25 INF [HLS] [session 322f3cde] closed: inactive
+2026/09/22 04:00:26 INF [WebRTC] [session b38ba7c7] created by 10.42.0.116:49669
+2026/09/22 04:00:26 INF [WebRTC] [session b38ba7c7] peer connection established, local candidate: host/udp/10.61.133.61/8189, remote candidate: prflx/udp/10.42.0.116/59775
+2026/09/22 04:00:26 INF [WebRTC] [session b38ba7c7] is reading from path 'live/lite3', 1 track (H264)
+2026/09/22 04:01:01 INF [HLS] [session e398950a] closed: inactive
+2026/09/22 04:01:32 INF [HLS] [muxer live/lite3] destroyed: not used anymore
+2026/09/22 04:01:41 ERR [API] path already exists
+2026/09/22 04:01:54 ERR [API] path already exists
+2026/09/22 04:02:07 ERR [API] path already exists
+2026/09/22 04:02:20 ERR [API] path already exists
+2026/09/22 04:02:59 ERR [API] path already exists
+2026/09/22 04:03:12 ERR [API] path already exists
+2026/09/22 04:03:25 ERR [API] path already exists
+2026/09/22 04:03:30 INF [WebRTC] [session b38ba7c7] closed: peer connection closed
+2026/09/22 04:03:38 ERR [API] path already exists

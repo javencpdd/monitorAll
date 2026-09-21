@@ -1892,3 +1892,826 @@
 
 {"time":"2026-09-22T03:26:03.023144875+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1"}
 {"time":"2026-09-22T03:26:03.030258321+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1","clientId":"web-3co8u5hr"}
+{"time":"2026-09-22T03:26:12.084104983+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1","channels":0}
+{"time":"2026-09-22T03:26:14.252859167+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2"}
+{"time":"2026-09-22T03:26:14.323603525+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2","clientId":"web-9n4z7o5y"}
+{"time":"2026-09-22T03:26:14.345259395+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:26:26.334832617+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2","channels":1}
+{"time":"2026-09-22T03:26:27.248998415+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3"}
+{"time":"2026-09-22T03:26:27.251806787+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3","clientId":"web-9n4z7o5y"}
+{"time":"2026-09-22T03:26:27.258644749+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:26:39.27197918+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3","channels":1}
+{"time":"2026-09-22T03:26:40.348722126+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4"}
+{"time":"2026-09-22T03:26:40.35320647+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4","clientId":"web-9n4z7o5y"}
+{"time":"2026-09-22T03:26:40.360587787+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:26:52.370801163+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4","channels":1}
+{"time":"2026-09-22T03:26:53.166249251+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_5"}
+{"time":"2026-09-22T03:26:53.169410161+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_5","clientId":"web-9n4z7o5y"}
+{"time":"2026-09-22T03:26:53.177410003+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:27:05.187536676+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_5","channels":1}
+{"time":"2026-09-22T03:27:06.093694331+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_6"}
+{"time":"2026-09-22T03:27:06.097720063+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_6","clientId":"web-9n4z7o5y"}
+{"time":"2026-09-22T03:27:06.105633808+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:27:18.116045744+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_6","channels":1}
+{"time":"2026-09-22T03:27:19.097438022+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_7"}
+{"time":"2026-09-22T03:27:19.107051307+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_7","clientId":"web-9n4z7o5y"}
+{"time":"2026-09-22T03:27:19.123526732+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:27:31.119685253+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_7","channels":1}
+{"time":"2026-09-22T03:27:32.30615275+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_8"}
+{"time":"2026-09-22T03:27:32.310854967+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_8","clientId":"web-9n4z7o5y"}
+{"time":"2026-09-22T03:27:32.318403261+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:27:36.787924029+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_8","channels":1}
+{"time":"2026-09-22T03:27:39.134468518+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_9"}
+{"time":"2026-09-22T03:27:39.215158119+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_9","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:27:39.234470412+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:27:51.237692611+08:00","level":"WARN","msg":"查询 MediaMTX 路径失败","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","err":"[50003] MediaMTX paths/list 失败: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled"}
+{"time":"2026-09-22T03:27:51.238060906+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_9","channels":1}
+{"time":"2026-09-22T03:27:52.128860795+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_a"}
+{"time":"2026-09-22T03:27:52.133485734+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_a","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:27:52.148934169+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:28:04.155464246+08:00","level":"WARN","msg":"查询 MediaMTX 路径失败","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","err":"[50003] MediaMTX paths/list 失败: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled"}
+{"time":"2026-09-22T03:28:04.158008405+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_a","channels":1}
+{"time":"2026-09-22T03:28:05.219933584+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_b"}
+{"time":"2026-09-22T03:28:05.231805054+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_b","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:28:05.24356382+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:28:17.242792337+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_b","channels":1}
+{"time":"2026-09-22T03:28:18.142904873+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_c"}
+{"time":"2026-09-22T03:28:18.14992653+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_c","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:28:18.162790913+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:28:30.166190834+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_c","channels":1}
+{"time":"2026-09-22T03:28:31.269308941+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_d"}
+{"time":"2026-09-22T03:28:31.274500365+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_d","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:28:31.284710501+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:28:43.29132009+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_d","channels":1}
+{"time":"2026-09-22T03:28:44.094560058+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_e"}
+{"time":"2026-09-22T03:28:44.099239908+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_e","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:28:44.107132932+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:28:56.116332854+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_e","channels":1}
+{"time":"2026-09-22T03:28:57.256150689+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_f"}
+{"time":"2026-09-22T03:28:57.261066114+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_f","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:28:57.270905853+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:29:09.278492099+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_f","channels":1}
+{"time":"2026-09-22T03:29:10.425208424+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_g"}
+{"time":"2026-09-22T03:29:10.431292274+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_g","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:29:10.441666438+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:29:22.447816372+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_g","channels":1}
+{"time":"2026-09-22T03:29:23.605459174+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_h"}
+{"time":"2026-09-22T03:29:23.611279995+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_h","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:29:23.631143167+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:29:35.628674762+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_h","channels":1}
+{"time":"2026-09-22T03:29:36.552637025+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_i"}
+{"time":"2026-09-22T03:29:36.557691641+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_i","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:29:36.567793725+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:29:48.574044266+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_i","channels":1}
+{"time":"2026-09-22T03:29:49.514440454+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_j"}
+{"time":"2026-09-22T03:29:49.520406956+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_j","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:29:49.529573357+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:30:01.538564568+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_j","channels":1}
+{"time":"2026-09-22T03:30:02.465925059+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_k"}
+{"time":"2026-09-22T03:30:02.470002248+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_k","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:30:02.477604436+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:30:14.489036261+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_k","channels":1}
+{"time":"2026-09-22T03:30:15.389461158+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_l"}
+{"time":"2026-09-22T03:30:15.527718181+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_l","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:30:15.541866491+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:30:27.531515088+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_l","channels":1}
+{"time":"2026-09-22T03:30:28.454669017+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_m"}
+{"time":"2026-09-22T03:30:28.457312746+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_m","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:30:28.476292217+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:30:40.477333113+08:00","level":"WARN","msg":"查询 MediaMTX 路径失败","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","err":"[50003] MediaMTX paths/list 失败: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled"}
+{"time":"2026-09-22T03:30:40.477490543+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_m","channels":1}
+{"time":"2026-09-22T03:30:41.610455976+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_n"}
+{"time":"2026-09-22T03:30:41.615386759+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_n","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:30:41.624019596+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:30:53.632488048+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_n","channels":1}
+{"time":"2026-09-22T03:30:54.736140358+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_o"}
+{"time":"2026-09-22T03:30:54.73953224+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_o","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:30:54.748157402+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:31:06.757904369+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_o","channels":1}
+{"time":"2026-09-22T03:31:07.691451414+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_p"}
+{"time":"2026-09-22T03:31:07.694540581+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_p","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:31:07.705761217+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:31:19.713498578+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_p","channels":1}
+{"time":"2026-09-22T03:31:20.571572284+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_q"}
+{"time":"2026-09-22T03:31:20.580681617+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_q","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:31:20.587048008+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:31:32.593833018+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_q","channels":1}
+{"time":"2026-09-22T03:31:33.544406652+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_r"}
+{"time":"2026-09-22T03:31:33.550285386+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_r","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:31:33.557566662+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:31:45.56730306+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_r","channels":1}
+{"time":"2026-09-22T03:31:46.558457283+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_s"}
+{"time":"2026-09-22T03:31:46.561860306+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_s","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:31:46.572008285+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:31:58.579686639+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_s","channels":1}
+{"time":"2026-09-22T03:31:59.607143724+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_t"}
+{"time":"2026-09-22T03:31:59.611515774+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_t","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:31:59.619528142+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:32:11.628844913+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_t","channels":1}
+{"time":"2026-09-22T03:32:12.600280218+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_u"}
+{"time":"2026-09-22T03:32:12.604831682+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_u","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:32:12.623011595+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:32:24.622348167+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_u","channels":1}
+{"time":"2026-09-22T03:32:25.536914584+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_v"}
+{"time":"2026-09-22T03:32:25.565159793+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_v","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:32:25.572898372+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:32:37.578862491+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_v","channels":1}
+{"time":"2026-09-22T03:32:38.754432663+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_w"}
+{"time":"2026-09-22T03:32:38.75810608+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_w","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:32:38.772144732+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:32:50.776280429+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_w","channels":1}
+{"time":"2026-09-22T03:32:51.857900427+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_x"}
+{"time":"2026-09-22T03:32:51.862072576+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_x","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:32:51.875030415+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:33:03.880527346+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_x","channels":1}
+{"time":"2026-09-22T03:33:04.829208148+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_y"}
+{"time":"2026-09-22T03:33:04.832947975+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_y","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:33:04.841554372+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:33:16.851393724+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_y","channels":1}
+{"time":"2026-09-22T03:33:17.945388941+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_z"}
+{"time":"2026-09-22T03:33:17.948447208+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_z","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:33:17.959210758+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:33:29.967479713+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_z","channels":1}
+{"time":"2026-09-22T03:33:31.854907757+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_10"}
+{"time":"2026-09-22T03:33:31.858319149+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_10","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:33:31.865626637+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:33:43.876449313+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_10","channels":1}
+{"time":"2026-09-22T03:33:44.849567906+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_11"}
+{"time":"2026-09-22T03:33:44.852789107+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_11","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:33:44.859643117+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:33:56.871303614+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_11","channels":1}
+{"time":"2026-09-22T03:33:57.949056709+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_12"}
+{"time":"2026-09-22T03:33:57.955830771+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_12","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:33:57.967231706+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:34:09.970320441+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_12","channels":1}
+{"time":"2026-09-22T03:34:10.608849055+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","mode":"sample","path":"live/autocar","rtmp":"rtmp://172.31.68.227:1936/live/autocar"}
+{"time":"2026-09-22T03:34:10.791821702+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_13"}
+{"time":"2026-09-22T03:34:10.796370654+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_13","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:34:10.804771919+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:34:10.805492402+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_unkjxsmvgyn2oiq4","path":"live/autocar","rtmp":"rtmp://172.31.68.227:1936/live/autocar"}
+{"time":"2026-09-22T03:34:22.813903025+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_13","channels":2}
+{"time":"2026-09-22T03:34:23.738873079+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_14"}
+{"time":"2026-09-22T03:34:23.742378647+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_14","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:34:23.750571587+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:34:35.760846963+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_14","channels":2}
+{"time":"2026-09-22T03:34:36.68029584+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_15"}
+{"time":"2026-09-22T03:34:36.687117916+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_15","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:34:36.702447581+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:34:48.702322554+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_15","channels":2}
+{"time":"2026-09-22T03:34:49.719748027+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_16"}
+{"time":"2026-09-22T03:34:49.723225236+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_16","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:34:49.729654218+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:35:01.742854545+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_16","channels":2}
+{"time":"2026-09-22T03:35:02.7995851+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_17"}
+{"time":"2026-09-22T03:35:02.806804932+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_17","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:35:02.827434663+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:35:14.822451779+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_17","channels":2}
+{"time":"2026-09-22T03:35:15.993241082+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_18"}
+{"time":"2026-09-22T03:35:15.998388558+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_18","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:35:16.009745613+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:35:28.016491101+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_18","channels":2}
+{"time":"2026-09-22T03:35:28.92657298+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_19"}
+{"time":"2026-09-22T03:35:28.972764974+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_19","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:35:29.00839945+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:35:40.989934614+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_19","channels":2}
+{"time":"2026-09-22T03:35:42.116940223+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1a"}
+{"time":"2026-09-22T03:35:42.120781078+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1a","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:35:42.127368153+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:35:54.138375723+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1a","channels":2}
+{"time":"2026-09-22T03:35:55.214673845+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1b"}
+{"time":"2026-09-22T03:35:55.220590731+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1b","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:35:55.22843645+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:36:07.236029803+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1b","channels":2}
+{"time":"2026-09-22T03:36:08.260160741+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1c"}
+{"time":"2026-09-22T03:36:08.263146734+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1c","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:36:08.271211929+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:36:20.282385797+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1c","channels":2}
+{"time":"2026-09-22T03:36:21.260674003+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1d"}
+{"time":"2026-09-22T03:36:21.266214206+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1d","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:36:21.277774445+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:36:33.282772549+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1d","channels":2}
+{"time":"2026-09-22T03:36:34.149889883+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1e"}
+{"time":"2026-09-22T03:36:34.155345647+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1e","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:36:34.166863329+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:36:46.172002458+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1e","channels":2}
+{"time":"2026-09-22T03:36:47.20615526+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1f"}
+{"time":"2026-09-22T03:36:47.209635021+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1f","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:36:47.217090934+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:36:59.228544926+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1f","channels":2}
+{"time":"2026-09-22T03:37:00.175002403+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1g"}
+{"time":"2026-09-22T03:37:00.184517719+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1g","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:37:00.192187447+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:37:12.197141362+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1g","channels":2}
+{"time":"2026-09-22T03:37:13.329623456+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1h"}
+{"time":"2026-09-22T03:37:13.334453347+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1h","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:37:13.34226372+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:37:25.351774767+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1h","channels":2}
+{"time":"2026-09-22T03:37:26.38198639+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1i"}
+{"time":"2026-09-22T03:37:26.386136727+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1i","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:37:26.402424619+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:37:38.403392291+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1i","channels":2}
+{"time":"2026-09-22T03:37:39.281534223+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1j"}
+{"time":"2026-09-22T03:37:39.28672901+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1j","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:37:39.296076382+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:37:51.304574457+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1j","channels":2}
+{"time":"2026-09-22T03:37:52.273980526+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1k"}
+{"time":"2026-09-22T03:37:52.277718938+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1k","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:37:52.284991537+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:38:04.296354944+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1k","channels":2}
+{"time":"2026-09-22T03:38:05.256388659+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1l"}
+{"time":"2026-09-22T03:38:05.261188408+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1l","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:38:05.270638507+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:38:17.280264432+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1l","channels":2}
+{"time":"2026-09-22T03:38:18.462107386+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1m"}
+{"time":"2026-09-22T03:38:18.469777528+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1m","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:38:18.482831613+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:38:30.484343964+08:00","level":"WARN","msg":"查询 MediaMTX 路径失败","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","err":"[50003] MediaMTX paths/list 失败: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled"}
+{"time":"2026-09-22T03:38:30.484943313+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1m","channels":2}
+{"time":"2026-09-22T03:38:31.285976936+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1n"}
+{"time":"2026-09-22T03:38:31.289231911+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1n","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:38:31.297488974+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:38:43.30860437+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1n","channels":2}
+{"time":"2026-09-22T03:38:44.3277825+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1o"}
+{"time":"2026-09-22T03:38:44.332101228+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1o","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:38:44.340643175+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:38:56.350355139+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1o","channels":2}
+{"time":"2026-09-22T03:38:57.323947999+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1p"}
+{"time":"2026-09-22T03:38:57.327773203+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1p","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:38:57.33729921+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:39:09.346681267+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1p","channels":2}
+{"time":"2026-09-22T03:39:10.347051151+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1q"}
+{"time":"2026-09-22T03:39:10.349932415+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1q","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:39:10.357283478+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:39:10.601264728+08:00","level":"INFO","msg":"视频适配器已启动","module":"api","stage":"discover","path":"live/autocar","rtmp":"rtmp://172.31.68.227:1936/live/autocar"}
+{"time":"2026-09-22T03:39:11.281423872+08:00","level":"INFO","msg":"视频适配器已启动","module":"api","stage":"discover","path":"live/autocar","rtmp":"rtmp://172.31.68.227:1936/live/autocar"}
+{"time":"2026-09-22T03:39:21.136510123+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","mode":"sample","path":"live/autocar","rtmp":"rtmp://172.31.68.227:1936/live/autocar"}
+{"time":"2026-09-22T03:39:22.37049218+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1q","channels":2}
+{"time":"2026-09-22T03:39:23.235507492+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1r"}
+{"time":"2026-09-22T03:39:23.240081521+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1r","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:39:23.248630718+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:39:35.259262848+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1r","channels":2}
+{"time":"2026-09-22T03:39:36.448145534+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1s"}
+{"time":"2026-09-22T03:39:36.451548863+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1s","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:39:36.460439904+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:39:48.470212508+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1s","channels":2}
+{"time":"2026-09-22T03:39:49.268135474+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1t"}
+{"time":"2026-09-22T03:39:49.273017718+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1t","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:39:49.279867844+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:39:51.08224121+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_wqh1v99zp74r0cch","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:39:51.09111265+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_97q1mky8dig21cuu","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:40:01.289515365+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1t","channels":2}
+{"time":"2026-09-22T03:40:02.242525253+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1u"}
+{"time":"2026-09-22T03:40:02.247167619+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1u","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:40:02.259410447+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_wqh1v99zp74r0cch","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:40:14.263433716+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1u","channels":0}
+{"time":"2026-09-22T03:40:15.353160602+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1v"}
+{"time":"2026-09-22T03:40:15.356788402+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1v","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:40:27.374194829+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1v","channels":0}
+{"time":"2026-09-22T03:40:28.356702147+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1w"}
+{"time":"2026-09-22T03:40:28.362009191+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1w","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:40:29.749421622+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1x"}
+{"time":"2026-09-22T03:40:29.758371789+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1x","clientId":"web-hyv3xeys"}
+{"time":"2026-09-22T03:40:31.621546675+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:40:40.37793726+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1w","channels":0}
+{"time":"2026-09-22T03:40:41.37668702+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1y"}
+{"time":"2026-09-22T03:40:41.379538908+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1y","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:40:41.771556911+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1x","channels":2}
+{"time":"2026-09-22T03:40:42.870803665+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1z"}
+{"time":"2026-09-22T03:40:42.877242176+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1z","clientId":"web-hyv3xeys"}
+{"time":"2026-09-22T03:40:42.884997659+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:40:53.397292499+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1y","channels":0}
+{"time":"2026-09-22T03:40:54.518040394+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_20"}
+{"time":"2026-09-22T03:40:54.521178509+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_20","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:40:54.892814593+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1z","channels":2}
+{"time":"2026-09-22T03:40:56.080522963+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_21"}
+{"time":"2026-09-22T03:40:56.085893901+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_21","clientId":"web-hyv3xeys"}
+{"time":"2026-09-22T03:40:56.09393042+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:41:06.538984473+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_20","channels":0}
+{"time":"2026-09-22T03:41:07.57332951+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_22"}
+{"time":"2026-09-22T03:41:07.576237705+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_22","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:41:08.101952164+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_21","channels":2}
+{"time":"2026-09-22T03:41:08.966279254+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_23"}
+{"time":"2026-09-22T03:41:08.977168783+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_23","clientId":"web-hyv3xeys"}
+{"time":"2026-09-22T03:41:08.984384452+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:41:19.59422679+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_22","channels":0}
+{"time":"2026-09-22T03:41:20.631921059+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_24"}
+{"time":"2026-09-22T03:41:20.635684671+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_24","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:41:20.987684445+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_23","channels":1}
+{"time":"2026-09-22T03:41:22.084974573+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_25"}
+{"time":"2026-09-22T03:41:22.102290778+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_25","clientId":"web-hyv3xeys"}
+{"time":"2026-09-22T03:41:22.125688048+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:41:25.167337774+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_25","channels":1}
+{"time":"2026-09-22T03:41:26.291297069+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_26"}
+{"time":"2026-09-22T03:41:26.379044549+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_26","clientId":"web-16uyg9wv"}
+{"time":"2026-09-22T03:41:26.399929916+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:41:32.652167877+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_24","channels":0}
+{"time":"2026-09-22T03:41:33.709971092+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_27"}
+{"time":"2026-09-22T03:41:33.713098019+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_27","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:41:38.392986363+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_26","channels":1}
+{"time":"2026-09-22T03:41:39.520481394+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_28"}
+{"time":"2026-09-22T03:41:39.526342535+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_28","clientId":"web-16uyg9wv"}
+{"time":"2026-09-22T03:41:39.532283912+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:41:45.730539437+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_27","channels":0}
+{"time":"2026-09-22T03:41:46.932055141+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_29"}
+{"time":"2026-09-22T03:41:46.936113622+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_29","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:41:51.541423515+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_28","channels":1}
+{"time":"2026-09-22T03:41:52.582521426+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2a"}
+{"time":"2026-09-22T03:41:52.587691923+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2a","clientId":"web-16uyg9wv"}
+{"time":"2026-09-22T03:41:52.59406145+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:41:58.953088065+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_29","channels":0}
+{"time":"2026-09-22T03:41:59.768316499+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2b"}
+{"time":"2026-09-22T03:41:59.7769175+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2b","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:42:04.604187066+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2a","channels":1}
+{"time":"2026-09-22T03:42:05.761889368+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2c"}
+{"time":"2026-09-22T03:42:05.768178026+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2c","clientId":"web-16uyg9wv"}
+{"time":"2026-09-22T03:42:05.780555049+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:42:11.143343997+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2c","channels":1}
+{"time":"2026-09-22T03:42:11.791343091+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2b","channels":0}
+{"time":"2026-09-22T03:42:12.904006119+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2d"}
+{"time":"2026-09-22T03:42:12.907070913+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2d","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:42:24.924506142+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2d","channels":0}
+{"time":"2026-09-22T03:42:25.806820906+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2e"}
+{"time":"2026-09-22T03:42:25.814494899+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2e","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:42:37.827915816+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2e","channels":0}
+{"time":"2026-09-22T03:42:38.770754636+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2f"}
+{"time":"2026-09-22T03:42:38.777470962+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2f","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:42:50.791572623+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2f","channels":0}
+{"time":"2026-09-22T03:42:51.950539243+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2g"}
+{"time":"2026-09-22T03:42:51.956846406+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2g","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:43:03.971554325+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2g","channels":0}
+{"time":"2026-09-22T03:43:04.969778045+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2h"}
+{"time":"2026-09-22T03:43:04.973492243+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2h","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:43:15.193319057+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2i"}
+{"time":"2026-09-22T03:43:15.214044749+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2i","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:43:16.990824729+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2h","channels":0}
+{"time":"2026-09-22T03:43:17.89826069+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2j"}
+{"time":"2026-09-22T03:43:17.901847128+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2j","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:43:27.234654803+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2i","channels":0}
+{"time":"2026-09-22T03:43:28.393003039+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2k"}
+{"time":"2026-09-22T03:43:28.416102816+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2k","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:43:29.919511142+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2j","channels":0}
+{"time":"2026-09-22T03:43:31.050176306+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2l"}
+{"time":"2026-09-22T03:43:31.055115562+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2l","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:43:40.434386482+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2k","channels":0}
+{"time":"2026-09-22T03:43:41.5983838+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2m"}
+{"time":"2026-09-22T03:43:41.603542694+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2m","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:43:43.070844105+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2l","channels":0}
+{"time":"2026-09-22T03:43:43.904953957+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2n"}
+{"time":"2026-09-22T03:43:43.907993554+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2n","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:43:53.619138903+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2m","channels":0}
+{"time":"2026-09-22T03:43:54.494507592+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2o"}
+{"time":"2026-09-22T03:43:54.502381573+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2o","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:43:55.925592961+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2n","channels":0}
+{"time":"2026-09-22T03:43:56.867953441+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2p"}
+{"time":"2026-09-22T03:43:56.8720329+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2p","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:44:06.51573156+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2o","channels":0}
+{"time":"2026-09-22T03:44:07.487255623+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2q"}
+{"time":"2026-09-22T03:44:07.501848447+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2q","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:44:08.889029115+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2p","channels":0}
+{"time":"2026-09-22T03:44:09.910752015+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2r"}
+{"time":"2026-09-22T03:44:09.913804456+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2r","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:44:19.508221686+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2q","channels":0}
+{"time":"2026-09-22T03:44:20.586462844+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2s"}
+{"time":"2026-09-22T03:44:20.590930811+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2s","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:44:21.931467325+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2r","channels":0}
+{"time":"2026-09-22T03:44:22.92287123+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2t"}
+{"time":"2026-09-22T03:44:22.927221906+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2t","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:44:32.60757551+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2s","channels":0}
+{"time":"2026-09-22T03:44:33.601265495+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2u"}
+{"time":"2026-09-22T03:44:33.60650848+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2u","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:44:34.943785602+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2t","channels":0}
+{"time":"2026-09-22T03:44:35.783315733+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2v"}
+{"time":"2026-09-22T03:44:35.787873294+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2v","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:44:45.622293107+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2u","channels":0}
+{"time":"2026-09-22T03:44:46.698464232+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2w"}
+{"time":"2026-09-22T03:44:46.709014482+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2w","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:44:47.804662858+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2v","channels":0}
+{"time":"2026-09-22T03:44:48.776569846+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2x"}
+{"time":"2026-09-22T03:44:48.780994167+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2x","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:44:58.719556006+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2w","channels":0}
+{"time":"2026-09-22T03:44:59.698008249+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2y"}
+{"time":"2026-09-22T03:44:59.711185842+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2y","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:45:00.797281238+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2x","channels":0}
+{"time":"2026-09-22T03:45:01.612226177+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2z"}
+{"time":"2026-09-22T03:45:01.618237163+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2z","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:45:11.718960603+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2y","channels":0}
+{"time":"2026-09-22T03:45:12.748552293+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_30"}
+{"time":"2026-09-22T03:45:12.752884661+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_30","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:45:13.347496534+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_lg9eiemi1unja40h","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:45:13.349752744+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","mode":"sample","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:45:13.63323489+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2z","channels":0}
+{"time":"2026-09-22T03:45:14.500247113+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_31"}
+{"time":"2026-09-22T03:45:14.505004225+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_31","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:45:24.770715125+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_30","channels":1}
+{"time":"2026-09-22T03:45:25.948830819+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_32"}
+{"time":"2026-09-22T03:45:25.953439876+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_32","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:45:26.521281798+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_31","channels":0}
+{"time":"2026-09-22T03:45:27.533396842+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_33"}
+{"time":"2026-09-22T03:45:27.538146711+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_33","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:45:37.970696058+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_32","channels":1}
+{"time":"2026-09-22T03:45:38.875929203+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_34"}
+{"time":"2026-09-22T03:45:38.886058741+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_34","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:45:39.554705395+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_33","channels":0}
+{"time":"2026-09-22T03:45:40.742171466+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_35"}
+{"time":"2026-09-22T03:45:40.746420163+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_35","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:45:50.89711158+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_34","channels":1}
+{"time":"2026-09-22T03:45:51.85813651+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_36"}
+{"time":"2026-09-22T03:45:51.863667987+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_36","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:45:52.76350267+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_35","channels":0}
+{"time":"2026-09-22T03:45:52.906057063+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","mode":"sample","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:45:53.572533249+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_37"}
+{"time":"2026-09-22T03:45:53.578197867+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_37","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:46:03.88001844+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_36","channels":1}
+{"time":"2026-09-22T03:46:04.929949494+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_38"}
+{"time":"2026-09-22T03:46:04.934991883+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_38","clientId":"web-neoyc9rk"}
+{"time":"2026-09-22T03:46:05.593253342+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_37","channels":0}
+{"time":"2026-09-22T03:46:06.424557075+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_39"}
+{"time":"2026-09-22T03:46:06.429895082+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_39","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:46:10.331147203+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_38","channels":1}
+{"time":"2026-09-22T03:46:11.407457935+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3a"}
+{"time":"2026-09-22T03:46:11.440482058+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3a","clientId":"web-mbnwmej0"}
+{"time":"2026-09-22T03:46:18.445308549+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_39","channels":0}
+{"time":"2026-09-22T03:46:19.251075893+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3b"}
+{"time":"2026-09-22T03:46:19.25730636+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3b","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:46:23.449859513+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3a","channels":1}
+{"time":"2026-09-22T03:46:24.581639382+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3c"}
+{"time":"2026-09-22T03:46:24.586859918+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3c","clientId":"web-mbnwmej0"}
+{"time":"2026-09-22T03:46:31.272108555+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3b","channels":0}
+{"time":"2026-09-22T03:46:32.275803208+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3d"}
+{"time":"2026-09-22T03:46:32.281546223+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3d","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:46:36.603140247+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3c","channels":1}
+{"time":"2026-09-22T03:46:37.71143357+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3e"}
+{"time":"2026-09-22T03:46:37.718622824+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3e","clientId":"web-mbnwmej0"}
+{"time":"2026-09-22T03:46:42.893230876+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3e","channels":1}
+{"time":"2026-09-22T03:46:44.29734216+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3d","channels":0}
+{"time":"2026-09-22T03:46:45.388983692+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3f"}
+{"time":"2026-09-22T03:46:45.399038517+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3f","clientId":"web-kkvym41z"}
+{"time":"2026-09-22T03:46:47.510147138+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3f","channels":0}
+{"time":"2026-09-22T03:46:50.135481419+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3g"}
+{"time":"2026-09-22T03:46:50.228337656+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3g","clientId":"web-wyyfphir"}
+{"time":"2026-09-22T03:47:02.237905322+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3g","channels":1}
+{"time":"2026-09-22T03:47:03.207855254+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3h"}
+{"time":"2026-09-22T03:47:03.214953811+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3h","clientId":"web-wyyfphir"}
+{"time":"2026-09-22T03:47:15.230842345+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3h","channels":1}
+{"time":"2026-09-22T03:47:16.043326171+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3i"}
+{"time":"2026-09-22T03:47:16.050308136+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3i","clientId":"web-wyyfphir"}
+{"time":"2026-09-22T03:47:21.163982771+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:47:28.065084512+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3i","channels":1}
+{"time":"2026-09-22T03:47:29.255455339+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3j"}
+{"time":"2026-09-22T03:47:29.260175483+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3j","clientId":"web-wyyfphir"}
+{"time":"2026-09-22T03:47:29.266275769+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:47:36.798476627+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3j","channels":1}
+{"time":"2026-09-22T03:47:39.172515372+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3k"}
+{"time":"2026-09-22T03:47:39.287504625+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3k","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:47:39.31610316+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:47:43.694398493+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","mode":"sample","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:47:43.700047449+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","mode":"sample","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:47:51.294793408+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3k","channels":1}
+{"time":"2026-09-22T03:47:52.485620653+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3l"}
+{"time":"2026-09-22T03:47:52.492125743+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3l","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:47:52.501918404+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:48:04.506953684+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3l","channels":1}
+{"time":"2026-09-22T03:48:05.672627305+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3m"}
+{"time":"2026-09-22T03:48:05.679450342+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3m","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:48:05.687920134+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:48:17.695051393+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3m","channels":1}
+{"time":"2026-09-22T03:48:18.852653293+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3n"}
+{"time":"2026-09-22T03:48:18.856054082+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3n","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:48:18.864187459+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:48:30.875201531+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3n","channels":1}
+{"time":"2026-09-22T03:48:31.791887342+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3o"}
+{"time":"2026-09-22T03:48:31.79644025+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3o","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:48:31.804451169+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:48:43.814166508+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3o","channels":1}
+{"time":"2026-09-22T03:48:44.615882796+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3p"}
+{"time":"2026-09-22T03:48:44.61983893+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3p","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:48:44.632395094+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:48:56.638156186+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3p","channels":1}
+{"time":"2026-09-22T03:48:57.610523341+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3q"}
+{"time":"2026-09-22T03:48:57.613587675+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3q","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:48:57.621621639+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:49:09.632390296+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3q","channels":1}
+{"time":"2026-09-22T03:49:10.748674935+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3r"}
+{"time":"2026-09-22T03:49:10.755936661+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3r","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:49:10.766582776+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:49:22.770461299+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3r","channels":1}
+{"time":"2026-09-22T03:49:23.750777361+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3s"}
+{"time":"2026-09-22T03:49:23.753483472+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3s","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:49:23.759462887+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:49:35.774767562+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3s","channels":1}
+{"time":"2026-09-22T03:49:36.702489964+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3t"}
+{"time":"2026-09-22T03:49:36.706477778+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3t","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:49:36.714430381+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:49:48.724499357+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3t","channels":1}
+{"time":"2026-09-22T03:49:49.631353927+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3u"}
+{"time":"2026-09-22T03:49:49.63512859+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3u","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:49:49.642239656+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:50:01.653055343+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3u","channels":1}
+{"time":"2026-09-22T03:50:02.527207307+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3v"}
+{"time":"2026-09-22T03:50:02.537870891+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3v","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:50:02.545766034+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:50:14.549539739+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3v","channels":1}
+{"time":"2026-09-22T03:50:15.515372667+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3w"}
+{"time":"2026-09-22T03:50:15.518030067+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3w","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:50:15.523131036+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:50:27.536668576+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3w","channels":1}
+{"time":"2026-09-22T03:50:28.547242355+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3x"}
+{"time":"2026-09-22T03:50:28.550792794+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3x","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:50:28.55754524+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:50:40.56881008+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3x","channels":1}
+{"time":"2026-09-22T03:50:41.455088716+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3y"}
+{"time":"2026-09-22T03:50:41.458579163+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3y","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:50:41.466206142+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:50:53.477682329+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3y","channels":1}
+{"time":"2026-09-22T03:50:54.358579231+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3z"}
+{"time":"2026-09-22T03:50:54.363094363+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3z","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:50:54.370521641+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:51:06.381281095+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3z","channels":1}
+{"time":"2026-09-22T03:51:07.348065639+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_40"}
+{"time":"2026-09-22T03:51:07.351022301+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_40","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:51:07.360129333+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:51:19.369487676+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_40","channels":1}
+{"time":"2026-09-22T03:51:20.381677789+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_41"}
+{"time":"2026-09-22T03:51:20.385712161+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_41","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:51:20.397088516+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:51:32.402464863+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_41","channels":1}
+{"time":"2026-09-22T03:51:33.316596718+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_42"}
+{"time":"2026-09-22T03:51:33.320774317+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_42","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:51:33.328041952+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:51:45.33860084+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_42","channels":1}
+{"time":"2026-09-22T03:51:46.277142714+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_43"}
+{"time":"2026-09-22T03:51:46.282148879+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_43","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:51:46.29013419+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:51:58.299123318+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_43","channels":1}
+{"time":"2026-09-22T03:51:59.233386739+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_44"}
+{"time":"2026-09-22T03:51:59.236709977+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_44","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:51:59.244928168+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:52:11.255163772+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_44","channels":1}
+{"time":"2026-09-22T03:52:12.132964155+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_45"}
+{"time":"2026-09-22T03:52:12.138675853+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_45","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:52:12.148866635+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:52:24.15568452+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_45","channels":1}
+{"time":"2026-09-22T03:52:24.970598401+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_46"}
+{"time":"2026-09-22T03:52:24.974507451+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_46","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:52:24.98084974+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:52:36.991966571+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_46","channels":1}
+{"time":"2026-09-22T03:52:37.88060498+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_47"}
+{"time":"2026-09-22T03:52:37.887784624+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_47","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:52:37.897725228+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:52:49.902361937+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_47","channels":1}
+{"time":"2026-09-22T03:52:51.087758329+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_48"}
+{"time":"2026-09-22T03:52:51.090966686+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_48","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:52:51.0977108+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:53:03.109838401+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_48","channels":1}
+{"time":"2026-09-22T03:53:04.070485814+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_49"}
+{"time":"2026-09-22T03:53:04.074383248+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_49","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:53:04.080270677+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:53:16.091347946+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_49","channels":1}
+{"time":"2026-09-22T03:53:17.224109287+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4a"}
+{"time":"2026-09-22T03:53:17.227918962+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4a","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:53:17.235822271+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:53:29.246542428+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4a","channels":1}
+{"time":"2026-09-22T03:53:30.305964877+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4b"}
+{"time":"2026-09-22T03:53:30.312976397+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4b","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:53:30.319236239+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:53:42.327864396+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4b","channels":1}
+{"time":"2026-09-22T03:53:43.16573854+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4c"}
+{"time":"2026-09-22T03:53:43.172075188+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4c","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:53:43.185461502+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:53:55.187188959+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4c","channels":1}
+{"time":"2026-09-22T03:53:56.050471714+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4d"}
+{"time":"2026-09-22T03:53:56.059786232+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4d","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:53:56.067889578+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:54:08.071852532+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4d","channels":1}
+{"time":"2026-09-22T03:54:08.888902242+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4e"}
+{"time":"2026-09-22T03:54:08.891525959+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4e","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:54:08.89646079+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:54:20.910322624+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4e","channels":1}
+{"time":"2026-09-22T03:54:21.781301286+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4f"}
+{"time":"2026-09-22T03:54:21.785352331+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4f","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:54:21.79418432+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:54:33.803980859+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4f","channels":1}
+{"time":"2026-09-22T03:54:34.946362618+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4g"}
+{"time":"2026-09-22T03:54:34.94992844+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4g","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:54:34.957373033+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:54:46.968346396+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4g","channels":1}
+{"time":"2026-09-22T03:54:47.792168685+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4h"}
+{"time":"2026-09-22T03:54:47.796975433+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4h","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:54:47.806676658+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:54:59.814040849+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4h","channels":1}
+{"time":"2026-09-22T03:55:00.921602367+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4i"}
+{"time":"2026-09-22T03:55:00.926277915+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4i","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:55:00.935385977+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:55:12.943498694+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4i","channels":1}
+{"time":"2026-09-22T03:55:13.885004438+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4j"}
+{"time":"2026-09-22T03:55:13.888919563+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4j","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:55:13.8960189+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:55:25.907457806+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4j","channels":1}
+{"time":"2026-09-22T03:55:27.051410931+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4k"}
+{"time":"2026-09-22T03:55:27.056130943+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4k","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:55:27.063430635+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:55:39.073076112+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4k","channels":1}
+{"time":"2026-09-22T03:55:40.092964408+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4l"}
+{"time":"2026-09-22T03:55:40.097811035+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4l","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:55:40.115342732+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:55:52.115109989+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4l","channels":1}
+{"time":"2026-09-22T03:55:53.072203363+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4m"}
+{"time":"2026-09-22T03:55:53.077222851+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4m","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:55:53.084880868+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:56:05.094175428+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4m","channels":1}
+{"time":"2026-09-22T03:56:06.122870684+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4n"}
+{"time":"2026-09-22T03:56:06.126594844+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4n","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:56:06.134946134+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:56:18.145125171+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4n","channels":1}
+{"time":"2026-09-22T03:56:19.056864077+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4o"}
+{"time":"2026-09-22T03:56:19.061957719+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4o","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:56:19.074053024+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:56:31.078700731+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4o","channels":1}
+{"time":"2026-09-22T03:56:31.929857485+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4p"}
+{"time":"2026-09-22T03:56:31.934043428+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4p","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:56:31.941925814+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:56:43.953420863+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4p","channels":1}
+{"time":"2026-09-22T03:56:44.918940278+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4q"}
+{"time":"2026-09-22T03:56:44.923760321+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4q","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:56:44.932253649+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:56:56.940563806+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4q","channels":1}
+{"time":"2026-09-22T03:56:58.106750018+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4r"}
+{"time":"2026-09-22T03:56:58.111555826+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4r","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:56:58.122051419+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:57:10.129015186+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4r","channels":1}
+{"time":"2026-09-22T03:57:10.986372144+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4s"}
+{"time":"2026-09-22T03:57:10.990982365+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4s","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:57:11.004111562+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:57:23.008830566+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4s","channels":1}
+{"time":"2026-09-22T03:57:23.963887117+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4t"}
+{"time":"2026-09-22T03:57:23.976921654+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4t","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:57:23.984309803+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:57:35.985315579+08:00","level":"WARN","msg":"查询 MediaMTX 路径失败","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","err":"[50003] MediaMTX paths/list 失败: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled"}
+{"time":"2026-09-22T03:57:35.985474981+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4t","channels":1}
+{"time":"2026-09-22T03:57:36.847940338+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4u"}
+{"time":"2026-09-22T03:57:36.852277533+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4u","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:57:36.861420058+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:57:48.868976169+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4u","channels":1}
+{"time":"2026-09-22T03:57:49.960104425+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4v"}
+{"time":"2026-09-22T03:57:49.971700116+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4v","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:57:49.981217174+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:58:01.982014252+08:00","level":"WARN","msg":"查询 MediaMTX 路径失败","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","err":"[50003] MediaMTX paths/list 失败: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled"}
+{"time":"2026-09-22T03:58:01.982285267+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4v","channels":1}
+{"time":"2026-09-22T03:58:03.175810715+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4w"}
+{"time":"2026-09-22T03:58:03.179719137+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4w","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:58:03.186806798+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:58:15.197482866+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4w","channels":1}
+{"time":"2026-09-22T03:58:16.329083303+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4x"}
+{"time":"2026-09-22T03:58:16.333384807+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4x","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:58:16.341772782+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:58:28.35080796+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4x","channels":1}
+{"time":"2026-09-22T03:58:29.363399103+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4y"}
+{"time":"2026-09-22T03:58:29.371954288+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4y","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:58:29.378815438+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:58:41.385418363+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4y","channels":1}
+{"time":"2026-09-22T03:58:42.342728829+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4z"}
+{"time":"2026-09-22T03:58:42.347048335+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4z","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:58:42.354246533+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:58:54.364698543+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4z","channels":1}
+{"time":"2026-09-22T03:58:55.530332008+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_50"}
+{"time":"2026-09-22T03:58:55.53891689+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_50","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:58:55.551691164+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:59:07.553191874+08:00","level":"WARN","msg":"查询 MediaMTX 路径失败","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","err":"[50003] MediaMTX paths/list 失败: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled: Get \"http://127.0.0.1:9997/v3/paths/list?path=live/lite3\": context canceled"}
+{"time":"2026-09-22T03:59:07.553428327+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_50","channels":1}
+{"time":"2026-09-22T03:59:08.769960398+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_51"}
+{"time":"2026-09-22T03:59:08.775106853+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_51","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:59:08.786477645+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:59:20.791496033+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_51","channels":1}
+{"time":"2026-09-22T03:59:21.823235436+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_52"}
+{"time":"2026-09-22T03:59:21.83093856+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_52","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:59:21.837658146+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:59:33.845484773+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_52","channels":1}
+{"time":"2026-09-22T03:59:34.757778161+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_53"}
+{"time":"2026-09-22T03:59:34.761672474+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_53","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:59:34.769640644+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:59:46.778966935+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_53","channels":1}
+{"time":"2026-09-22T03:59:47.677085277+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_54"}
+{"time":"2026-09-22T03:59:47.681865119+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_54","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:59:47.688489306+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:59:48.692172663+08:00","level":"INFO","msg":"收到退出信号，开始优雅关闭","module":"main"}
+{"time":"2026-09-22T03:59:48.694030804+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_54","channels":1}
+{"time":"2026-09-22T03:59:48.703129838+08:00","level":"INFO","msg":"已退出","module":"main"}
+{"time":"2026-09-22T03:59:48.783670475+08:00","level":"INFO","msg":"配置加载完成","module":"main","httpAddr":":8080","httpsAddr":":8443","tlsEnabled":true,"dataDir":"./data"}
+{"time":"2026-09-22T03:59:48.787089023+08:00","level":"INFO","msg":"HTTP 监听已启动","module":"server","addr":":8080"}
+{"time":"2026-09-22T03:59:48.787409079+08:00","level":"INFO","msg":"HTTPS 监听已启动","module":"server","addr":":8443"}
+
+  MonitorAll v1.0.0  (schema v1)
+  ────────────────────────────────────────────────
+    HTTP   →  http://10.42.0.1:8080
+    HTTPS  →  https://10.42.0.1:8443   (自签证书)
+    证书信任指引 → http://10.42.0.1:8080/trust
+    其它地址 → http://10.61.133.61:8080
+    MediaMTX     → embedded @ http://127.0.0.1:9997
+    SQLite       → ./data/monitorall.db
+  ────────────────────────────────────────────────
+
+{"time":"2026-09-22T03:59:49.637494219+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1"}
+{"time":"2026-09-22T03:59:49.64401416+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1","clientId":"web-1tlut9r7"}
+{"time":"2026-09-22T03:59:49.652589573+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T03:59:54.599735857+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1","channels":1}
+{"time":"2026-09-22T03:59:57.178667203+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2"}
+{"time":"2026-09-22T03:59:57.268794006+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T03:59:57.304402487+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T04:00:09.280052306+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2","channels":1}
+{"time":"2026-09-22T04:00:10.133671439+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_3"}
+{"time":"2026-09-22T04:00:10.142784044+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_3","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:00:10.151485891+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T04:00:21.178970568+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_4"}
+{"time":"2026-09-22T04:00:21.255509109+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_4","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:00:21.262895708+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_lg9eiemi1unja40h","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T04:00:22.155308739+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_3","channels":1}
+{"time":"2026-09-22T04:00:23.203209264+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_5"}
+{"time":"2026-09-22T04:00:23.208729437+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_5","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:00:23.217349752+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T04:00:33.260736556+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_4","channels":1}
+{"time":"2026-09-22T04:00:35.027321038+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_6"}
+{"time":"2026-09-22T04:00:35.032216067+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_6","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:00:35.225093184+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_5","channels":1}
+{"time":"2026-09-22T04:00:36.253676963+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_7"}
+{"time":"2026-09-22T04:00:36.258571344+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_7","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:00:47.048706096+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_6","channels":1}
+{"time":"2026-09-22T04:00:47.896827783+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_8"}
+{"time":"2026-09-22T04:00:47.904159841+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_8","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:00:48.2745282+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_7","channels":1}
+{"time":"2026-09-22T04:00:49.130741245+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_9"}
+{"time":"2026-09-22T04:00:49.136167063+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_9","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:00:59.918817736+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_8","channels":1}
+{"time":"2026-09-22T04:01:00.944875126+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_a"}
+{"time":"2026-09-22T04:01:00.959467002+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_a","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:01:01.152806657+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_9","channels":1}
+{"time":"2026-09-22T04:01:02.346230799+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_b"}
+{"time":"2026-09-22T04:01:02.350570536+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_b","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:01:12.966226105+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_a","channels":1}
+{"time":"2026-09-22T04:01:13.94220291+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_c"}
+{"time":"2026-09-22T04:01:13.992320461+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_c","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:01:14.367356366+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_b","channels":1}
+{"time":"2026-09-22T04:01:15.355963792+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_d"}
+{"time":"2026-09-22T04:01:15.36096734+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_d","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:01:26.003578974+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_c","channels":1}
+{"time":"2026-09-22T04:01:26.878949723+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_e"}
+{"time":"2026-09-22T04:01:26.885109219+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_e","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:01:27.378220397+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_d","channels":1}
+{"time":"2026-09-22T04:01:28.532741791+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_f"}
+{"time":"2026-09-22T04:01:28.539858342+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_f","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:01:38.900744997+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_e","channels":1}
+{"time":"2026-09-22T04:01:40.554174239+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_f","channels":1}
+{"time":"2026-09-22T04:01:41.02667032+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_g"}
+{"time":"2026-09-22T04:01:41.031895072+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_g","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:01:41.040804222+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T04:01:41.503940956+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_h"}
+{"time":"2026-09-22T04:01:41.508710887+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_h","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:01:53.048358285+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_g","channels":1}
+{"time":"2026-09-22T04:01:53.525428849+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_h","channels":1}
+{"time":"2026-09-22T04:01:54.030627985+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_i"}
+{"time":"2026-09-22T04:01:54.035219423+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_i","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:01:54.041287527+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T04:01:54.593013987+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_j"}
+{"time":"2026-09-22T04:01:54.597095901+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_j","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:02:06.052307073+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_i","channels":1}
+{"time":"2026-09-22T04:02:06.61686957+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_j","channels":1}
+{"time":"2026-09-22T04:02:07.76423883+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_k"}
+{"time":"2026-09-22T04:02:07.768659054+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_k","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:02:07.775583403+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T04:02:08.032936588+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_l"}
+{"time":"2026-09-22T04:02:08.037767938+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_l","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:02:19.786582584+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_k","channels":1}
+{"time":"2026-09-22T04:02:20.054983139+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_l","channels":1}
+{"time":"2026-09-22T04:02:20.745299204+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_m"}
+{"time":"2026-09-22T04:02:20.749334055+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_m","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:02:20.762367424+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T04:02:22.035752731+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_n"}
+{"time":"2026-09-22T04:02:22.041422723+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_n","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:02:32.766789254+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_m","channels":1}
+{"time":"2026-09-22T04:02:33.65190593+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_o"}
+{"time":"2026-09-22T04:02:33.65574455+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_o","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:02:34.057511089+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_n","channels":1}
+{"time":"2026-09-22T04:02:35.041839148+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_p"}
+{"time":"2026-09-22T04:02:35.046112894+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_p","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:02:45.673807992+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_o","channels":1}
+{"time":"2026-09-22T04:02:46.693012718+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_q"}
+{"time":"2026-09-22T04:02:46.695721948+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_q","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:02:47.062903629+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_p","channels":1}
+{"time":"2026-09-22T04:02:48.253819734+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_r"}
+{"time":"2026-09-22T04:02:48.258835618+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_r","clientId":"web-a2h6nn47"}
+{"time":"2026-09-22T04:02:58.716644093+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_q","channels":1}
+{"time":"2026-09-22T04:02:58.896056057+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_r","channels":1}
+{"time":"2026-09-22T04:02:59.56241585+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_s"}
+{"time":"2026-09-22T04:02:59.567483859+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_s","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:02:59.576349687+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T04:03:11.585226021+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_s","channels":1}
+{"time":"2026-09-22T04:03:12.545727068+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_t"}
+{"time":"2026-09-22T04:03:12.551977216+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_t","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:03:12.562490729+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T04:03:24.567352055+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_t","channels":1}
+{"time":"2026-09-22T04:03:25.605943861+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_u"}
+{"time":"2026-09-22T04:03:25.610093347+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_u","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:03:25.617587603+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-22T04:03:37.628574857+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_u","channels":1}
+{"time":"2026-09-22T04:03:38.485484408+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_v"}
+{"time":"2026-09-22T04:03:38.49045726+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_v","clientId":"web-fhehnvwq"}
+{"time":"2026-09-22T04:03:38.500079007+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_ggyldkiwpj7f1pmb","path":"live/lite3","rtmp":"rtmp://172.31.68.227:1936/live/lite3"}
