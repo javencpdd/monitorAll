@@ -98,6 +98,11 @@ class WebSocketClient {
   private watchdogTimer = 0
   private retryTimer = 0
   private manualClose = false
+
+  /** 是否已完成 hello 握手（收到 welcome）。握手前除 hello 外的消息一律排队。 */
+  private welcomed = false
+  /** 握手前排队待发的消息（subscribe / pong 等），welcome 后按序补发。 */
+  private pending: ClientMessage[] = []
   private url = ''
   private clientId = randomClientId()
 
@@ -197,14 +202,18 @@ class WebSocketClient {
       this.nextRetryAt.value = 0
       this.phase.value = 'open'
       this.lastError.value = ''
-      // 必须在 hello 截止时间前完成握手（ARCH §6.1）
-      window.setTimeout(() => {
-        if (socket.readyState === WebSocket.OPEN) {
-          this.send({ op: 'hello', protocol: WS_PROTOCOL_VERSION, clientId: this.clientId })
-        }
-      }, 0)
+      this.welcomed = false
+      this.pending.length = 0
+      // hello 必须是连接后的第一条消息（服务端要求 5s 内完成握手）。
+      // ⚠️ 不能用 setTimeout 异步发送：此前订阅重放是同步发送的，
+      //    subscribe 会抢在 hello 之前到达被服务端拒绝（BAD_REQUEST「请先发送 hello」），
+      //    订阅静默丢失且不会重试 —— 这正是「预览有画面、看板卡片永远没数据」的根因。
+      if (socket.readyState === WebSocket.OPEN) {
+        this.send({ op: 'hello', protocol: WS_PROTOCOL_VERSION, clientId: this.clientId })
+      }
       this.startWatchdog()
-      // 重连成功后重放订阅表：一次性携带全部 channelId（Set 语义，后端幂等）
+      // 重连成功后重放订阅表：一次性携带全部 channelId（Set 语义，后端幂等）。
+      // 未握手前 send 会自动排队，welcome 后按序补发。
       const ids = this.subscribedIds()
       if (ids.length > 0) {
         this.send({ op: 'subscribe', channelIds: ids, ref: randomRef() })
@@ -229,6 +238,8 @@ class WebSocketClient {
 
     socket.onclose = (ev: CloseEvent): void => {
       this.socket = null
+      this.welcomed = false
+      this.pending.length = 0
       this.clearWatchdog()
       if (this.manualClose) {
         this.phase.value = 'closed'
@@ -243,6 +254,10 @@ class WebSocketClient {
     switch (msg.op) {
       case 'welcome': {
         this.clockOffsetMs.value = msg.serverTimeMs - Date.now()
+        this.welcomed = true
+        // 握手完成：按序补发握手期间排队的消息（subscribe / pong 等）
+        const queued = this.pending.splice(0)
+        for (const m of queued) this.send(m)
         for (const set of this.handlers) set.welcome?.(msg)
         break
       }
@@ -280,6 +295,11 @@ class WebSocketClient {
   }
 
   private send(msg: ClientMessage): void {
+    // 握手完成前，除 hello 外的所有消息一律排队（服务端会拒绝未握手消息）
+    if (!this.welcomed && msg.op !== 'hello') {
+      this.pending.push(msg)
+      return
+    }
     if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return
     try {
       this.socket.send(JSON.stringify(msg))

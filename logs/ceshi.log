@@ -12,3 +12,8 @@
     cardHost迹象: document.querySelectorAll('.vgl-item > *').length
   }, null, 1);
 })()
+
+
+curl http://127.0.0.1:9997/v3/paths/list
+
+ffprobe -v error -show_streams rtmp://172.31.68.227:1936/live/lite3
