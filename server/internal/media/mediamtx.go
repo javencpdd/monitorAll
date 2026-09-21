@@ -17,15 +17,15 @@ import (
 
 // MediaMTXPath 描述 MediaMTX 的一个路径与其健康状态。
 type MediaMTXPath struct {
-	Name       string   `json:"name"`
-	ConfName   string   `json:"confName,omitempty"`
-	Source     string   `json:"source,omitempty"`
-	Ready      bool     `json:"ready"`
-	SourceReady bool    `json:"sourceReady"`
-	ReadyTime  string   `json:"readyTime,omitempty"`
-	Tracks     []string `json:"tracks,omitempty"`
-	Readers    int      `json:"readers"`
-	BytesSent  int64    `json:"bytesSent"`
+	Name        string   `json:"name"`
+	ConfName    string   `json:"confName,omitempty"`
+	Source      string   `json:"source,omitempty"`
+	Ready       bool     `json:"ready"`
+	SourceReady bool     `json:"sourceReady"`
+	ReadyTime   string   `json:"readyTime,omitempty"`
+	Tracks      []string `json:"tracks,omitempty"`
+	Readers     int      `json:"readers"`
+	BytesSent   int64    `json:"bytesSent"`
 }
 
 // Client 抽象 MediaMTX API，便于用 mock 做单测（不依赖真实 MediaMTX）。
@@ -66,14 +66,14 @@ type pathsListResponse struct {
 
 // item 为 paths/list 中的单项（字段较多，只解析需要的）。
 type item struct {
-	Name       string         `json:"name"`
-	ConfName   string         `json:"confName"`
-	Source     map[string]any `json:"source"`
-	Ready      bool           `json:"ready"`
-	ReadyTime  string         `json:"readyTime"`
-	Tracks     []string       `json:"tracks"`
-	BytesSent  int64          `json:"bytesSent"`
-	Readers    []any          `json:"readers"`
+	Name      string         `json:"name"`
+	ConfName  string         `json:"confName"`
+	Source    map[string]any `json:"source"`
+	Ready     bool           `json:"ready"`
+	ReadyTime string         `json:"readyTime"`
+	Tracks    []string       `json:"tracks"`
+	BytesSent int64          `json:"bytesSent"`
+	Readers   []any          `json:"readers"`
 }
 
 // PathsList 查询路径列表。
@@ -139,6 +139,12 @@ func (c *httpClient) PathAdd(ctx context.Context, path string, source string) er
 	defer resp.Body.Close()
 	if resp.StatusCode >= 300 {
 		respBody, _ := io.ReadAll(resp.Body)
+		// 路径已存在视为成功：重连/重启/多数据源共用同一路径时会重复注册，
+		// MediaMTX 返回 400 "path already exists"，此时配置已在，不应按失败处理
+		//（否则适配器反复重试并刷 WARN，且可能让状态推导误判）。
+		if resp.StatusCode == http.StatusBadRequest && strings.Contains(string(respBody), "already exists") {
+			return nil
+		}
 		return apperr.Newf(apperr.MediaMTXUnreachable, "MediaMTX paths/add 返回 %d: %s", resp.StatusCode, string(respBody))
 	}
 	return nil

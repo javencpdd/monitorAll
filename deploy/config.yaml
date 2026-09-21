@@ -1,0 +1,75 @@
+# MonitorAll Docker 部署配置（compose 只读挂载为容器内 /app/data/config.yaml）
+#
+# 🚩 Docker 场景三条铁律（否则浏览器一定拉不到视频）：
+#   1. publicHost / lanHost 必须是【宿主机】的局域网 IP，不能留空。
+#      留空会退化成 127.0.0.1（对浏览器无意义）或容器内网 IP（浏览器不可达）。
+#   2. apiBase 用 compose 服务名 mediamtx（容器网络内解析），不要写 127.0.0.1。
+#   3. publicScheme 要与 MediaMTX 是否加密保持一致 —— 本配置走纯 HTTP、不加密。
+#
+# 查宿主机 IP： hostname -I
+
+schemaVersion: 1
+
+server:
+  httpAddr: ":8080"
+  httpsAddr: ":8443"
+  tlsEnabled: false                 # 纯 HTTP：无需信任自签证书，任何浏览器都能出画面
+  autoCert: false
+  certDir: "/app/data/cert"
+  lanHost: "10.42.0.1"              # ← 【改成你浏览器访问看板用的宿主机 IP】
+  dataDir: "/app/data"
+  secretKeyFile: "/app/data/secret.key"
+  readTimeoutMs: 15000
+  writeTimeoutMs: 15000
+  shutdownTimeoutMs: 10000
+
+store:
+  dsn: "/app/data/monitorall.db"
+  wal: true
+
+mediamtx:
+  mode: embedded
+  apiBase: "http://mediamtx:9997"   # compose 服务名，容器网络内可解析
+  publicHost: "10.42.0.1"           # ← 【同上，改成宿主机 IP】
+  publicScheme: "http"
+  portRtmp: 1936
+  portHls: 8888
+  portWebrtc: 8889
+  encryption: "never"               # 不加密，配合 publicScheme: http
+  flvBase: ""
+
+bus:
+  defaultMaxHz: 20
+  imageMaxHz: 10
+  videoStatusHz: 0.5
+  frameBatchMs: 20
+  frameBatchMax: 64
+  connQueueDepth: 256
+  ringCapacity: 1200
+  backpressureNotifyMs: 1000
+  pingIntervalMs: 15000
+  writeWaitMs: 3000
+
+adapter:
+  healthIntervalMs: 3000
+  reconnectBaseMs: 1000
+  reconnectMaxMs: 30000
+  reconnectJitter: 0.2
+  reconnectMaxRetry: -1
+  sampleTimeoutMs: 3000
+
+httpPoll:
+  minIntervalMs: 100
+  defaultTimeoutMs: 3000
+  failureThreshold: 3
+
+web:
+  amapKey: ""
+  theme: "dark"
+
+log:
+  level: "info"
+  format: "json"
+  file: ""
+  maxSizeMb: 50
+  maxBackups: 7

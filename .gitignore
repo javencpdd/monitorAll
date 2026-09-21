@@ -12,6 +12,7 @@ data/cert/*
 server/data/*.db
 server/data/*.db-*
 server/data/cert/*
+deploy/data/*
 
 # Frontend dependencies and build output
 web/node_modules/

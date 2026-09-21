@@ -1,32 +1,73 @@
 ################################################################################
-# MediaMTX 配置（关键片段，其余用官方默认值）
+# MediaMTX 配置（供 docker-compose 挂载使用）
 #
-# 端口规划与 docker-compose 一致：
-#   RTMP 1936（推流入） · HLS 8888（降级播放） · WebRTC 8889（WHEP 首选） · API 9997
+# 端口（与 deploy/docker-compose.yml 的 port 映射一致）：
+#   rtmpAddress   :1936   RTMP 入（默认 1935，此处改 1936 避免与宿主机其他服务冲突）
+#   hlsAddress    :8888   HLS 出（hls.js 降级播放）
+#   webrtcAddress :8889   WebRTC / WHEP
+#   apiAddress    :9997   控制 API
 #
-# 🚩 注意：MediaMTX 原生不支持 HTTP-FLV（官方 issue #1460 明确不实现），
-#          因此降级播放使用 HLS(mpegts variant)，延迟 1–3s，与 FLV 同量级。
+# ── 两个已踩过的坑，改动前务必先看 ────────────────────────────────────────
+#
+# 【坑 1】字段类型分两派，写错会启动即崩溃 + restart 死循环：
+#   - api            是【布尔】 → api: true        （写 "yes" 报 string into bool）
+#   - *Encryption    是【字符串】 → webrtcEncryption: "no"
+#     （写 false 报 bool into conf.alias）
+#   其余字段（AllowOrigin / hlsVariant 等）全部沿用官方默认值，不在此重复声明。
+#
+# 【坑 2】改完本文件必须重启容器才生效：
+#   Docker 单文件 bind mount 绑定的是【inode】。若编辑器用「原子替换」（写临时文件再
+#   rename）保存，容器里 /mediamtx.yml 仍指向旧 inode，进程读到的还是旧内容，
+#   表现为「明明改了却没生效」。MediaMTX 也不会因为宿主机文件变化而自动重载。
+#   → 每次改完务必： docker compose restart mediamtx
+#     （或 ./start.sh --no-build，它内部会 up -d + restart）
+#
+# 【坑 3】authInternalUsers 不能省略，且 api 权限不能只放行 127.0.0.1：
+#   - 官方默认配置里 api 管理员条目是 ips: ["127.0.0.1", "::1"]；
+#     在 Docker 中后端容器访问 mediamtx:9997 时，源 IP 是【网桥地址 172.x】，
+#     不是 127.0.0.1 → 所有 API 请求返回 401 authentication error。
+#     表现：MediaMTX 进程正常、端口在监听，但 paths 永远注册不进去、视频不出画面。
+#   - 本文件（本平台）把 ips 放开为 []（任意 IP）。这是局域网内网部署，
+#     且 9997 端口未对外暴露；若要上公网，必须改成账号密码 + 限定 IP。
 ################################################################################
 
+# RTMP 监听端口（默认 1935，此处改 1936 与 compose 端口映射保持一致）
 rtmpAddress: :1936
-hlsAddress: :8888
-webrtcAddress: :8889
-apiAddress: :9997
 
-api: yes
+# 控制 API（后端编排拉流必需，布尔类型）
+api: true
 
-# HLS：mpegts 切片与 hls.js 兼容性最好
-hlsVariant: mpegts
-hlsSegmentDuration: 1s
-hlsPartDuration: 200ms
-hlsSegmentCount: 7
+# ── 认证 ──────────────────────────────────────────────────────────────────
+# 后端以【无凭据】方式调用 http://mediamtx:9997，因此必须显式声明匿名可访问，
+# 否则 MediaMTX 一律拒绝（401），表现为「容器活着但流注册不进去」。
+authMethod: internal
+authInternalUsers:
+  # ① 推流 / 拉流 / 播放：任意来源（局域网摄像头、浏览器 HLS/WHEP 直连）
+  - user: any
+    pass:
+    ips: []
+    permissions:
+      - action: publish
+        path:
+      - action: read
+        path:
+      - action: playback
+        path:
 
-webrtcAllowOrigin: '*'
+  # ② 控制 API / metrics / pprof：任意来源
+  #    注意：官方默认这里写的是 ips: ["127.0.0.1", "::1"]，
+  #    在 Docker 网桥网络下源 IP 是 172.x，会导致 401，故放开为 []。
+  - user: any
+    pass:
+    ips: []
+    permissions:
+      - action: api
+      - action: metrics
+      - action: pprof
 
-rtmpEncryption: "no"
-webrtcEncryption: "no"      # 由 docker-compose 环境变量覆盖为 yes（后端启用 TLS 时）
-hlsEncryption: "no"         # 同上
-
-# 路径：允许任意路径（由后端通过 API 动态注册 + RTMP 推流自动发现）
+# ── 路径 ──────────────────────────────────────────────────────────────────
+# 许可模板：允许任意路径名被推流/拉流。
+# 注意这是「许可规则」而非「预创建实例」——启动时 /v3/paths/list 为空是正常的，
+# 后端调 paths/add 注册 live/<id> 后才会出现（sourceOnDemand 默认 no，注册即拉流）。
 paths:
   all_others: {}

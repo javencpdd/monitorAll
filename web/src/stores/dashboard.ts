@@ -120,6 +120,14 @@ export const useDashboardStore = defineStore('dashboard', () => {
     const board = current.value
     if (!board) return
     const map = new Map(layouts.map((l) => [l.id, l]))
+    // 坐标完全未变化时直接返回：不替换 cards 数组。
+    // 若替换，layout computed 会产生新引用传回 <grid-layout>，
+    // 组件内部会再次 emit layout-updated → 无限循环 → 浏览器卡死。
+    const changed = layouts.some((l) => {
+      const c = board.cards.find((x) => x.id === l.id)
+      return !c || c.layout.x !== l.x || c.layout.y !== l.y || c.layout.w !== l.w || c.layout.h !== l.h
+    })
+    if (!changed) return
     board.cards = board.cards.map((c) => {
       const patch = map.get(c.id)
       if (!patch) return c

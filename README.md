@@ -44,37 +44,102 @@ monitorAll/
 ├── web/                  # Vue3 前端（构建产物 → server/internal/web/dist）
 ├── server/               # Go 后端（cmd / internal / config / Makefile）
 ├── deploy/               # Dockerfile、docker-compose.yml、mediamtx 配置
-├── scripts/smoke.sh      # 冒烟自测
+│   ├── start.sh / stop.sh    # Docker 一键启停 + 就绪检查
+│   └── diag.sh               # 视频链路自检（API/路径/播放地址逐项判定）
+├── scripts/
+│   ├── start-local.sh / stop-local.sh   # 裸跑（无 Docker）一键启停
+│   └── smoke.sh          # 冒烟自测
 └── README.md
 ```
 
-## 快速开始（本地）
+## 快速开始（裸跑 · 不使用 Docker）
 
-前置：Go 1.22+、Node 18+（仅构建前端时需要）。
+裸跑是**两个独立进程**，通过 MediaMTX 的 `:9997` HTTP API 协作：
 
-```bash
-# 1. 构建前端并嵌入后端（首次或前端改动后执行）
-cd server && make build-web
-
-# 2. 编译单二进制
-make build          # 产物在 server/bin/monitorall
-
-# 3. 启动（默认 HTTP :8080 / HTTPS :8443，自签证书）
-./bin/monitorall
+```
+浏览器 ──:8080──> monitorall（单二进制，含前端 + SQLite）
+                      │ 控制 API（:9997，注册拉流路径）
+                      ▼
+                  MediaMTX ──拉流──> rtmp://相机:1935/live/xxx
+浏览器 ──:8888──> MediaMTX（HLS 播放地址，画面不经后端转发）
 ```
 
-启动后按横幅打印的 LAN 地址访问（如 `http://10.42.0.1:8080`），同一局域网内其它电脑直接打开即可。
+| 进程 | 端口 | 作用 |
+|---|---|---|
+| `mediamtx` | 1935(RTMP) / 8888(HLS) / 8889(WebRTC) / 9997(API) | 拉流 + 转封装 |
+| `monitorall` | 8080(HTTP) / 8443(HTTPS) | 平台 + 前端 + 数据编排 |
+
+### 流程
+
+```bash
+# 0. 若 Docker 栈正在运行，先停掉（否则 8080/8888/9997 端口冲突）
+cd deploy && ./stop.sh && cd ..
+
+# 1. 启动 MediaMTX（转封装进程，独立于后端）
+#    下载：https://github.com/bluenviron/mediamtx/releases（本仓库 mediamtx/ 已自带）
+cd ~/monitorAll/mediamtx && ./mediamtx          # 前台运行，会占用当前终端
+# 等价后台写法（不 cd 进去时【必须】显式传配置路径）：
+#   nohup ~/monitorAll/mediamtx/mediamtx ~/monitorAll/mediamtx/mediamtx.yml &
+# ⚠️ MediaMTX 按【当前目录】查找配置文件（mediamtx.yml → 系统路径）。不 cd 也不传路径时
+#    会 WARN "configuration file not found ... using an empty configuration" 并以空配置启动，
+#    api 可能被关闭 → 后端连不上 :9997。
+
+# 2. 构建前端并嵌入（首次，或改过 web/ 之后；已构建过可跳过）
+cd server && make build-web && cd ..
+
+# 3. 编译后端单二进制
+cd server && make build && cd ..                # 产物 server/bin/monitorall
+
+# 4. 启动后端（读取 server/config.yaml；./data 相对当前目录，故在仓库根目录执行）
+./server/bin/monitorall --config server/config.yaml
+#   想一条命令搞定 1+4：./scripts/start-local.sh（自动起 MediaMTX、预检端口、等待就绪）
+
+# 5. 停止
+./scripts/stop-local.sh                          # 或手工 kill 两个进程
+```
+
+启动后访问 `http://<本机局域网IP>:8080`（脚本会打印）。
+
+### 裸跑配置要点（`server/config.yaml`）
+
+| 配置项 | 裸跑取值 | 说明 |
+|---|---|---|
+| `mediamtx.apiBase` | `http://127.0.0.1:9997` | **不能写 compose 服务名 `mediamtx`**——裸跑无 Docker DNS，会报 `lookup mediamtx: server misbehaving` |
+| `mediamtx.portRtmp` | `1935` | 裸跑 MediaMTX 默认 RTMP 端口（Docker 方案才是 1936） |
+| `mediamtx.publicHost` | 本机局域网 IP（留空则自动探测） | 浏览器靠它拼 HLS 播放地址，留错会拉不到画面 |
+| `mediamtx.publicScheme` | `http` | 与 MediaMTX 是否加密保持一致 |
+| `mediamtx.encryption` | `never` | 纯 HTTP 场景下关闭，否则 HLS/WHEP 会被证书卡住 |
+| `server.lanHost` | 本机局域网 IP（留空自动探测） | 横幅与证书 SAN 用它 |
+
+> MediaMTX 侧配置（`mediamtx/mediamtx.yml`）必须 `api: true`；且 `api` 权限的 `ips` 要包含 `127.0.0.1`（裸跑后端从本机访问）。
+> 若出现 `401 authentication error`，就是这两项之一没满足——详见 `deploy/diag.sh` 的输出提示。
 
 > 首次以 HTTPS 访问前，先访问 `/trust` 信任自签证书（否则浏览器会拦截 WebRTC / HLS）。
+> 纯 HTTP 下 **WebRTC 不可用**，视频卡片首选协议请选 **HLS**。
 
 ## 快速开始（Docker Compose，推荐）
 
 ```bash
 cd deploy
-docker compose up -d --build
+./start.sh          # 一键：构建镜像 + 启动 + 就绪检查 + 打印访问地址
+./stop.sh           # 一键停止（保留数据）；./stop.sh -v 连数据一起清空
 ```
 
-自动拉起 `monitorall`（含前端）+ `mediamtx` 两个容器。访问 `http://<主机IP>:8080`。
+脚本会自动拉起 `monitorall`（含前端）+ `mediamtx` 两个容器，并校验 `config.yaml` 里的 IP 是否匹配宿主机。
+
+> **⚠️ 首次部署必做**：编辑 `deploy/config.yaml`，把 `server.lanHost` 和 `mediamtx.publicHost` 改成**你宿主机访问看板用的局域网 IP**（`hostname -I` 查看）。
+> 留空会退化成 `127.0.0.1` 或容器内网 IP，浏览器将拉不到视频。
+
+### 改动后要不要重建镜像？
+
+| 改了什么 | 命令 | 原因 |
+|---|---|---|
+| `web/**` 或 `server/**` 代码 | `./start.sh` | 代码在**镜像构建阶段**编译/打包，必须重建 |
+| `deploy/config.yaml`、`mediamtx/mediamtx.yml` | `./start.sh --no-build` | 只读挂载，重启容器即重新加载，无需重建 |
+| `deploy/docker-compose.yml` | `./start.sh` | compose 需重新创建容器 |
+
+> 只改配置时**务必用 `--no-build`**（或 `docker compose restart`）。直接 `docker compose up -d` 对已运行容器不会重启，配置改动不会生效。
+> 改了前端却只重启不重建，界面会停留在旧版本——这是最容易踩的坑。
 
 ## ROS 接入前置条件
 
@@ -133,6 +198,7 @@ make smoke   # 冒烟自测（启动 → 探活 → 默认看板 → 前端产�
 
 ## 更多
 
+- **操作手册**：`docs/USER_GUIDE.md`（部署、接入数据源、编排看板、渲染器参考、FAQ 排查）
 - 需求文档：`docs/PRD.md`
 - 架构设计：`docs/ARCHITECTURE.md`（含统一 Frame 契约、WS 协议、REST API、错误码）
 - 任务分解：`docs/TASKS.md`
