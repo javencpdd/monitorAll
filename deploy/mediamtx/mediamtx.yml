@@ -1,0 +1,32 @@
+################################################################################
+# MediaMTX 配置（关键片段，其余用官方默认值）
+#
+# 端口规划与 docker-compose 一致：
+#   RTMP 1936（推流入） · HLS 8888（降级播放） · WebRTC 8889（WHEP 首选） · API 9997
+#
+# 🚩 注意：MediaMTX 原生不支持 HTTP-FLV（官方 issue #1460 明确不实现），
+#          因此降级播放使用 HLS(mpegts variant)，延迟 1–3s，与 FLV 同量级。
+################################################################################
+
+rtmpAddress: :1936
+hlsAddress: :8888
+webrtcAddress: :8889
+apiAddress: :9997
+
+api: yes
+
+# HLS：mpegts 切片与 hls.js 兼容性最好
+hlsVariant: mpegts
+hlsSegmentDuration: 1s
+hlsPartDuration: 200ms
+hlsSegmentCount: 7
+
+webrtcAllowOrigin: '*'
+
+rtmpEncryption: "no"
+webrtcEncryption: "no"      # 由 docker-compose 环境变量覆盖为 yes（后端启用 TLS 时）
+hlsEncryption: "no"         # 同上
+
+# 路径：允许任意路径（由后端通过 API 动态注册 + RTMP 推流自动发现）
+paths:
+  all_others: {}

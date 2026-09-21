@@ -1,0 +1,71 @@
+# MonitorAll 后端配置示例
+# 复制到 ./config.yaml 或 ./data/config.yaml 后按需修改。
+# 环境变量覆盖：MONITORALL_ + 路径大写下划线，例：MONITORALL_SERVER_HTTPADDR=:9080
+# 优先级：环境变量 > yaml > 默认值
+
+schemaVersion: 1
+
+server:
+  httpAddr: ":8080"           # HTTP 永不跳转 HTTPS（保证任何环境都能出画面）
+  httpsAddr: ":8443"
+  tlsEnabled: true            # false 则只监听 HTTP
+  autoCert: true              # 首次启动自动生成自签证书（含全部 LAN IP 的 SAN）
+  certDir: "./data/cert"
+  lanHost: ""                 # 留空 = 自动探测首个私有 IPv4
+  dataDir: "./data"
+  secretKeyFile: "./data/secret.key"   # 敏感字段加密密钥（首次生成，0600）
+  readTimeoutMs: 15000
+  writeTimeoutMs: 15000
+  shutdownTimeoutMs: 10000
+
+store:
+  dsn: "./data/monitorall.db"
+  wal: true                   # WAL + synchronous=NORMAL，kill -9 后可恢复
+
+mediamtx:
+  mode: embedded              # embedded（compose 自带容器） | external（外部已部署）
+  apiBase: "http://mediamtx:9997"
+  publicHost: ""              # 前端可直连的 MediaMTX 主机，留空 = 同 lanHost
+  publicScheme: "auto"        # auto | http | https（auto = 跟随后端是否启用 TLS）
+  portRtmp: 1936
+  portHls: 8888
+  portWebrtc: 8889
+  encryption: auto            # auto | never | always，控制 webrtcEncryption / hlsEncryption
+  flvBase: ""                 # 外部 HTTP-FLV 网关根地址，如 http://172.31.68.9:8081/live
+                              # 留空则降级用 HLS（MediaMTX 原生不支持 HTTP-FLV）
+
+bus:
+  defaultMaxHz: 20            # scalar / time_series / json 默认上限
+  imageMaxHz: 10              # image 默认上限（D6）
+  videoStatusHz: 0.5          # video_stream 状态帧频率
+  frameBatchMs: 20            # 批量窗口
+  frameBatchMax: 64           # 单批上限
+  connQueueDepth: 256         # 每 WS 连接输出队列（批次）容量
+  ringCapacity: 1200          # 后端环形缓冲，与前端 1200 点对齐
+  backpressureNotifyMs: 1000  # 丢帧通知节流（每通道每秒最多 1 条）
+  pingIntervalMs: 15000       # 服务端心跳周期
+  writeWaitMs: 3000           # 写超时，超时即断连
+
+adapter:
+  healthIntervalMs: 3000      # 健康探活周期
+  reconnectBaseMs: 1000       # 退避基数
+  reconnectMaxMs: 30000       # 退避上限
+  reconnectJitter: 0.2        # ±20% 抖动
+  reconnectMaxRetry: -1       # -1 = 无限重试
+  sampleTimeoutMs: 3000       # 样例帧超时（3s 无数据 → 50004）
+
+httpPoll:
+  minIntervalMs: 100          # 轮询周期下限
+  defaultTimeoutMs: 3000
+  failureThreshold: 3         # 连续失败 3 次才置 reconnecting
+
+web:
+  amapKey: "40ce0fa4713ac6e2e063c6962e3da718"                 # 高德 JS API Key（地图渲染器必需）；留空则地图卡显示配置指引
+  theme: "dark"
+
+log:
+  level: "info"               # debug | info | warn | error
+  format: "json"              # json | text
+  file: ""                    # 留空 = 仅 stdout；填路径则按大小滚动
+  maxSizeMb: 50
+  maxBackups: 7

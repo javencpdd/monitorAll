@@ -1,0 +1,36 @@
+{
+  "name": "monitorall-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "MonitorAll 多源异构监控看板 - 前端（Vue 3 + Naive UI）",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "build-only": "vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@amap/amap-jsapi-loader": "^1.0.1",
+    "echarts": "^5.6.0",
+    "gcoord": "^1.0.7",
+    "grid-layout-plus": "^1.1.1",
+    "hls.js": "^1.6.0",
+    "mpegts.js": "^1.8.0",
+    "naive-ui": "^2.45.0",
+    "pinia": "^3.0.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7",
+    "vue-tsc": "^2.2.0"
+  }
+}
