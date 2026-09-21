@@ -2,7 +2,8 @@
 // 装配各层组件（store / bus / adapter manager / ws hub / api）并启动 HTTP+HTTPS 双监听。
 //
 // 装配顺序（依赖决定，不可随意调整）：
-//   config → logx → store → 默认看板 → 证书 → bus → adapter.Setup → manager → hub → router → server
+//
+//	config → logx → store → 默认看板 → 证书 → bus → adapter.Setup → manager → hub → router → server
 package main
 
 import (
@@ -82,6 +83,16 @@ func main() {
 
 	// ——— 证书（LAN IP SAN） ———
 	lanHosts := appsrv.CollectLANHosts()
+	// 回填局域网 IP：publicHost / lanHost 都留空时，播放地址（HLS / WHEP）会一路回退到
+	// 127.0.0.1（见 media.BuildPlayURLs），结果只有运行 MediaMTX 的本机能出画面，
+	// 局域网其它主机拿到的播放地址也是 127.0.0.1（表现为 m3u8 500 / whep 400）。
+	// 若 hosts[0] 不是其它主机可达的地址，请在配置里显式设置 mediamtx.publicHost。
+	if cfg.Server.LANHost == "" && len(lanHosts) > 0 {
+		cfg.Server.LANHost = lanHosts[0]
+	}
+	if cfg.MediaMTX.PublicHost == "" {
+		cfg.MediaMTX.PublicHost = cfg.Server.LANHost
+	}
 	certInfo, err := media.EnsureCertificate(cfg, lanHosts)
 	if err != nil {
 		log.Warn("证书准备失败，HTTPS 将不可用", "err", err)

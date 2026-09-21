@@ -22,7 +22,7 @@ const newTopic = ref('')
 const newSourceId = ref<string | undefined>(undefined)
 const submitting = ref(false)
 
-const sources = computed(() => datasourceStore.sources)
+const selectedLabel = computed<string>(() => {
 
 const grouped = computed(() => {
   const kw = keyword.value.trim().toLowerCase()
@@ -74,7 +74,7 @@ function openWizard(): void {
 <template>
   <div class="ma-chsel">
     <div class="ma-chsel__bar">
-      <input v-model="keyword" class="ma-chsel__search" placeholder="搜索通道" />
+      <input v-model="keyword" class="ma-chsel__search" placeholder="过滤已发现通道（不去远端搜索）" />
       <button class="ma-chsel__link" @click="discover">发现通道</button>
       <button class="ma-chsel__link" @click="adding = !adding">{{ adding ? '取消' : '+ 手工新增' }}</button>
     </div>
