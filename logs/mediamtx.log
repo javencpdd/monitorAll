@@ -1,0 +1,61 @@
+2026/09/22 00:23:49 ERR [API] path already exists
+2026/09/22 00:23:50 ERR [API] path already exists
+2026/09/22 00:23:50 ERR [API] path already exists
+2026/09/22 00:23:55 ERR [API] path already exists
+2026/09/22 00:24:04 ERR [API] path already exists
+2026/09/22 00:24:56 ERR [API] path already exists
+2026/09/22 02:12:35 INF shutting down gracefully
+2026/09/22 02:12:35 INF [API] closing
+2026/09/22 02:12:35 INF [SRT] closing
+2026/09/22 02:12:35 INF [MoQ] closing
+2026/09/22 02:12:35 INF [WebRTC] closing
+2026/09/22 02:12:35 INF [HLS] closing
+2026/09/22 02:12:35 INF [RTMP] closing
+2026/09/22 02:12:35 INF [RTSP] closing
+2026/09/22 02:12:35 INF waiting for running hooks
+2026/09/22 02:12:41 INF MediaMTX v1.21.1, linux, amd64
+2026/09/22 02:12:41 INF configuration loaded from /home/jack/monitorAll/mediamtx/mediamtx.yml
+2026/09/22 02:12:41 INF [RTSP] started with listeners on :8554 (TCP/RTSP), :8000 (UDP/RTP), :8001 (UDP/RTCP)
+2026/09/22 02:12:41 INF [RTMP] started with listener on :1935 (TCP/RTMP)
+2026/09/22 02:12:41 INF [HLS] started with listener on :8888 (TCP/HTTP)
+2026/09/22 02:12:41 INF [WebRTC] started with listeners on :8889 (TCP/HTTP), :8189 (UDP/ICE)
+2026/09/22 02:12:41 INF [SRT] started with listener on :8890 (UDP/SRT)
+2026/09/22 02:12:41 INF [MoQ] started with listeners on :8892 (TCP/HTTP2), :8892 (UDP/HTTP3), :8893 (UDP/QUIC)
+2026/09/22 02:12:41 INF [API] started with listener on :9997 (TCP/HTTP)
+2026/09/22 02:13:54 INF reloading configuration (API request)
+2026/09/22 02:13:54 ERR [API] path already exists
+2026/09/22 02:13:57 INF [WebRTC] [session 6ada5349] created by 127.0.0.1:39074
+2026/09/22 02:13:57 INF [path live/lite3] [RTMP source] started on demand
+2026/09/22 02:13:59 INF [path live/lite3] stream is available and online, 1 track (H264)
+2026/09/22 02:13:59 INF [WebRTC] [session 6ada5349] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/60723
+2026/09/22 02:13:59 INF [WebRTC] [session 6ada5349] is reading from path 'live/lite3', 1 track (H264)
+2026/09/22 02:14:00 INF [WebRTC] [session 6ada5349] closed: peer connection closed
+2026/09/22 02:14:10 INF [path live/lite3] [RTMP source] stopped: not needed by anyone
+2026/09/22 02:14:37 ERR [API] path already exists
+2026/09/22 02:14:37 ERR [API] path already exists
+2026/09/22 02:14:39 ERR [API] path already exists
+2026/09/22 02:14:39 ERR [API] path already exists
+2026/09/22 02:24:51 INF shutting down gracefully
+2026/09/22 02:24:51 INF [API] closing
+2026/09/22 02:24:51 INF [SRT] closing
+2026/09/22 02:24:51 INF [MoQ] closing
+2026/09/22 02:24:51 INF [WebRTC] closing
+2026/09/22 02:24:51 INF [HLS] closing
+2026/09/22 02:24:51 INF [RTMP] closing
+2026/09/22 02:24:51 INF [RTSP] closing
+2026/09/22 02:24:51 INF waiting for running hooks
+2026/09/22 02:25:17 INF MediaMTX v1.21.1, linux, amd64
+2026/09/22 02:25:17 INF configuration loaded from /home/jack/monitorAll/mediamtx/mediamtx.yml
+2026/09/22 02:25:17 INF [RTSP] started with listeners on :8554 (TCP/RTSP), :8000 (UDP/RTP), :8001 (UDP/RTCP)
+2026/09/22 02:25:17 INF [RTMP] started with listener on :1935 (TCP/RTMP)
+2026/09/22 02:25:17 INF [HLS] started with listener on :8888 (TCP/HTTP)
+2026/09/22 02:25:17 INF [WebRTC] started with listeners on :8889 (TCP/HTTP), :8189 (UDP/ICE)
+2026/09/22 02:25:17 INF [SRT] started with listener on :8890 (UDP/SRT)
+2026/09/22 02:25:17 INF [MoQ] started with listeners on :8892 (TCP/HTTP2), :8892 (UDP/HTTP3), :8893 (UDP/QUIC)
+2026/09/22 02:25:17 INF [API] started with listener on :9997 (TCP/HTTP)
+2026/09/22 02:26:18 INF reloading configuration (API request)
+2026/09/22 02:26:18 ERR [API] path already exists
+2026/09/22 02:26:21 ERR [API] path already exists
+2026/09/22 02:26:21 ERR [API] path already exists
+2026/09/22 02:42:08 ERR [API] path already exists
+2026/09/22 02:42:11 ERR [API] path already exists

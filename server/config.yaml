@@ -27,7 +27,7 @@ mediamtx:
   apiBase: "http://127.0.0.1:9997"   # 本机 MediaMTX 管理 API（裸跑后端用 127.0.0.1，非 compose 服务名）
   publicHost: ""              # 前端可直连的 MediaMTX 主机，留空 = 同 lanHost
   publicScheme: "http"        # 裸跑 HTTP 时用 http；启用 HTTPS 后改 auto
-  portRtmp: 1936
+  portRtmp: 1935             # 裸跑 MediaMTX 默认 RTMP 端口（Docker 方案才是 1936）
   portHls: 8888
   portWebrtc: 8889
   encryption: "never"         # 裸跑 HTTP 时关闭加密（否则 HLS/WebRTC 带证书，http 拉取失败）

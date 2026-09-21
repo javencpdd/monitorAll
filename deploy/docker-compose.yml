@@ -2,13 +2,16 @@
 #
 # 使用：
 #   cd deploy
-#   docker compose up -d
-#   # 首次启动若 mediamtx 因证书未生成而失败，restart: unless-stopped 会自动重试
-#   # 也可先预生成证书： docker compose run --rm monitorall cert
+#   docker compose up -d --build
+#   docker compose ps            # 确认 monitorall 和 mediamtx 都是 running
+#   docker compose logs -f mediamtx
 #
-# 说明：MediaMTX 官方不支持 HTTP-FLV（issue #1460），降级播放默认走 HLS(mpegts) + hls.js。
-#      若你已有外部 FLV 网关（SRS / ZLMediaKit / nginx-http-flv），在 config.yaml 配置
-#      mediamtx.flvBase 即可启用 flv 后端，compose 不自带 FLV 网关容器。
+# 说明：
+#   - MediaMTX 官方不支持 HTTP-FLV（issue #1460），降级播放走 HLS(mpegts) + hls.js。
+#     若已有外部 FLV 网关（SRS / ZLMediaKit / nginx-http-flv），在 config.yaml 配
+#     mediamtx.flvBase 即可启用 flv 后端，compose 不自带 FLV 网关容器。
+#   - 默认走【纯 HTTP、不加密】，避免自签证书信任问题，保证任何浏览器都能出画面。
+#     需要亚秒级 WebRTC 时，再改 HTTPS + 信任证书（见 README）。
 
 services:
   monitorall:
@@ -21,15 +24,18 @@ services:
       - "8080:8080"
       - "8443:8443"
     volumes:
-      - ./data:/app/data          # SQLite + 密钥 + 证书
+      - ./data:/app/data                                    # SQLite + 密钥 + 证书（容器自动生成）
+      - ./config.yaml:/app/data/config.yaml:ro              # 平台配置（与数据分离，便于版本管理）
     command: ["--config", "/app/data/config.yaml"]
     depends_on:
       - mediamtx
 
   mediamtx:
-    image: bluenviron/mediamtx:latest-ffmpeg
+    # 不带 ffmpeg 的精简镜像：转发（拉流/转封装）够用，体积小、拉取更快。
+    # 若需要 runOnDemand 调用 ffmpeg，可换回 bluenviron/mediamtx:latest-ffmpeg。
+    image: bluenviron/mediamtx:latest
     container_name: mediamtx
-    restart: unless-stopped       # 首启动证书可能尚未生成，靠重启策略自愈
+    restart: unless-stopped
     ports:
       - "1936:1936"   # RTMP 入
       - "8888:8888"   # HLS（降级播放）
@@ -37,11 +43,3 @@ services:
       - "9997:9997"   # HTTP API（仅局域网）
     volumes:
       - ./mediamtx/mediamtx.yml:/mediamtx.yml:ro
-      - ./data/cert:/cert:ro      # 与后端共用自签证书
-    environment:
-      MTX_WEBRTCENCRYPTION: "yes"
-      MTX_WEBRTCSERVERKEY: /cert/server.key
-      MTX_WEBRTCSERVERCERT: /cert/server.crt
-      MTX_HLSENCRYPTION: "yes"
-      MTX_HLSSERVERKEY: /cert/server.key
-      MTX_HLSSERVERCERT: /cert/server.crt

@@ -1,0 +1,14 @@
+(() => {
+  const q = s => document.querySelector(s);
+  const info = e => e ? { tag: e.tagName, cls: String(e.className).slice(0,40), w: e.offsetWidth, h: e.offsetHeight, kids: e.children.length } : null;
+  const canvas = q('.ma-canvas');
+  const item = q('.vgl-item');
+  return JSON.stringify({
+    canvas: info(canvas),
+    canvasChildren: canvas ? [...canvas.children].map(c => ({ tag: c.tagName, cls: String(c.className).slice(0,40), w: c.offsetWidth, h: c.offsetHeight, kids: c.children.length })) : null,
+    vglLayout: info(q('.vgl-layout')),
+    vglItemCount: document.querySelectorAll('.vgl-item').length,
+    firstItemStyle: item ? (item.getAttribute('style') || '').slice(0, 240) : null,
+    cardHost迹象: document.querySelectorAll('.vgl-item > *').length
+  }, null, 1);
+})()

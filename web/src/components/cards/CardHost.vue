@@ -41,6 +41,17 @@ const sourceLabel = computed<string>(() => {
 const manifest = computed(() => getManifest(props.card.rendererType))
 const config = computed<Record<string, unknown>>(() => mergeConfig(props.card.rendererType, props.card.renderConfig))
 const rendererComponent = computed(() => resolveComponent(props.card.rendererType))
+
+/**
+ * 视频渲染器不能等帧再挂载。
+ *
+ * MediaMTX 路径注册时带 sourceOnDemand=true（server/internal/media/mediamtx.go:125），
+ * 即「有人读才拉上游流」。若等 hasFrames 才挂载渲染器，就形成死锁：
+ *   没有渲染器 → 没有读者 → 路径不就绪（日志：stopped: not needed by anyone）
+ *   → 上游不拉 → 永远没有帧 → 渲染器永不挂载 → 卡片一直显示「未收到数据」。
+ * 因此视频卡挂载即渲染，由它自己发起 WHEP/HLS 请求成为读者，触发按需拉流。
+ */
+const needsFrames = computed<boolean>(() => props.card.rendererType !== 'video')
 const neededPoints = computed<number>(() => maxPointsOf(props.card.rendererType, DEFAULT_RING_CAPACITY))
 const stats = computed(() => frameStore.getStats(props.card.channelId))
 
@@ -83,9 +94,9 @@ function confirmRemove(): void {
   >
     <card-error-boundary>
       <!-- 三态：未收到首帧 -->
-      <card-skeleton v-if="info.status === 'loading'" />
+      <card-skeleton v-if="needsFrames && info.status === 'loading'" />
       <empty-state
-        v-else-if="info.status === 'waiting'"
+        v-else-if="needsFrames && info.status === 'waiting'"
         icon="waiting"
         title="未收到数据"
         description="请检查话题名是否正确、数据源是否在线"
@@ -103,7 +114,7 @@ function confirmRemove(): void {
       <!-- 正常渲染：渲染器分发 -->
       <component
         :is="rendererComponent"
-        v-else-if="rendererComponent && hasFrames"
+        v-else-if="rendererComponent && (hasFrames || !needsFrames)"
         :card="card"
         :config="config"
         @status="(s: CardVisualStatus) => (runtimeStatus = s)"

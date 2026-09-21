@@ -1,0 +1,4 @@
+rtmpAddress: :11936
+api: true
+paths:
+  all_others: {}

@@ -1,0 +1,19 @@
+2026/09/21 17:32:57 INF MediaMTX v1.21.1, linux, amd64
+2026/09/21 17:32:57 INF configuration loaded from /home/jack/monitorAll/min.yml
+2026/09/21 17:32:57 INF [RTSP] started with listeners on :18555 (TCP/RTSP), :8000 (UDP/RTP), :8001 (UDP/RTCP)
+2026/09/21 17:32:57 INF [RTMP] started with listener on :11936 (TCP/RTMP)
+2026/09/21 17:32:57 INF [HLS] started with listener on :18881 (TCP/HTTP)
+2026/09/21 17:32:57 INF [WebRTC] started with listeners on :18891 (TCP/HTTP), :8189 (UDP/ICE)
+2026/09/21 17:32:57 INF [SRT] started with listener on :18911 (UDP/SRT)
+2026/09/21 17:32:57 WAR [MoQ] certificate auto.key not found, generating it from scratch
+2026/09/21 17:32:57 INF [MoQ] started with listeners on :8892 (TCP/HTTP2), :8892 (UDP/HTTP3), :8893 (UDP/QUIC)
+2026/09/21 17:32:57 INF [API] started with listener on :19996 (TCP/HTTP)
+2026/09/21 17:33:01 INF shutting down gracefully
+2026/09/21 17:33:01 INF [API] closing
+2026/09/21 17:33:01 INF [SRT] closing
+2026/09/21 17:33:01 INF [MoQ] closing
+2026/09/21 17:33:01 INF [WebRTC] closing
+2026/09/21 17:33:01 INF [HLS] closing
+2026/09/21 17:33:01 INF [RTMP] closing
+2026/09/21 17:33:01 INF [RTSP] closing
+2026/09/21 17:33:01 INF waiting for running hooks
