@@ -48,34 +48,34 @@ function buildLayout(): Layout {
   }))
 }
 
-const gridLayout = ref<Layout>(buildLayout())
+const layoutRef = ref<Layout>(buildLayout())
 
 /** store → 本地：仅当几何真的不同才整体替换，避免拖拽/缩放过程中被覆盖。 */
 watch(
   () => dashboardStore.cards,
   () => {
     const next = buildLayout()
-    const cur = gridLayout.value
+    const cur = layoutRef.value
     const same =
       next.length === cur.length &&
       next.every((n, i) => {
         const c = cur[i]
         return !!c && c.i === n.i && c.x === n.x && c.y === n.y && c.w === n.w && c.h === n.h
       })
-    if (!same) gridLayout.value = next
+    if (!same) layoutRef.value = next
   },
   { deep: true },
 )
 
 /**
  * 卡片 → 几何的查询表：优先取本地真源，缺失时回落到 store 里的布局。
- * 用查询表而不是「按 gridLayout 遍历卡片」，可避免 id 对不上时把 undefined 传给
+ * 用查询表而不是「按 layoutRef 遍历卡片」，可避免 id 对不上时把 undefined 传给
  * CardHost（CardHost 不在错误边界内，会整块渲染失败 → 一张卡都不显示）。
  */
 const geoMap = computed<Map<string, LayoutItem>>(() => {
   const map = new Map<string, LayoutItem>()
   for (const card of dashboardStore.cards) {
-    const g = gridLayout.value.find((it) => String(it.i) === card.id)
+    const g = layoutRef.value.find((it) => String(it.i) === card.id)
     map.set(
       card.id,
       g ?? {
@@ -130,7 +130,7 @@ function onLayoutUpdated(next: Layout): void {
   // 子项的 _e()（唯一从 props 重算几何的入口，由 compact→gt()→_e() 驱动）不会执行，
   // 子项内部几何 Q/le 仍是拖动前的旧值 → 松手回弹。
   // 用库回传的最终几何重建一个新数组（新引用），强制触发上述同步链路。
-  gridLayout.value = next.map((i) => ({ ...i }))
+  layoutRef.value = next.map((i) => ({ ...i }))
 }
 
 /**
@@ -202,7 +202,7 @@ const dbg = computed(
     <div class="ma-canvas__dbg">{{ dbg }}</div>
     <grid-layout
       v-if="dashboardStore.cards.length > 0"
-      :layout="gridLayout"
+      :layout="layoutRef"
       :col-num="GRID_COLS"
       :row-height="ROW_HEIGHT"
       :margin="MARGIN"
