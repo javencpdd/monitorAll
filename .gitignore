@@ -1,0 +1,23 @@
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+data/secret.key
+server/data/secret.key
+
+# Runtime data and generated certificates
+data/*.db
+data/*.db-*
+data/cert/*
+server/data/*.db
+server/data/*.db-*
+server/data/cert/*
+
+# Frontend dependencies and build output
+web/node_modules/
+web/dist/
+
+# Local binaries
+server/bin/*
+
+.workbuddy/*
