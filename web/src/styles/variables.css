@@ -1,0 +1,81 @@
+/**
+ * 全局 CSS 变量：颜色 / 间距 / 圆角 / 尺寸的唯一来源。
+ * 组件内禁止硬编码色值，一律 var(--ma-*)。
+ */
+:root {
+  /* 背景与表面 */
+  --ma-bg-base: #101014;
+  --ma-bg-card: #18181c;
+  --ma-bg-elevated: #1f1f24;
+  --ma-bg-hover: #26262d;
+  --ma-border: #2c2c34;
+  --ma-border-strong: #3a3a45;
+
+  /* 文字 */
+  --ma-text-1: #e5e5ea;
+  --ma-text-2: #9a9aa6;
+  --ma-text-3: #6b6b76;
+
+  /* 强调色 */
+  --ma-accent: #63e2b7;
+  --ma-accent-hover: #7cecc5;
+  --ma-accent-dim: rgba(99, 226, 183, 0.16);
+
+  /* 四态 + 降级态 */
+  --ma-status-online: #63e2b7;
+  --ma-status-offline: #6b6b76;
+  --ma-status-reconnecting: #f2c037;
+  --ma-status-error: #e5534b;
+  --ma-status-degraded: #f2a037;
+  --ma-status-idle: #6b6b76;
+  --ma-status-connecting: #63a0e5;
+
+  /* 尺寸 */
+  --ma-gap: 12px;
+  --ma-radius: 6px;
+  --ma-card-header-h: 32px;
+  --ma-card-footer-h: 24px;
+  --ma-topbar-h: 48px;
+  --ma-panel-w: 260px;
+  --ma-drawer-w: 360px;
+
+  /* 字号 */
+  --ma-font-xs: 11px;
+  --ma-font-sm: 12px;
+  --ma-font-md: 13px;
+  --ma-font-lg: 15px;
+
+  /* 阴影 */
+  --ma-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.36);
+  --ma-shadow-pop: 0 6px 20px rgba(0, 0, 0, 0.48);
+}
+
+/**
+ * 亮色主题（P1 保留实现的扩展点）：只覆盖变量，组件代码不写死十六进制。
+ * 根元素加 class="ma-theme-light" 生效。
+ */
+:root.ma-theme-light {
+  --ma-bg-base: #f4f5f7;
+  --ma-bg-card: #ffffff;
+  --ma-bg-elevated: #ffffff;
+  --ma-bg-hover: #eef0f3;
+  --ma-border: #e0e2e8;
+  --ma-border-strong: #c8ccd6;
+
+  --ma-text-1: #1f2027;
+  --ma-text-2: #5a5c68;
+  --ma-text-3: #8a8d99;
+
+  --ma-accent: #18a058;
+  --ma-accent-hover: #36ad6a;
+  --ma-accent-dim: rgba(24, 160, 88, 0.14);
+
+  --ma-status-online: #18a058;
+  --ma-status-offline: #9a9aa6;
+  --ma-status-reconnecting: #f0a020;
+  --ma-status-error: #d03050;
+  --ma-status-degraded: #f08020;
+
+  --ma-shadow-card: 0 2px 8px rgba(24, 26, 32, 0.08);
+  --ma-shadow-pop: 0 6px 20px rgba(24, 26, 32, 0.12);
+}

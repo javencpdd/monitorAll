@@ -1,0 +1,149 @@
+/**
+ * 全局 reset + 滚动条 + 通用工具类。
+ * 所有自定义类统一 ma- 前缀，避免与第三方样式冲突。
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--ma-bg-base);
+  color: var(--ma-text-1);
+  font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  font-size: var(--ma-font-md);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--ma-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--ma-accent-hover);
+}
+
+code,
+pre {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+}
+
+/* 滚动条 */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--ma-border-strong);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--ma-text-3);
+}
+
+/* ——— 工具类 ——— */
+.ma-flex {
+  display: flex;
+}
+
+.ma-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.ma-flex-1 {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.ma-items-center {
+  align-items: center;
+}
+
+.ma-justify-between {
+  justify-content: space-between;
+}
+
+.ma-gap-xs {
+  gap: 4px;
+}
+
+.ma-gap-sm {
+  gap: 8px;
+}
+
+.ma-gap-md {
+  gap: 12px;
+}
+
+.ma-text-xs {
+  font-size: var(--ma-font-xs);
+}
+
+.ma-text-sm {
+  font-size: var(--ma-font-sm);
+}
+
+.ma-text-2 {
+  color: var(--ma-text-2);
+}
+
+.ma-text-3 {
+  color: var(--ma-text-3);
+}
+
+.ma-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ma-mono {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+}
+
+.ma-full {
+  width: 100%;
+  height: 100%;
+}
+
+.ma-scroll-y {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 卡片编辑态虚线外框 */
+.ma-card--editing {
+  outline: 1px dashed var(--ma-border-strong);
+  outline-offset: -1px;
+}
+
+/* grid-layout-plus 占位块与手柄的主题适配 */
+.vgl-item--placeholder {
+  background: var(--ma-accent) !important;
+  opacity: 0.24;
+  border-radius: var(--ma-radius);
+}
+
+.vgl-item__resizer {
+  opacity: 0.5;
+}

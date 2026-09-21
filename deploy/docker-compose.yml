@@ -1,0 +1,47 @@
+# MonitorAll + MediaMTX 编排（局域网监控看板）
+#
+# 使用：
+#   cd deploy
+#   docker compose up -d
+#   # 首次启动若 mediamtx 因证书未生成而失败，restart: unless-stopped 会自动重试
+#   # 也可先预生成证书： docker compose run --rm monitorall cert
+#
+# 说明：MediaMTX 官方不支持 HTTP-FLV（issue #1460），降级播放默认走 HLS(mpegts) + hls.js。
+#      若你已有外部 FLV 网关（SRS / ZLMediaKit / nginx-http-flv），在 config.yaml 配置
+#      mediamtx.flvBase 即可启用 flv 后端，compose 不自带 FLV 网关容器。
+
+services:
+  monitorall:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: monitorall
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    volumes:
+      - ./data:/app/data          # SQLite + 密钥 + 证书
+    command: ["--config", "/app/data/config.yaml"]
+    depends_on:
+      - mediamtx
+
+  mediamtx:
+    image: bluenviron/mediamtx:latest-ffmpeg
+    container_name: mediamtx
+    restart: unless-stopped       # 首启动证书可能尚未生成，靠重启策略自愈
+    ports:
+      - "1936:1936"   # RTMP 入
+      - "8888:8888"   # HLS（降级播放）
+      - "8889:8889"   # WebRTC / WHEP
+      - "9997:9997"   # HTTP API（仅局域网）
+    volumes:
+      - ./mediamtx/mediamtx.yml:/mediamtx.yml:ro
+      - ./data/cert:/cert:ro      # 与后端共用自签证书
+    environment:
+      MTX_WEBRTCENCRYPTION: "yes"
+      MTX_WEBRTCSERVERKEY: /cert/server.key
+      MTX_WEBRTCSERVERCERT: /cert/server.crt
+      MTX_HLSENCRYPTION: "yes"
+      MTX_HLSSERVERKEY: /cert/server.key
+      MTX_HLSSERVERCERT: /cert/server.crt
