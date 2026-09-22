@@ -22,7 +22,25 @@ const newTopic = ref('')
 const newSourceId = ref<string | undefined>(undefined)
 const submitting = ref(false)
 
-const selectedLabel = computed<string>(() => {
+const sources = computed(() => datasourceStore.sources)
+
+/** 手工新增时按数据源类型给出填写示例，避免"不知道该填什么"。 */
+const TOPIC_HINT: Record<string, string> = {
+  ros: 'ROS topic，如 /imu/data',
+  video: '流路径，如 live/lite3',
+  http: '字段路径，如 $.data.temperature',
+}
+const newSource = computed(() => {
+  const id = newSourceId.value ?? sources.value.find((s) => s.kind === 'ros')?.id
+  return sources.value.find((s) => s.id === id)
+})
+const topicPlaceholder = computed<string>(
+  () => TOPIC_HINT[newSource.value?.kind ?? ''] ?? '通道标识（按数据源类型填写）',
+)
+/** 已加载通道总数：用于区分「没有数据源」与「有数据源但没通道」。 */
+const loadedChannelCount = computed<number>(() =>
+  Object.values(datasourceStore.channelsBySource).reduce((n, list) => n + (list?.length ?? 0), 0),
+)
 
 const grouped = computed(() => {
   const kw = keyword.value.trim().toLowerCase()
@@ -75,16 +93,23 @@ function openWizard(): void {
   <div class="ma-chsel">
     <div class="ma-chsel__bar">
       <input v-model="keyword" class="ma-chsel__search" placeholder="过滤已发现通道（不去远端搜索）" />
-      <button class="ma-chsel__link" @click="discover">发现通道</button>
-      <button class="ma-chsel__link" @click="adding = !adding">{{ adding ? '取消' : '+ 手工新增' }}</button>
+      <button class="ma-chsel__link" title="让适配器去数据源实时探测可用通道（如 ROS 列 topic）" @click="discover">
+        从数据源发现
+      </button>
+      <button class="ma-chsel__link" title="自动发现不可用或你已知通道标识时使用，直接写入通道" @click="adding = !adding">
+        {{ adding ? '取消' : '+ 手工新增' }}
+      </button>
     </div>
 
     <div v-if="adding" class="ma-chsel__new">
       <select v-model="newSourceId" class="ma-chsel__select">
         <option v-for="s in sources" :key="s.id" :value="s.id">{{ s.name }}（{{ s.protocol }}）</option>
       </select>
-      <input v-model="newTopic" class="ma-chsel__topic" placeholder="ROS topic，如 /imu/data" />
+      <input v-model="newTopic" class="ma-chsel__topic" :placeholder="topicPlaceholder" />
       <button class="ma-chsel__btn" :disabled="submitting" @click="addTopic">添加</button>
+      <div class="ma-chsel__tip ma-text-xs ma-text-3">
+        用于自动发现不可用时：直接按上面的示例填写通道标识并写入。
+      </div>
     </div>
 
     <div class="ma-chsel__list ma-scroll-y">
@@ -102,8 +127,19 @@ function openWizard(): void {
         </button>
       </div>
       <div v-if="grouped.length === 0" class="ma-chsel__none ma-text-sm ma-text-3">
-        还没有通道，点击右上角「+ 手工新增」或
-        <button class="ma-chsel__link" @click="openWizard">新建数据源</button>
+        <template v-if="sources.length === 0">
+          还没有数据源。先
+          <button class="ma-chsel__link" @click="openWizard">新建数据源</button>
+          （填写 RTMP 地址 / rosbridge 地址 / HTTP 接口），建好后系统会自动
+          尝试发现并生成一个通道。
+        </template>
+        <template v-else-if="loadedChannelCount === 0">
+          数据源已建好，但还没有通道。可点「从数据源发现」让它去探测，或点
+          「+ 手工新增」直接填写通道标识。
+        </template>
+        <template v-else>
+          没有匹配「{{ keyword }}」的通道（过滤只在已发现列表内进行，不会去远端搜索）。
+        </template>
       </div>
     </div>
 
