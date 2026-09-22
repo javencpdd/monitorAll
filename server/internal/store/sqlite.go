@@ -399,9 +399,9 @@ func (s *SQLite) DeleteChannelsBySource(dataSourceID string) error {
 // scanDashboard 把一行映射为 model.Dashboard。
 func scanDashboard(rows *sql.Rows) (*model.Dashboard, error) {
 	var (
-		d       model.Dashboard
-		margin  string
-		global  string
+		d      model.Dashboard
+		margin string
+		global string
 	)
 	if err := rows.Scan(&d.ID, &d.Name, &d.Revision, &d.SchemaVersion, &d.GridCols, &d.RowHeight,
 		&margin, &global, &d.CreatedAt, &d.UpdatedAt); err != nil {
@@ -744,4 +744,87 @@ func nullString(s string) sql.NullString {
 		return sql.NullString{}
 	}
 	return sql.NullString{String: s, Valid: true}
+}
+
+// ————————————————— Import CRUD（离线导入文件） —————————————————
+
+// scanImport 把一行映射为 model.Import。
+func scanImport(rows *sql.Rows) (*model.Import, error) {
+	var im model.Import
+	if err := rows.Scan(&im.ID, &im.FileName, &im.RelPath, &im.SizeBytes,
+		&im.FrameCount, &im.FirstTs, &im.LastTs, &im.CreatedAt); err != nil {
+		return nil, apperr.Wrap(err, apperr.StoreError, "扫描导入文件行失败")
+	}
+	return &im, nil
+}
+
+// ListImports 返回全部导入记录（按创建时间升序）。
+func (s *SQLite) ListImports() ([]model.Import, error) {
+	rows, err := s.db.Query(`SELECT id, file_name, rel_path, size_bytes, frame_count, first_ts, last_ts, created_at
+		FROM imports ORDER BY created_at ASC`)
+	if err != nil {
+		return nil, apperr.Wrap(err, apperr.StoreError, "查询导入文件失败")
+	}
+	defer rows.Close()
+	out := make([]model.Import, 0)
+	for rows.Next() {
+		im, err := scanImport(rows)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, *im)
+	}
+	return out, rows.Err()
+}
+
+// GetImport 按 ID 读取导入记录，不存在返回 apperr.NotFound。
+func (s *SQLite) GetImport(id string) (*model.Import, error) {
+	rows, err := s.db.Query(`SELECT id, file_name, rel_path, size_bytes, frame_count, first_ts, last_ts, created_at
+		FROM imports WHERE id = ?`, id)
+	if err != nil {
+		return nil, apperr.Wrap(err, apperr.StoreError, "查询导入文件失败")
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		if err := rows.Err(); err != nil {
+			return nil, apperr.Wrap(err, apperr.StoreError, "查询导入文件失败")
+		}
+		return nil, apperr.Newf(apperr.NotFound, "import %s not found", id)
+	}
+	im, err := scanImport(rows)
+	if err != nil {
+		return nil, err
+	}
+	return im, nil
+}
+
+// CreateImport 落库一条导入记录。
+func (s *SQLite) CreateImport(im *model.Import) error {
+	if im == nil {
+		return apperr.New(apperr.InvalidParam, "导入记录为空")
+	}
+	if im.ID == "" {
+		im.ID = model.NewImportID()
+	}
+	if im.CreatedAt == 0 {
+		im.CreatedAt = model.NowMs()
+	}
+	ctx := context.Background()
+	return s.tx(ctx, func(t *sql.Tx) error {
+		_, err := t.ExecContext(ctx, `INSERT INTO imports
+			(id, file_name, rel_path, size_bytes, frame_count, first_ts, last_ts, created_at)
+			VALUES (?,?,?,?,?,?,?,?)`,
+			im.ID, im.FileName, im.RelPath, im.SizeBytes,
+			im.FrameCount, im.FirstTs, im.LastTs, im.CreatedAt)
+		return err
+	})
+}
+
+// DeleteImport 删除导入记录（磁盘文件由调用方负责清理）。
+func (s *SQLite) DeleteImport(id string) error {
+	ctx := context.Background()
+	return s.tx(ctx, func(t *sql.Tx) error {
+		_, err := t.ExecContext(ctx, `DELETE FROM imports WHERE id = ?`, id)
+		return err
+	})
 }

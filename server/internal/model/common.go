@@ -40,11 +40,12 @@ const (
 // DataSourceKind 为数据源大类。
 type DataSourceKind string
 
-// 三类数据源。
+// 四类数据源（replay 为离线文件回放，无外部连接）。
 const (
-	KindVideo DataSourceKind = "video"
-	KindROS   DataSourceKind = "ros"
-	KindHTTP  DataSourceKind = "http"
+	KindVideo  DataSourceKind = "video"
+	KindROS    DataSourceKind = "ros"
+	KindHTTP   DataSourceKind = "http"
+	KindReplay DataSourceKind = "replay" // 离线 JSON 文件回放（本地导入，无外部连接）
 )
 
 // Protocol 为具体接入协议。
@@ -56,7 +57,8 @@ const (
 	ProtoRTSP     Protocol = "rtsp"      // [EXT]
 	ProtoROS1     Protocol = "ros1"
 	ProtoROS2     Protocol = "ros2"
-	ProtoHTTPPoll Protocol = "http-poll"
+	ProtoHTTPPoll   Protocol = "http-poll"
+	ProtoFileReplay Protocol = "file-replay" // 离线 JSON/JSONL 文件回放
 )
 
 // CRS 为坐标系标识（后端只盖章，不做转换）。

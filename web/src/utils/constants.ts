@@ -163,6 +163,13 @@ export const TMP_ID_PREFIX = 'tmp_'
 export const PREVIEW_CARD_ID = `${TMP_ID_PREFIX}preview`
 
 /* ——— URL 正则（T-22 实时 URL 校验） ——— */
-export const RTMP_URL_RE = /^rtmp:\/\/[^\s/]+(?::\d+)?\/[^\s]+$/i
+/**
+ * 流媒体地址：rtmp / rtmps / rtsp / rtsps。
+ * 允许 `user:pass@` 凭据段——RTSP 摄像头（海康/大华）普遍要求 URL 内带账号密码，
+ * MediaMTX 拉流时需要原样保留，故校验正则必须放行。
+ */
+export const STREAM_URL_RE = /^(?:rtmp|rtmps|rtsp|rtsps):\/\/(?:[^\s:@/]+(?::[^\s@/]*)?@)?[^\s/]+(?::\d+)?\/[^\s]+$/i
+/** 提取流地址协议（返回小写 rtmp/rtmps/rtsp/rtsps），非法返回空串。 */
+export const STREAM_SCHEME_RE = /^(rtmp|rtmps|rtsp|rtsps):\/\//i
 export const WS_URL_RE = /^wss?:\/\/[^\s]+$/i
 export const HTTP_URL_RE = /^https?:\/\/[^\s]+$/i

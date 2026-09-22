@@ -20,33 +20,33 @@ import (
 
 // CreateDataSourceReq 为创建/测试数据源的请求体。
 type CreateDataSourceReq struct {
-	Name       string             `json:"name" binding:"required"`
-	Kind       model.DataSourceKind `json:"kind" binding:"required,oneof=video ros http"`
-	Protocol   model.Protocol     `json:"protocol" binding:"required"`
-	ConnParams map[string]any     `json:"connParams" binding:"required"`
-	SecretKeys []string           `json:"secretKeys,omitempty"`
+	Name       string               `json:"name" binding:"required"`
+	Kind       model.DataSourceKind `json:"kind" binding:"required,oneof=video ros http replay"`
+	Protocol   model.Protocol       `json:"protocol" binding:"required"`
+	ConnParams map[string]any       `json:"connParams" binding:"required"`
+	SecretKeys []string             `json:"secretKeys,omitempty"`
 }
 
 // UpdateDataSourceReq 为更新数据源的请求体（字段可缺省）。
 type UpdateDataSourceReq struct {
-	Name       string             `json:"name,omitempty"`
-	Kind       model.DataSourceKind `json:"kind,omitempty"`
-	Protocol   model.Protocol     `json:"protocol,omitempty"`
-	ConnParams map[string]any     `json:"connParams,omitempty"`
-	SecretKeys []string           `json:"secretKeys,omitempty"`
-	RetryPolicy *model.RetryPolicy `json:"retryPolicy,omitempty"`
-	Enabled    *bool              `json:"enabled,omitempty"`
+	Name        string               `json:"name,omitempty"`
+	Kind        model.DataSourceKind `json:"kind,omitempty"`
+	Protocol    model.Protocol       `json:"protocol,omitempty"`
+	ConnParams  map[string]any       `json:"connParams,omitempty"`
+	SecretKeys  []string             `json:"secretKeys,omitempty"`
+	RetryPolicy *model.RetryPolicy   `json:"retryPolicy,omitempty"`
+	Enabled     *bool                `json:"enabled,omitempty"`
 }
 
 // TestResult 为测试连接的返回体（D4：MVP 必须实现）。
 type TestResult struct {
-	OK          bool               `json:"ok"`
-	PayloadType model.PayloadType  `json:"payloadType,omitempty"`
-	Sample      *model.Frame       `json:"sample,omitempty"`
-	Channels    []string           `json:"channels,omitempty"`
-	Error       string             `json:"error,omitempty"`
-	Hint        string             `json:"hint,omitempty"`
-	LatencyMs   int64              `json:"latencyMs"`
+	OK          bool              `json:"ok"`
+	PayloadType model.PayloadType `json:"payloadType,omitempty"`
+	Sample      *model.Frame      `json:"sample,omitempty"`
+	Channels    []string          `json:"channels,omitempty"`
+	Error       string            `json:"error,omitempty"`
+	Hint        string            `json:"hint,omitempty"`
+	LatencyMs   int64             `json:"latencyMs"`
 }
 
 // CreateChannelReq 为手工添加通道的请求体。
@@ -177,20 +177,45 @@ func fallbackSpecs(ds *model.DataSource, params map[string]any) []adapter.Channe
 	switch ds.Kind {
 	case model.KindVideo:
 		vp, _ := adapter.ParamsTo[model.VideoConnParams](params)
-		info, err := media.ParseRTMPURL(vp.RtmpURL)
 		name := "live"
-		if err == nil {
-			name = info.Path
+		meta := map[string]any{model.MetaVideoMode: normalizeVideoMode(vp.Mode)}
+		if strings.TrimSpace(vp.RtmpURL) != "" {
+			meta[model.MetaRtmpURL] = strings.TrimSpace(vp.RtmpURL)
+			if info, err := media.ParseStreamURL(vp.RtmpURL); err == nil {
+				name = info.Path
+				meta[model.MetaRtmpURL] = info.Raw
+				if info.IsRTSP() {
+					meta[model.MetaRTSPTransport] = config.RTSPTransportTCP
+				}
+			}
 		}
+		if p := strings.Trim(strings.TrimSpace(vp.MediaMTXPath), "/"); p != "" {
+			name = p
+		}
+		meta[model.MetaMediaMTXPath] = name
 		return []adapter.ChannelSpec{{
-			Name: name, PayloadType: model.PayloadVideoStream,
-			Meta: map[string]any{model.MetaRtmpURL: vp.RtmpURL},
+			Name: name, PayloadType: model.PayloadVideoStream, Meta: meta,
 		}}
 	case model.KindHTTP:
 		hp, _ := adapter.ParamsTo[model.HTTPConnParams](params)
 		return []adapter.ChannelSpec{{
 			Name: channelNameOf(hp.URL), PayloadType: model.PayloadJSON,
 			Meta: map[string]any{model.MetaHTTPMethod: hp.Method, model.MetaJSONPath: hp.JSONPath},
+		}}
+	case model.KindReplay:
+		rp, _ := adapter.ParamsTo[model.ReplayConnParams](params)
+		name := rp.FileID
+		if name == "" {
+			name = "replay"
+		}
+		return []adapter.ChannelSpec{{
+			Name:        name,
+			PayloadType: model.PayloadJSON,
+			Meta: map[string]any{
+				model.MetaReplayFileID: rp.FileID,
+				model.MetaReplaySpeed:  rp.Speed,
+				model.MetaReplayLoop:   rp.Loop,
+			},
 		}}
 	default:
 		rp, _ := adapter.ParamsTo[model.ROSConnParams](params)
@@ -370,13 +395,13 @@ func (d *Deps) testDataSource(c *gin.Context) {
 func hintFor(kind model.DataSourceKind, code apperr.Code) string {
 	switch code {
 	case apperr.InvalidURL:
-		return "请检查地址格式：视频为 rtmp://host:1936/live/xxx，ROS 为 ws://host:9090，HTTP 为 http://host/api"
+		return "请检查地址格式：视频为 rtmp://host:1936/live/xxx 或 rtsp://user:pass@host:554/Streaming/Channels/101，ROS 为 ws://host:9090，HTTP 为 http://host/api"
 	case apperr.SourceConnectFailed:
 		switch kind {
 		case model.KindROS:
 			return "请确认 rosbridge 已启动（ROS1: roslaunch rosbridge_server rosbridge_websocket.launch；ROS2: ros2 launch rosbridge_server rosbridge_websocket_launch.xml）"
 		case model.KindVideo:
-			return "请确认 MediaMTX 已启动且 RTMP 端口可达"
+			return "请确认 MediaMTX 已启动，且 RTSP/RTMP 源端口可达（海康摄像头 RTSP 默认 554；建议传输方式选 TCP）"
 		default:
 			return "请确认目标服务已启动且局域网可访问"
 		}
@@ -385,6 +410,14 @@ func hintFor(kind model.DataSourceKind, code apperr.Code) string {
 	default:
 		return "请检查连接参数与网络连通性"
 	}
+}
+
+// normalizeVideoMode 归一化视频接入模式，缺省 pull。
+func normalizeVideoMode(v string) string {
+	if strings.EqualFold(strings.TrimSpace(v), config.VideoModePublish) {
+		return config.VideoModePublish
+	}
+	return config.VideoModePull
 }
 
 // ————————————————— 通道 —————————————————
@@ -583,7 +616,7 @@ func validateProtocol(kind model.DataSourceKind, proto model.Protocol) error {
 	switch kind {
 	case model.KindVideo:
 		if proto != model.ProtoRTMP && proto != model.ProtoRTSP {
-			return apperr.Newf(apperr.UnsupportedType, "视频数据源仅支持 rtmp（rtsp 为 P1），当前为 %s", proto)
+			return apperr.Newf(apperr.UnsupportedType, "视频数据源仅支持 rtmp / rtsp，当前为 %s", proto)
 		}
 	case model.KindROS:
 		if proto != model.ProtoROS1 && proto != model.ProtoROS2 {
@@ -592,6 +625,10 @@ func validateProtocol(kind model.DataSourceKind, proto model.Protocol) error {
 	case model.KindHTTP:
 		if proto != model.ProtoHTTPPoll {
 			return apperr.Newf(apperr.UnsupportedType, "HTTP 数据源协议必须是 http-poll，当前为 %s", proto)
+		}
+	case model.KindReplay:
+		if proto != model.ProtoFileReplay {
+			return apperr.Newf(apperr.UnsupportedType, "离线回放数据源协议必须是 file-replay，当前为 %s", proto)
 		}
 	default:
 		return apperr.Newf(apperr.UnsupportedType, "不支持的数据源类型: %s", kind)
@@ -610,7 +647,15 @@ func validateConnParams(kind model.DataSourceKind, params map[string]any) error 
 		if err != nil {
 			return err
 		}
-		if _, err := media.ParseRTMPURL(vp.RtmpURL); err != nil {
+		if strings.TrimSpace(vp.RtmpURL) == "" {
+			// 接收推流（publish）模式没有源地址，但必须给出 MediaMTX 路径
+			if normalizeVideoMode(vp.Mode) == config.VideoModePublish &&
+				strings.TrimSpace(vp.MediaMTXPath) != "" {
+				return nil
+			}
+			return apperr.New(apperr.InvalidURL, "视频数据源缺少流地址（rtmp://… 或 rtsp://…）；接收推流模式请填写 mediaMtxPath")
+		}
+		if _, err := media.ParseStreamURL(vp.RtmpURL); err != nil {
 			return err
 		}
 	case model.KindROS:
@@ -634,6 +679,17 @@ func validateConnParams(kind model.DataSourceKind, params map[string]any) error 
 		}
 		if _, err := url.ParseRequestURI(hp.URL); err != nil {
 			return apperr.Wrap(err, apperr.InvalidURL, "HTTP 地址非法")
+		}
+	case model.KindReplay:
+		rp, err := adapter.ParamsTo[model.ReplayConnParams](params)
+		if err != nil {
+			return err
+		}
+		if strings.TrimSpace(rp.FileID) == "" {
+			return apperr.New(apperr.InvalidParam, "fileId 不能为空")
+		}
+		if rp.Speed < 0 {
+			return apperr.Newf(apperr.InvalidParam, "倍速不能为负数，当前为 %v", rp.Speed)
 		}
 	}
 	return nil

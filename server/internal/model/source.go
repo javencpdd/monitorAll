@@ -30,10 +30,17 @@ type DataSource struct {
 
 // VideoConnParams 为视频类数据源的连接参数。
 type VideoConnParams struct {
-	RtmpURL           string `json:"rtmpUrl"`                     // rtmp://172.31.68.227:1936/live/lite3
-	MediaMTXPath      string `json:"mediaMtxPath,omitempty"`      // 自动解析：live/lite3
+	// RtmpURL 为流地址，支持 rtmp/rtmps/rtsp/rtsps：
+	// rtmp://172.31.68.227:1936/live/lite3、rtsp://admin:pwd@192.168.2.69:554/Streaming/Channels/101
+	// publish（接收推流）模式下可留空，此时必须给出 MediaMTXPath。
+	RtmpURL           string `json:"rtmpUrl"`
+	MediaMTXPath      string `json:"mediaMtxPath,omitempty"`      // MediaMTX 路径；留空时自动从流地址解析
 	PreferredProtocol string `json:"preferredProtocol,omitempty"` // webrtc | hls | flv，默认 webrtc
 	Audio             bool   `json:"audio"`
+	// Mode 为接入模式：pull（默认，主动拉流）| publish（接收远端 WHIP/RTMP 推流）。
+	Mode string `json:"mode,omitempty"`
+	// RTSPTransport 为 RTSP 拉流传输方式：tcp（默认）| udp | automatic。
+	RTSPTransport string `json:"rtspTransport,omitempty"`
 }
 
 // ROSConnParams 为 ROS 类数据源的连接参数。
@@ -58,6 +65,15 @@ type HTTPConnParams struct {
 	JSONPath    string            `json:"jsonPath,omitempty"`
 	TimeoutMs   int               `json:"timeoutMs"`         // 默认 3000
 	InsecureTLS bool              `json:"insecureTls"`
+}
+
+// ReplayConnParams 为离线文件回放类数据源的连接参数。
+type ReplayConnParams struct {
+	FileID   string  `json:"fileId"`             // imports 表主键，指向 data/imports 下的文件
+	Speed    float64 `json:"speed"`              // 倍速，默认 1；<=0 时按 1
+	Loop     bool    `json:"loop"`               // 播完是否从头再来
+	TimePath string  `json:"timePath,omitempty"` // 帧时间戳字段路径（点分）；取不到则用记录序号推进
+	JSONPath string  `json:"jsonPath,omitempty"` // 从每条记录里再取子路径
 }
 
 // Channel 为通道实体（落盘）。运行态字段（status/lastFrameAt/lastSeq/latencyMs）不落盘。
@@ -95,8 +111,16 @@ const (
 	MetaRtmpURL = "rtmpUrl"
 	// MetaMediaMTXPath 为视频通道的 MediaMTX path。
 	MetaMediaMTXPath = "mediaMtxPath"
-	// MetaIsLocalPublish 标记该 RTMP 是否推给本机 MediaMTX。
+	// MetaIsLocalPublish 标记该地址是否推给本机 MediaMTX（RTSP 恒为 false）。
 	MetaIsLocalPublish = "isLocalPublish"
+	// MetaVideoMode 为视频接入模式（pull / publish）。
+	MetaVideoMode = "videoMode"
+	// MetaPublishURL 为 publish 模式下的 WebRTC WHIP 推流地址。
+	MetaPublishURL = "publishUrl"
+	// MetaPublishRTMPURL 为 publish 模式下的 RTMP 推流地址。
+	MetaPublishRTMPURL = "publishRtmpUrl"
+	// MetaRTSPTransport 为 RTSP 拉流的传输方式（tcp / udp / automatic）。
+	MetaRTSPTransport = "rtspTransport"
 	// MetaHTTPMethod 为 HTTP 通道的请求方法。
 	MetaHTTPMethod = "httpMethod"
 	// MetaJSONPath 为 HTTP 通道的提取路径。
@@ -105,6 +129,18 @@ const (
 	MetaCRS = "crs"
 	// MetaVideoCodec 为视频编码（由 MediaMTX 上报）。
 	MetaVideoCodec = "videoCodec"
+	// MetaReplayFileID 为回放通道对应的导入文件 ID。
+	MetaReplayFileID = "replayFileId"
+	// MetaReplaySpeed 为回放倍速。
+	MetaReplaySpeed = "replaySpeed"
+	// MetaReplayLoop 标记回放是否循环。
+	MetaReplayLoop = "replayLoop"
+	// MetaReplayTimePath 为回放帧时间戳字段路径。
+	MetaReplayTimePath = "replayTimePath"
+	// MetaReplayJSONPath 为回放记录内的提取子路径。
+	MetaReplayJSONPath = "replayJsonPath"
+	// MetaReplayFrameCount 为导入文件解析出的总帧数。
+	MetaReplayFrameCount = "replayFrameCount"
 )
 
 // NewDataSource 构造一个带缺省值的数据源。

@@ -62,6 +62,8 @@ func NewRouter(cfg *config.Config, st *store.SQLite, adm *adapter.Manager,
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
+	// 导入文件上限 64MB 走内存，超出部分由 Gin 自动落临时文件
+	r.MaxMultipartMemory = 64 << 20
 	r.Use(RequestID())
 	r.Use(Recover(deps.Log))
 	r.Use(RequestLog(deps.Log))
@@ -112,6 +114,11 @@ func NewRouter(cfg *config.Config, st *store.SQLite, adm *adapter.Manager,
 
 		// MediaMTX 路径发现与健康
 		v1.GET("/mediamtx/paths", deps.mediamtxPaths)
+
+		// 离线导入文件（离线 JSON 回放的数据来源）
+		v1.GET("/imports", deps.listImports)
+		v1.POST("/imports", deps.uploadImport)
+		v1.DELETE("/imports/:id", deps.deleteImport)
 
 		// 系统接口
 		v1.GET("/system/runtime", deps.runtime)

@@ -69,6 +69,23 @@ const (
 	// VideoProtocolFLV 为可选降级协议，仅在配置 flvBase 时启用。
 	VideoProtocolFLV = "flv"
 
+	// PublishProtocolWHIP 为接收推流地址类型：WebRTC WHIP。
+	PublishProtocolWHIP = "whip"
+	// PublishProtocolRTMP 为接收推流地址类型：RTMP。
+	PublishProtocolRTMP = "rtmp"
+
+	// VideoModePull 为视频接入模式：主动拉取远端流（默认，rtmp/rtsp 均适用）。
+	VideoModePull = "pull"
+	// VideoModePublish 为视频接入模式：接收远端推流（WHIP / RTMP），路径 source 固定 publisher。
+	VideoModePublish = "publish"
+
+	// RTSPTransportTCP 为 RTSP 拉流传输方式：TCP（默认；UDP 在摄像头场景下易花屏或连不上）。
+	RTSPTransportTCP = "tcp"
+	// RTSPTransportUDP 为 RTSP 拉流传输方式：UDP。
+	RTSPTransportUDP = "udp"
+	// RTSPTransportAuto 为 RTSP 拉流传输方式：自动协商。
+	RTSPTransportAuto = "automatic"
+
 	DefaultMediaMTXMode        = MediaMTXModeEmbedded
 	DefaultMediaMTXAPIBase     = "http://mediamtx:9997"
 	DefaultMediaMTXPublicHost  = ""
@@ -81,6 +98,8 @@ const (
 
 	// DefaultRTMPPort 为 RTMP URL 未显式给端口时的缺省值。
 	DefaultRTMPPort = 1935
+	// DefaultRTSPPort 为 RTSP URL 未显式给端口时的缺省值（海康/大华等摄像头默认 554）。
+	DefaultRTSPPort = 554
 
 	// MediaMTXPathPollMs 为视频适配器的路径状态轮询周期。
 	MediaMTXPathPollMs = 2000
@@ -529,6 +548,7 @@ func firstPositiveF(v, def float64) float64 {
 func EnsureDirs(cfg *Config) error {
 	dirs := []string{
 		cfg.Server.DataDir,
+		filepath.Join(cfg.Server.DataDir, "imports"),
 		cfg.Server.CertDir,
 		filepath.Dir(cfg.Store.DSN),
 		filepath.Dir(cfg.Server.SecretKeyFile),

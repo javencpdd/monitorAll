@@ -130,5 +130,5 @@ echo " 下一步："
 echo "   1) 平台里添加数据源（视频源填 rtmp://<相机IP>:<端口>/live/<流名>）"
 echo "   2) 卡片首选协议选 HLS（纯 HTTP 下 WebRTC 不可用）"
 echo "   3) 自检： cd deploy && ./diag.sh"
-echo "   停止： ./scripts/stop-local.sh"
+echo "   停止： pkill -f monitorall ; ./scripts/stop-local.sh"
 hr

@@ -15,6 +15,10 @@ import (
 
 // ————————————————— MediaMTX HTTP API v3 客户端 —————————————————
 
+// SourcePublisher 为 MediaMTX 的被动接收推流源标识。
+// 该模式下 MediaMTX 不主动去拉流，而是等待远端（WHIP / RTMP）推进来。
+const SourcePublisher = "publisher"
+
 // MediaMTXPath 描述 MediaMTX 的一个路径与其健康状态。
 type MediaMTXPath struct {
 	Name        string   `json:"name"`
@@ -28,12 +32,26 @@ type MediaMTXPath struct {
 	BytesSent   int64    `json:"bytesSent"`
 }
 
+// PathOption 为 PathAdd 的可选参数（变参形式，不影响既有调用）。
+type PathOption func(map[string]any)
+
+// WithRTSPTransport 指定 RTSP 拉流的传输方式（tcp / udp / automatic）。
+// 摄像头在 UDP 下易花屏或连不上，RTSP 源默认走 tcp。
+func WithRTSPTransport(v string) PathOption {
+	return func(m map[string]any) {
+		if v != "" {
+			m["rtspTransport"] = v
+		}
+	}
+}
+
 // Client 抽象 MediaMTX API，便于用 mock 做单测（不依赖真实 MediaMTX）。
 type Client interface {
 	// PathsList 列出路径；path 为空表示全部。
 	PathsList(ctx context.Context, path string) ([]MediaMTXPath, error)
-	// PathAdd 注册一个路径（source 为 RTMP 拉流地址或 publisher）。
-	PathAdd(ctx context.Context, path string, source string) error
+	// PathAdd 注册一个路径（source 为 RTMP/RTSP 拉流地址或 publisher）；
+	// opts 可附加 rtspTransport 等可选字段。
+	PathAdd(ctx context.Context, path string, source string, opts ...PathOption) error
 	// Health 探测 API 可达性。
 	Health(ctx context.Context) error
 }
@@ -120,9 +138,17 @@ func (c *httpClient) PathsList(ctx context.Context, path string) ([]MediaMTXPath
 }
 
 // PathAdd 注册路径到 MediaMTX（embedded 模式编排用）。
-func (c *httpClient) PathAdd(ctx context.Context, path string, source string) error {
+func (c *httpClient) PathAdd(ctx context.Context, path string, source string, opts ...PathOption) error {
 	endpoint := c.base + "/v3/config/paths/add/" + path
-	payload := map[string]any{"source": source, "sourceOnDemand": true}
+	// sourceOnDemand 只对“主动去拉”的源有意义；publisher 是被动等远端推流，
+	// MediaMTX 会直接拒绝该组合："'sourceOnDemand' is useless when source is 'publisher'"，
+	// 导致 publish 模式注册失败（实测：false 或省略均 200，true 400）。
+	payload := map[string]any{"source": source, "sourceOnDemand": source != SourcePublisher}
+	for _, opt := range opts {
+		if opt != nil {
+			opt(payload)
+		}
+	}
 	body, err := json.Marshal(payload)
 	if err != nil {
 		return apiError(err, "序列化请求体")
