@@ -6,6 +6,7 @@ import (
 	"context"
 	"log/slog"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -30,7 +31,8 @@ const (
 	stateDegraded = model.VideoStateDegraded
 )
 
-// Adapter 为视频数据源适配器（一个 DataSource = 一条 RTMP 路径）。
+// Adapter 为视频数据源适配器（一个 DataSource = 一条 MediaMTX 路径，
+// 源可以是 RTMP 也可以是 RTSP 摄像头，或 publisher 接收远端推流）。
 type Adapter struct {
 	ds     *model.DataSource
 	log    *slog.Logger
@@ -38,7 +40,9 @@ type Adapter struct {
 	client media.Client
 
 	mu       sync.Mutex
-	info     *media.RTMPInfo
+	info     *media.StreamInfo // pull 模式非空；publish 模式可为空
+	path     string            // MediaMTX 路径：解析自流地址或 mediaMtxPath
+	mode     string            // pull（拉流）| publish（接收推流）
 	params   model.VideoConnParams
 	started  bool
 	lastErr  string
@@ -86,26 +90,39 @@ func (a *Adapter) SetClient(c media.Client) {
 // DataSourceID 返回数据源 ID。
 func (a *Adapter) DataSourceID() string { return a.ds.ID }
 
-// Start 解析 RTMP 地址、注册路径到 MediaMTX 并启动轮询上下文；幂等。
+// Start 解析流地址（rtmp/rtsp）、注册路径到 MediaMTX 并启动轮询上下文；幂等。
+//
+// source 规则：publish 模式或本机 RTMP 推流用 publisher；其余一律把完整原始 URL
+// （保留 rtsp://user:pass@host:554/... 的凭据）交给 MediaMTX 自行拉流。
 func (a *Adapter) Start(ctx context.Context) error {
 	params, err := adapter.ParamsTo[model.VideoConnParams](a.ds.ConnParams)
 	if err != nil {
 		return err
 	}
-	info, err := media.ParseRTMPURL(params.RtmpURL)
-	if err != nil {
-		return err
+	mode := normalizeMode(params.Mode)
+	var info *media.StreamInfo
+	if strings.TrimSpace(params.RtmpURL) != "" {
+		info, err = media.ParseStreamURL(params.RtmpURL)
+		if err != nil {
+			return err
+		}
+	}
+	path := streamPath(params, info)
+	if path == "" {
+		return apperr.New(apperr.InvalidParam, "视频数据源缺少路径：请填写流地址或 mediaMtxPath")
 	}
 	if params.PreferredProtocol == "" {
 		params.PreferredProtocol = config.VideoProtocolWebRTC
 	}
 	if params.MediaMTXPath == "" {
-		params.MediaMTXPath = info.Path
+		params.MediaMTXPath = path
 	}
 
 	a.mu.Lock()
 	a.params = params
 	a.info = info
+	a.path = path
+	a.mode = mode
 	if a.started {
 		a.mu.Unlock()
 		return nil
@@ -114,26 +131,53 @@ func (a *Adapter) Start(ctx context.Context) error {
 	a.ctx, a.cancel = context.WithCancel(context.Background())
 	a.mu.Unlock()
 
-	// embedded 模式：把路径注册进 MediaMTX（远端 RTMP 用拉流，本机推流用 publisher）
+	// embedded 模式：把路径注册进 MediaMTX（远端 rtmp/rtsp 用拉流，本机推流用 publisher）
 	if a.cfg != nil && a.cfg.MediaMTX.Mode == config.MediaMTXModeEmbedded && a.client != nil {
-		source := params.RtmpURL
-		if a.isLocalPublish() {
-			source = "publisher"
+		source := a.sourceFor()
+		var opts []media.PathOption
+		if mode == config.VideoModePull && info != nil && info.IsRTSP() {
+			// RTSP 摄像头在 UDP 下易花屏或连不上，默认强制 TCP
+			opts = append(opts, media.WithRTSPTransport(rtspTransportOf(params.RTSPTransport)))
 		}
 		regCtx, cancel := context.WithTimeout(ctx, time.Duration(config.DefaultTimeoutMs)*time.Millisecond)
 		defer cancel()
-		if err := a.client.PathAdd(regCtx, info.Path, source); err != nil {
+		if err := a.client.PathAdd(regCtx, path, source, opts...); err != nil {
 			// 注册失败不致命（路径可能已存在或 API 只读），记录后继续
-			a.log.Warn("注册 MediaMTX 路径失败", "path", info.Path, "err", err)
+			a.log.Warn("注册 MediaMTX 路径失败", "path", path, "err", err)
 		}
 	}
-	a.log.Info("视频适配器已启动", "path", info.Path, "rtmp", info.Raw)
+	a.log.Info("视频适配器已启动", "path", path, "mode", mode, "source", a.sourceFor())
 	return nil
 }
 
-// isLocalPublish 判断该 RTMP 是否推给本机 MediaMTX（端口一致且主机是本机）。
+// sourceFor 计算注册给 MediaMTX 的 source：publish 模式或本机推流为 publisher，
+// 否则为完整原始 URL（含 RTSP 用户名密码）。
+func (a *Adapter) sourceFor() string {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	if a.mode == config.VideoModePublish || a.isLocalPublishLocked() {
+		return "publisher"
+	}
+	if a.info != nil {
+		return a.info.Raw
+	}
+	return ""
+}
+
+// isLocalPublish 判断该地址是否推给本机 MediaMTX。
 func (a *Adapter) isLocalPublish() bool {
-	if a.cfg == nil || a.info == nil {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return a.isLocalPublishLocked()
+}
+
+// isLocalPublishLocked 判断该地址是否是推给本机 MediaMTX 的 RTMP 推流：
+// 仅 rtmp/rtmps 可能是推流（RTSP 一律 false），且端口与主机均指向本机。
+func (a *Adapter) isLocalPublishLocked() bool {
+	if a.cfg == nil || a.info == nil || a.mode == config.VideoModePublish {
+		return false
+	}
+	if !a.info.IsRTMP() {
 		return false
 	}
 	if a.info.Port != a.cfg.MediaMTX.PortRTMP {
@@ -144,15 +188,50 @@ func (a *Adapter) isLocalPublish() bool {
 		(a.cfg.Server.LANHost != "" && host == a.cfg.Server.LANHost)
 }
 
+// streamPath 计算 MediaMTX 路径：mediaMtxPath 优先，否则取自流地址。
+func streamPath(params model.VideoConnParams, info *media.StreamInfo) string {
+	if p := strings.Trim(strings.TrimSpace(params.MediaMTXPath), "/"); p != "" {
+		return p
+	}
+	if info != nil {
+		return info.Path
+	}
+	return ""
+}
+
+// normalizeMode 归一化接入模式，缺省 pull。
+func normalizeMode(v string) string {
+	if strings.EqualFold(strings.TrimSpace(v), config.VideoModePublish) {
+		return config.VideoModePublish
+	}
+	return config.VideoModePull
+}
+
+// rtspTransportOf 归一化 RTSP 传输方式，非法值回落 TCP。
+func rtspTransportOf(v string) string {
+	t := strings.ToLower(strings.TrimSpace(v))
+	switch t {
+	case config.RTSPTransportTCP, config.RTSPTransportUDP, config.RTSPTransportAuto:
+		return t
+	default:
+		return config.RTSPTransportTCP
+	}
+}
+
+// publicHost 返回对外的 MediaMTX 主机名（用于拼推流地址）。
+func (a *Adapter) publicHost() string {
+	if a.cfg != nil {
+		return a.cfg.MediaMTX.PublicHost
+	}
+	return ""
+}
+
 // Health 探测 MediaMTX API 可达性（路径未 ready 不算失败，由帧的 state 表达）。
 func (a *Adapter) Health(ctx context.Context) adapter.Health {
 	start := time.Now()
 	a.mu.Lock()
 	client := a.client
-	path := ""
-	if a.info != nil {
-		path = a.info.Path
-	}
+	path := a.path
 	a.mu.Unlock()
 	if client == nil {
 		return adapter.Health{OK: false, Detail: "MediaMTX 客户端未初始化"}
@@ -166,30 +245,59 @@ func (a *Adapter) Health(ctx context.Context) adapter.Health {
 	return adapter.Health{OK: true, LatencyMs: time.Since(start).Milliseconds(), Detail: "ok"}
 }
 
-// ListChannels 返回该视频源的通道（固定 1 个：path）。
+// ListChannels 返回该视频源的通道（固定 1 个：MediaMTX path）。
 func (a *Adapter) ListChannels(ctx context.Context) ([]adapter.ChannelSpec, error) {
 	a.mu.Lock()
 	info := a.info
+	path := a.path
+	mode := a.mode
+	transport := a.params.RTSPTransport
 	a.mu.Unlock()
-	if info == nil {
+	if path == "" {
 		params, err := adapter.ParamsTo[model.VideoConnParams](a.ds.ConnParams)
 		if err != nil {
 			return nil, err
 		}
-		info, err = media.ParseRTMPURL(params.RtmpURL)
-		if err != nil {
-			return nil, err
+		mode = normalizeMode(params.Mode)
+		transport = params.RTSPTransport
+		if strings.TrimSpace(params.RtmpURL) != "" {
+			info, err = media.ParseStreamURL(params.RtmpURL)
+			if err != nil {
+				return nil, err
+			}
+		}
+		path = streamPath(params, info)
+		if path == "" {
+			return nil, apperr.New(apperr.InvalidParam, "视频数据源缺少路径：请填写流地址或 mediaMtxPath")
+		}
+	}
+	meta := map[string]any{
+		model.MetaMediaMTXPath:   path,
+		model.MetaVideoMode:      mode,
+		model.MetaIsLocalPublish: a.isLocalPublish(),
+	}
+	if info != nil {
+		meta[model.MetaRtmpURL] = info.Raw
+		if info.IsRTSP() {
+			meta[model.MetaRTSPTransport] = rtspTransportOf(transport)
+		}
+	}
+	if mode == config.VideoModePublish {
+		// publish 模式：把可推流地址放进通道 meta，供前端展示给用户复制
+		for k, v := range media.BuildPublishURLs(a.cfg, a.publicHost(), path) {
+			switch k {
+			case config.PublishProtocolWHIP:
+				meta[model.MetaPublishURL] = v
+			case config.PublishProtocolRTMP:
+				meta[model.MetaPublishRTMPURL] = v
+			}
 		}
 	}
 	spec := adapter.ChannelSpec{
-		Name:        info.Path,
+		Name:        path,
 		PayloadType: model.PayloadVideoStream,
-		Meta: map[string]any{
-			model.MetaRtmpURL:       info.Raw,
-			model.MetaMediaMTXPath:  info.Path,
-			model.MetaIsLocalPublish: a.isLocalPublish(),
-		},
-		DefaultHz: a.videoStatusHz(),
+		Meta:        meta,
+		DefaultHz:   a.videoStatusHz(),
 	}
 	return []adapter.ChannelSpec{spec}, nil
 }
@@ -218,6 +326,7 @@ func (a *Adapter) StartChannel(ctx context.Context, channelID string, spec adapt
 	client := a.client
 	params := a.params
 	info := a.info
+	path := a.path
 	a.mu.Unlock()
 
 	interval := time.Duration(config.MediaMTXPathPollMs) * time.Millisecond
@@ -231,13 +340,13 @@ func (a *Adapter) StartChannel(ctx context.Context, channelID string, spec adapt
 		}()
 		ticker := time.NewTicker(interval)
 		defer ticker.Stop()
-		a.emitStatus(chCtx, channelID, client, params, info, emit)
+		a.emitStatus(chCtx, channelID, client, params, path, info, emit)
 		for {
 			select {
 			case <-chCtx.Done():
 				return
 			case <-ticker.C:
-				a.emitStatus(chCtx, channelID, client, params, info, emit)
+				a.emitStatus(chCtx, channelID, client, params, path, info, emit)
 			}
 		}
 	}()
@@ -246,11 +355,10 @@ func (a *Adapter) StartChannel(ctx context.Context, channelID string, spec adapt
 
 // emitStatus 查询一次路径状态并产出一帧 video_stream（只含地址与状态，无像素）。
 func (a *Adapter) emitStatus(ctx context.Context, channelID string, client media.Client,
-	params model.VideoConnParams, info *media.RTMPInfo, emit adapter.Emit) {
-	if info == nil || emit == nil {
+	params model.VideoConnParams, path string, info *media.StreamInfo, emit adapter.Emit) {
+	if emit == nil || path == "" {
 		return
 	}
-	path := info.Path
 	ready := false
 	readers := 0
 	var bytesPerSec int64
@@ -291,11 +399,15 @@ func (a *Adapter) emitStatus(ctx context.Context, channelID string, client media
 		protocol = config.VideoProtocolHLS
 	}
 
+	sourceURL := ""
+	if info != nil {
+		sourceURL = info.Raw
+	}
 	payload := model.VideoPayload{
 		Protocol:    protocol,
 		State:       state,
 		URLs:        urls,
-		SourceURL:   info.Raw,
+		SourceURL:   sourceURL,
 		Path:        path,
 		Ready:       ready,
 		Readers:     readers,
@@ -374,7 +486,10 @@ func (a *Adapter) String() string {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	if a.info == nil {
+		if a.path != "" {
+			return "video://" + a.path
+		}
 		return "video://" + a.ds.ID
 	}
-	return "video://" + a.info.Host + ":" + strconv.Itoa(a.info.Port) + "/" + a.info.Path
+	return "video://" + a.info.Host + ":" + strconv.Itoa(a.info.Port) + "/" + a.path
 }

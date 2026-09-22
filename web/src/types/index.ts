@@ -105,10 +105,16 @@ export interface ChannelRuntime extends Channel {
 }
 
 export interface VideoConnParams {
+  /** 流地址，支持 rtmp / rtmps / rtsp / rtsps；publish 模式可留空。 */
   rtmpUrl: string
+  /** MediaMTX 路径；留空时后端自动从流地址解析。publish 模式必填。 */
   mediaMtxPath?: string
   preferredProtocol?: 'webrtc' | 'hls' | 'flv'
   audio: boolean
+  /** 接入模式：pull（默认，主动拉远端流）| publish（接收远端 WHIP / RTMP 推流）。 */
+  mode?: 'pull' | 'publish'
+  /** RTSP 拉流传输方式：tcp（默认，UDP 在摄像头场景易花屏）| udp | automatic。 */
+  rtspTransport?: 'tcp' | 'udp' | 'automatic'
 }
 
 export interface ROSConnParams {

@@ -49,6 +49,12 @@ type Store interface {
 	UpdateDashboard(d *model.Dashboard) error
 	DeleteDashboard(id string) error
 
+	// 离线导入文件（离线 JSON 回放）
+	ListImports() ([]model.Import, error)
+	GetImport(id string) (*model.Import, error)
+	CreateImport(im *model.Import) error
+	DeleteImport(id string) error
+
 	// 卡片
 	ListCards(dashboardID string) ([]model.Card, error)
 	ListAllCards() ([]model.Card, error)

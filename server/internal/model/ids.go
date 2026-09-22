@@ -20,6 +20,7 @@ const (
 	PrefixCard       = "cd_"
 	PrefixDashboard  = "db_"
 	PrefixTemp       = "tmp_"
+	PrefixImport     = "im_"
 )
 
 // IDRandomLen 为随机部分长度（base36 字符数）。
@@ -59,6 +60,9 @@ func NewDashboardID() string { return newID(PrefixDashboard) }
 
 // NewTempID 生成临时通道 ID（tmp_ 前缀，仅用于测试连接等不落库场景）。
 func NewTempID() string { return newID(PrefixTemp) }
+
+// NewImportID 生成导入文件 ID（im_ 前缀）。
+func NewImportID() string { return newID(PrefixImport) }
 
 // ————————————————— 通用工具 —————————————————
 

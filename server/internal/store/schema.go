@@ -11,9 +11,9 @@ import (
 // ————————————————— 建表 DDL 与迁移链（架构 §4.4 / §12.5） —————————————————
 
 // CurrentSchemaVersion 为当前库结构版本，与 config.CurrentSchemaVersion 对齐。
-const CurrentSchemaVersion = 1
+const CurrentSchemaVersion = 2
 
-// ddlV1 为初始版本的全部建表语句（6 张表）。
+// ddlV1 为初始版本的全部建表语句（6 张表）。迁移链只增不改，勿编辑本常量。
 const ddlV1 = `
 CREATE TABLE IF NOT EXISTS meta (
 	key   TEXT PRIMARY KEY,
@@ -87,6 +87,23 @@ CREATE TABLE IF NOT EXISTS secret_meta (
 );
 `
 
+// ddlV2Imports 为离线导入文件表（离线 JSON 回放功能）。
+// 文件本体存于 <dataDir>/imports/<rel_path>，表内只记相对路径与解析统计。
+const ddlV2Imports = `
+CREATE TABLE IF NOT EXISTS imports (
+	id          TEXT PRIMARY KEY,
+	file_name   TEXT NOT NULL,
+	rel_path    TEXT NOT NULL,
+	size_bytes  INTEGER NOT NULL DEFAULT 0,
+	frame_count INTEGER NOT NULL DEFAULT 0,
+	first_ts    INTEGER NOT NULL DEFAULT 0,
+	last_ts     INTEGER NOT NULL DEFAULT 0,
+	created_at  INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE INDEX IF NOT EXISTS idx_imports_created ON imports(created_at);
+`
+
 // Migration 为一条迁移：版本号、名称与 SQL。
 type Migration struct {
 	Version int
@@ -97,7 +114,7 @@ type Migration struct {
 // migrations 为迁移链，按顺序执行且幂等。新增迁移只增不改。
 var migrations = []Migration{
 	{Version: 1, Name: "init", SQL: ddlV1},
-	// {Version: 2, Name: "add_channel_rate_limit", SQL: "ALTER TABLE channels ADD COLUMN rate_limit_hz REAL DEFAULT 0"},
+	{Version: 2, Name: "add_imports", SQL: ddlV2Imports},
 }
 
 // Migrate 按序执行未应用的迁移，每条迁移一个事务；结束后写入最新 schema_version。

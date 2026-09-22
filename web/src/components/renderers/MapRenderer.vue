@@ -35,6 +35,11 @@ const trailLength = computed<number>(() => Number(props.config.trailLength ?? MA
 const follow = computed<boolean>(() => props.config.follow !== false)
 const showYaw = computed<boolean>(() => props.config.showYaw !== false)
 const zoom = computed<number>(() => Number(props.config.zoom ?? MAP_DEFAULT_ZOOM))
+/** 自定义经纬度/朝向字段路径（JSON 通道用；留空走默认候选）。 */
+const latPath = computed<string>(() => String(props.config.latPath ?? '').trim())
+const lonPath = computed<string>(() => String(props.config.lonPath ?? '').trim())
+const yawPath = computed<string>(() => String(props.config.yawPath ?? '').trim())
+const yawIsRad = computed<boolean>(() => (props.config.yawUnit as string) !== 'deg')
 
 const { latest, getBuffer, version } = useFrameFeed(() => props.card.channelId)
 
@@ -65,13 +70,35 @@ function extractPosition(frame: { payload: unknown; publishedTs: number } | unde
       sourceCRS: sourceCRS.value,
     }
   }
-  // json 兜底：尝试常见字段路径
-  const candidates = ['latitude', 'lat', 'gps.lat', 'pose.position.lat']
-  const lonCandidates = ['longitude', 'lon', 'lng', 'gps.lon', 'gps.lng', 'pose.position.lon']
+  // json 兜底：优先用配置的字段路径，再试常见候选
+  const candidates = [
+    ...(latPath.value ? [latPath.value] : []),
+    'latitude',
+    'lat',
+    'gps.lat',
+    'pose.position.lat',
+  ]
+  const lonCandidates = [
+    ...(lonPath.value ? [lonPath.value] : []),
+    'longitude',
+    'lon',
+    'lng',
+    'gps.lon',
+    'gps.lng',
+    'pose.position.lon',
+  ]
   const flatLat = firstNumberAt(payload, candidates)
   const flatLon = firstNumberAt(payload, lonCandidates)
   if (flatLat !== undefined && flatLon !== undefined) {
-    return { lat: flatLat, lon: flatLon, t: frame.publishedTs, sourceCRS: sourceCRS.value }
+    const rawYaw = yawPath.value ? firstNumberAt(payload, [yawPath.value]) : undefined
+    const yawDeg = rawYaw === undefined ? undefined : yawIsRad.value ? (rawYaw * 180) / Math.PI : rawYaw
+    return {
+      lat: flatLat,
+      lon: flatLon,
+      t: frame.publishedTs,
+      sourceCRS: sourceCRS.value,
+      ...(yawDeg !== undefined ? { yaw: yawDeg } : {}),
+    }
   }
   return null
 }

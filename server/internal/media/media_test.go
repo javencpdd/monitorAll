@@ -175,9 +175,10 @@ func TestBuildSANs(t *testing.T) {
 
 // mockClient 为 MediaMTX API 的 mock 实现（不依赖真实 MediaMTX）。
 type mockClient struct {
-	paths   []MediaMTXPath
-	listErr error
-	added   map[string]string
+	paths      []MediaMTXPath
+	listErr    error
+	added      map[string]string
+	addedExtra map[string]map[string]any
 }
 
 func (m *mockClient) PathsList(ctx context.Context, path string) ([]MediaMTXPath, error) {
@@ -195,11 +196,21 @@ func (m *mockClient) PathsList(ctx context.Context, path string) ([]MediaMTXPath
 	return []MediaMTXPath{}, nil
 }
 
-func (m *mockClient) PathAdd(ctx context.Context, path string, source string) error {
+func (m *mockClient) PathAdd(ctx context.Context, path string, source string, opts ...PathOption) error {
 	if m.added == nil {
 		m.added = map[string]string{}
 	}
 	m.added[path] = source
+	if m.addedExtra == nil {
+		m.addedExtra = map[string]map[string]any{}
+	}
+	extra := map[string]any{}
+	for _, opt := range opts {
+		if opt != nil {
+			opt(extra)
+		}
+	}
+	m.addedExtra[path] = extra
 	return nil
 }
 
@@ -252,5 +263,86 @@ func TestCertFilePermissions(t *testing.T) {
 	}
 	if info.Fingerprint == "" {
 		t.Fatal("应返回证书指纹")
+	}
+}
+
+// TestParseStreamURLRTSP 校验 RTSP 摄像头地址解析：默认端口 554、保留用户名密码、多段路径。
+func TestParseStreamURLRTSP(t *testing.T) {
+	const raw = "rtsp://admin:okwy1688@192.168.2.69:554/Streaming/Channels/101"
+	info, err := ParseStreamURL(raw)
+	if err != nil {
+		t.Fatalf("RTSP 解析失败: %v", err)
+	}
+	if info.Scheme != "rtsp" || info.Host != "192.168.2.69" || info.Port != 554 {
+		t.Fatalf("解析结果错误: %+v", info)
+	}
+	if info.Path != "Streaming/Channels/101" {
+		t.Fatalf("路径应为多段: %q", info.Path)
+	}
+	if info.Raw != raw {
+		t.Fatalf("必须保留原始 URL（含用户名密码）: %q", info.Raw)
+	}
+	if !info.IsRTSP() || info.IsRTMP() {
+		t.Fatalf("协议判定错误: %+v", info)
+	}
+	// 不显式给端口时缺省 554
+	info2, err := ParseStreamURL("rtsp://192.168.2.69/Streaming/Channels/102")
+	if err != nil {
+		t.Fatalf("解析失败: %v", err)
+	}
+	if info2.Port != config.DefaultRTSPPort {
+		t.Fatalf("RTSP 缺省端口应为 554: %d", info2.Port)
+	}
+	// RTMP 仍是 1935
+	info3, err := ParseStreamURL("rtmp://172.31.68.227/live/lite3")
+	if err != nil {
+		t.Fatalf("解析失败: %v", err)
+	}
+	if info3.Port != config.DefaultRTMPPort || !info3.IsRTMP() {
+		t.Fatalf("RTMP 解析错误: %+v", info3)
+	}
+	// rtsps 也应放行
+	if _, err := ParseStreamURL("rtsps://cam.local/stream/1"); err != nil {
+		t.Fatalf("rtsps 应放行: %v", err)
+	}
+	// 非法协议仍返回 40002
+	for _, bad := range []string{"", "http://x/live/a", "rtsp://host", "rtsp://host:abc/a"} {
+		if _, err := ParseStreamURL(bad); err == nil {
+			t.Fatalf("%q 应解析失败", bad)
+		} else if apperr.CodeOf(err) != apperr.InvalidURL {
+			t.Fatalf("%q 错误码应为 40002，实际 %d", bad, apperr.CodeOf(err))
+		}
+	}
+}
+
+// TestBuildPublishURLs 校验 publish 模式的 WHIP / RTMP 推流地址。
+func TestBuildPublishURLs(t *testing.T) {
+	cfg := config.DefaultConfig()
+	cfg.Server.TLSEnabled = false
+	cfg.Server.LANHost = "172.31.68.100"
+	urls := BuildPublishURLs(cfg, "", "live/lite3")
+	if urls[config.PublishProtocolWHIP] != "http://172.31.68.100:8889/live/lite3/whip" {
+		t.Fatalf("whip 地址错误: %s", urls[config.PublishProtocolWHIP])
+	}
+	if urls[config.PublishProtocolRTMP] != "rtmp://172.31.68.100:1936/live/lite3" {
+		t.Fatalf("rtmp 推流地址错误: %s", urls[config.PublishProtocolRTMP])
+	}
+}
+
+// TestPathAddRTSPTransport 校验 PathAdd 的可选参数会带上 rtspTransport。
+func TestPathAddRTSPTransport(t *testing.T) {
+	var c Client = &mockClient{}
+	if err := c.PathAdd(context.Background(), "cam/101", "rtsp://admin:pwd@192.168.2.69:554/Streaming/Channels/101",
+		WithRTSPTransport(config.RTSPTransportTCP)); err != nil {
+		t.Fatalf("PathAdd 失败: %v", err)
+	}
+	extra := c.(*mockClient).addedExtra["cam/101"]
+	if extra["rtspTransport"] != config.RTSPTransportTCP {
+		t.Fatalf("rtspTransport 未写入: %+v", extra)
+	}
+	// 不带可选参数时不应出现该字段（保持既有调用行为不变）
+	_ = c.PathAdd(context.Background(), "cam/102", "publisher")
+	if _, ok := c.(*mockClient).addedExtra["cam/102"]["rtspTransport"]; ok {
+		t.Fatal("未传可选参数时不应写入 rtspTransport")
 	}
 }

@@ -19,6 +19,7 @@ import (
 	"github.com/monitorall/monitorall/internal/adapter"
 	// 注册三类适配器工厂（副作用导入，勿删除）
 	_ "github.com/monitorall/monitorall/internal/adapter/http"
+	_ "github.com/monitorall/monitorall/internal/adapter/replay"
 	_ "github.com/monitorall/monitorall/internal/adapter/ros"
 	_ "github.com/monitorall/monitorall/internal/adapter/video"
 	"github.com/monitorall/monitorall/internal/api"
