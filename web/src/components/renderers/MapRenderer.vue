@@ -105,8 +105,12 @@ function extractPosition(frame: { payload: unknown; publishedTs: number } | unde
 
 function firstNumberAt(payload: Record<string, unknown>, paths: string[]): number | undefined {
   for (const path of paths) {
-    const value = getByPath(payload, path)
-    if (typeof value === 'number' && Number.isFinite(value)) return value
+    // JSON 通道的 payload 被后端包成 {root: 原始响应}（model.JSONPayload），
+    // 用户填路径时几乎必然漏掉 root. 前缀，这里两种都试，命中即用。
+    for (const p of [path, `root.${path}`]) {
+      const value = getByPath(payload, p)
+      if (typeof value === 'number' && Number.isFinite(value)) return value
+    }
   }
   return undefined
 }

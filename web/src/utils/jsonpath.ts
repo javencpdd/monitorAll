@@ -24,11 +24,13 @@ export interface FieldSource {
   schemaHint?: Record<string, FieldHint>
 }
 
-/** 把 "a.b[0].c" 解析为 ['a','b','0','c']。 */
+/** 把 "a.b[0].c" 解析为 ['a','b','0','c']。
+ *  分隔符兼容点分与斜杠（a/b/c）——用户手填路径时两种写法都很常见，
+ *  只认点分会把 "data/pose/latitude" 当成单个键名而静默取不到值。 */
 export function parsePathParts(path: string): string[] {
   return path
     .replace(/\[(\d+)\]/g, '.$1')
-    .split('.')
+    .split(/[./]/)
     .map((p) => p.trim())
     .filter((p) => p.length > 0)
 }

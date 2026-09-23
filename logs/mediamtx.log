@@ -1475,3 +1475,60 @@
 2026/09/23 02:48:50 INF [RTMP] closing
 2026/09/23 02:48:50 INF [RTSP] closing
 2026/09/23 02:48:50 INF waiting for running hooks
+2026/09/23 12:50:04 INF MediaMTX v1.21.1, linux, amd64
+2026/09/23 12:50:04 INF configuration loaded from /home/jack/monitorAll/mediamtx/mediamtx.yml
+2026/09/23 12:50:04 INF [RTSP] started with listeners on :8554 (TCP/RTSP), :8000 (UDP/RTP), :8001 (UDP/RTCP)
+2026/09/23 12:50:04 INF [RTMP] started with listener on :1935 (TCP/RTMP)
+2026/09/23 12:50:04 INF [HLS] started with listener on :8888 (TCP/HTTP)
+2026/09/23 12:50:04 INF [WebRTC] started with listeners on :8889 (TCP/HTTP), :8189 (UDP/ICE)
+2026/09/23 12:50:04 INF [SRT] started with listener on :8890 (UDP/SRT)
+2026/09/23 12:50:04 INF [MoQ] started with listeners on :8892 (TCP/HTTP2), :8892 (UDP/HTTP3), :8893 (UDP/QUIC)
+2026/09/23 12:50:04 INF [API] started with listener on :9997 (TCP/HTTP)
+2026/09/23 12:50:13 INF reloading configuration (API request)
+2026/09/23 12:50:13 INF reloading configuration (API request)
+2026/09/23 12:50:13 INF [HLS] [session fe4a1ba1] created by 10.42.0.1:43908
+2026/09/23 12:50:13 INF [path live/lite3] [RTMP source] started on demand
+2026/09/23 12:50:13 INF [WebRTC] [session 8ec22536] created by 10.42.0.1:44404
+2026/09/23 12:50:13 INF [path Streaming/Channels/101] [RTSP source] started on demand
+2026/09/23 12:50:16 INF [path Streaming/Channels/101] stream is available and online, 2 tracks (H264, G711)
+2026/09/23 12:50:16 INF [WebRTC] [session 8ec22536] peer connection established, local candidate: host/udp/10.63.23.135/8189, remote candidate: prflx/udp/127.0.0.1/47201
+2026/09/23 12:50:16 INF [WebRTC] [session 8ec22536] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/23 12:50:16 INF [WebRTC] [session 4980b357] created by 10.42.0.1:44404
+2026/09/23 12:50:23 INF [path live/lite3] [RTMP source] stopped: timed out
+2026/09/23 12:50:23 INF [HLS] [session fe4a1ba1] closed: source of path 'live/lite3' has timed out
+2026/09/23 12:50:23 INF [WebRTC] [session 4980b357] closed: source of path 'live/lite3' has timed out
+2026/09/23 12:50:32 INF [WebRTC] [session 8ec22536] closed: peer connection closed
+2026/09/23 12:50:42 INF [path Streaming/Channels/101] [RTSP source] stopped: not needed by anyone
+2026/09/23 12:51:04 ERR [API] path already exists
+2026/09/23 12:51:04 ERR [API] path already exists
+2026/09/23 12:51:07 ERR [API] path already exists
+2026/09/23 12:51:07 ERR [API] path already exists
+2026/09/23 12:51:10 INF [WebRTC] [session 7ab9d7e7] created by 10.42.0.1:43434
+2026/09/23 12:51:10 INF [path Streaming/Channels/101] [RTSP source] started on demand
+2026/09/23 12:51:10 INF [path Streaming/Channels/101] stream is available and online, 2 tracks (H264, G711)
+2026/09/23 12:51:10 INF [WebRTC] [session 7ab9d7e7] peer connection established, local candidate: host/udp/10.63.23.135/8189, remote candidate: prflx/udp/127.0.0.1/39960
+2026/09/23 12:51:10 INF [WebRTC] [session 7ab9d7e7] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/23 12:51:11 INF [WebRTC] [session 7ab9d7e7] closed: peer connection closed
+2026/09/23 12:51:11 INF [WebRTC] [session 14aa03bf] created by 10.42.0.1:43434
+2026/09/23 12:51:11 INF [WebRTC] [session 14aa03bf] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/57703
+2026/09/23 12:51:11 INF [WebRTC] [session 14aa03bf] is reading from path 'Streaming/Channels/101', 2 tracks (G711, H264)
+2026/09/23 12:51:19 ERR [API] path already exists
+2026/09/23 12:51:21 ERR [API] path already exists
+2026/09/23 13:03:15 ERR [API] path not found
+2026/09/23 13:06:05 ERR [API] path already exists
+2026/09/23 13:06:09 INF [WebRTC] [session 14aa03bf] closed: peer connection closed
+2026/09/23 13:06:10 ERR [API] path already exists
+2026/09/23 13:06:11 INF [WebRTC] [session 00ba17ce] created by 10.42.0.1:52656
+2026/09/23 13:06:11 INF [WebRTC] [session 00ba17ce] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/52259
+2026/09/23 13:06:11 INF [WebRTC] [session 00ba17ce] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/23 13:06:57 INF shutting down gracefully
+2026/09/23 13:06:57 INF [API] closing
+2026/09/23 13:06:57 INF [SRT] closing
+2026/09/23 13:06:57 INF [MoQ] closing
+2026/09/23 13:06:57 INF [WebRTC] closing
+2026/09/23 13:06:57 INF [WebRTC] [session 00ba17ce] closed: terminated
+2026/09/23 13:06:57 INF [HLS] closing
+2026/09/23 13:06:57 INF [RTMP] closing
+2026/09/23 13:06:57 INF [RTSP] closing
+2026/09/23 13:06:57 INF [path Streaming/Channels/101] [RTSP source] stopped: path is closing
+2026/09/23 13:06:57 INF waiting for running hooks

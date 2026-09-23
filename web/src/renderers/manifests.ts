@@ -180,7 +180,7 @@ export const mapManifest: RendererManifest = {
       type: 'text',
       default: '',
       placeholder: 'latitude',
-      help: 'JSON 通道用：填字段路径，如 pose.latitude / data.pose.latitude。留空则按顺序尝试 latitude、lat、gps.lat、pose.position.lat',
+      help: 'JSON 通道用：填字段路径（点分或斜杠均可，可不带 root. 前缀），如 data.pose.latitude。留空则按顺序尝试 latitude、lat、gps.lat、pose.position.lat',
     },
     {
       key: 'lonPath',
@@ -188,7 +188,7 @@ export const mapManifest: RendererManifest = {
       type: 'text',
       default: '',
       placeholder: 'longitude',
-      help: '如 pose.longitude / data.pose.longitude。留空则尝试 longitude、lon、lng、gps.lon、pose.position.lon',
+      help: '如 data.pose.longitude（点分或斜杠均可，可不带 root. 前缀）。留空则尝试 longitude、lon、lng、gps.lon、pose.position.lon',
     },
     {
       key: 'yawPath',
@@ -196,7 +196,7 @@ export const mapManifest: RendererManifest = {
       type: 'text',
       default: '',
       placeholder: 'yaw',
-      help: '如 pose.yaw；留空则不画朝向',
+      help: '如 data.pose.yaw（点分或斜杠均可，可不带 root. 前缀）；留空则不画朝向',
     },
     {
       key: 'yawUnit',

@@ -6966,3 +6966,63 @@
 {"time":"2026-09-23T02:48:50.129620795+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1","channels":2}
 {"time":"2026-09-23T02:48:50.130698236+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2","channels":2}
 {"time":"2026-09-23T02:48:50.131328351+08:00","level":"INFO","msg":"已退出","module":"main"}
+{"time":"2026-09-23T12:50:05.425986522+08:00","level":"INFO","msg":"配置加载完成","module":"main","httpAddr":":8080","httpsAddr":":8443","tlsEnabled":true,"dataDir":"./data"}
+{"time":"2026-09-23T12:50:05.430749725+08:00","level":"INFO","msg":"HTTP 监听已启动","module":"server","addr":":8080"}
+{"time":"2026-09-23T12:50:05.430970435+08:00","level":"INFO","msg":"HTTPS 监听已启动","module":"server","addr":":8443"}
+
+  MonitorAll v1.0.0  (schema v1)
+  ────────────────────────────────────────────────
+    HTTP   →  http://10.42.0.1:8080
+    HTTPS  →  https://10.42.0.1:8443   (自签证书)
+    证书信任指引 → http://10.42.0.1:8080/trust
+    其它地址 → http://10.63.23.135:8080
+    其它地址 → http://192.168.2.201:8080
+    MediaMTX     → embedded @ http://127.0.0.1:9997
+    SQLite       → ./data/monitorall.db
+  ────────────────────────────────────────────────
+
+{"time":"2026-09-23T12:50:13.396103034+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1"}
+{"time":"2026-09-23T12:50:13.478836661+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1","clientId":"web-fjzo8cc6"}
+{"time":"2026-09-23T12:50:13.488703196+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_lg9eiemi1unja40h","path":"live/lite3","mode":"pull","source":"rtmp://172.31.68.227:1936/live/lite3"}
+{"time":"2026-09-23T12:50:13.490652876+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_wi1exah0x639x51a","path":"Streaming/Channels/101","mode":"pull","source":"rtsp://admin:okwy1688@192.168.2.69:554/Streaming/Channels/101"}
+{"time":"2026-09-23T12:51:04.99724396+08:00","level":"INFO","msg":"视频适配器已启动","module":"api","stage":"test","path":"Streaming/Channels/101","mode":"pull","source":"rtsp://admin:okwy1688@192.168.2.69:554/Streaming/Channels/101"}
+{"time":"2026-09-23T12:51:04.999356832+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","mode":"sample","path":"Streaming/Channels/101","mode":"pull","source":"rtsp://admin:okwy1688@192.168.2.69:554/Streaming/Channels/101"}
+{"time":"2026-09-23T12:51:07.786388935+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_cs267tprqph67had","path":"Streaming/Channels/101","mode":"pull","source":"rtsp://admin:okwy1688@192.168.2.69:554/Streaming/Channels/101"}
+{"time":"2026-09-23T12:51:07.79393517+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","mode":"sample","path":"Streaming/Channels/101","mode":"pull","source":"rtsp://admin:okwy1688@192.168.2.69:554/Streaming/Channels/101"}
+{"time":"2026-09-23T12:51:19.761130267+08:00","level":"INFO","msg":"视频适配器已启动","module":"api","stage":"discover","path":"Streaming/Channels/101","mode":"pull","source":"rtsp://admin:okwy1688@192.168.2.69:554/Streaming/Channels/101"}
+{"time":"2026-09-23T12:51:21.276956608+08:00","level":"INFO","msg":"视频适配器已启动","module":"api","stage":"discover","path":"Streaming/Channels/101","mode":"pull","source":"rtsp://admin:okwy1688@192.168.2.69:554/Streaming/Channels/101"}
+{"time":"2026-09-23T12:54:07.735621498+08:00","level":"WARN","msg":"HTTP 轮询失败","module":"adapter","mode":"sample","url":"http://192.168.2.100:7999/sensor_data/base_data","err":"Get \"http://192.168.2.100:7999/sensor_data/base_data\": context canceled"}
+{"time":"2026-09-23T12:56:32.137532239+08:00","level":"WARN","msg":"HTTP 轮询失败","module":"adapter","dataSourceId":"ds_ikw5mzb51e03fizp","url":"http://192.168.2.100:7999/sensor_data/base_data","err":"Get \"http://192.168.2.100:7999/sensor_data/base_data\": context deadline exceeded"}
+{"time":"2026-09-23T12:56:35.138630703+08:00","level":"WARN","msg":"HTTP 轮询失败","module":"adapter","dataSourceId":"ds_ikw5mzb51e03fizp","url":"http://192.168.2.100:7999/sensor_data/base_data","err":"Get \"http://192.168.2.100:7999/sensor_data/base_data\": context deadline exceeded"}
+{"time":"2026-09-23T12:57:07.13843281+08:00","level":"WARN","msg":"HTTP 轮询失败","module":"adapter","dataSourceId":"ds_ikw5mzb51e03fizp","url":"http://192.168.2.100:7999/sensor_data/base_data","err":"Get \"http://192.168.2.100:7999/sensor_data/base_data\": context deadline exceeded"}
+{"time":"2026-09-23T12:57:10.139449857+08:00","level":"WARN","msg":"HTTP 轮询失败","module":"adapter","dataSourceId":"ds_ikw5mzb51e03fizp","url":"http://192.168.2.100:7999/sensor_data/base_data","err":"Get \"http://192.168.2.100:7999/sensor_data/base_data\": context deadline exceeded"}
+{"time":"2026-09-23T12:57:13.140807028+08:00","level":"WARN","msg":"HTTP 轮询失败","module":"adapter","dataSourceId":"ds_ikw5mzb51e03fizp","url":"http://192.168.2.100:7999/sensor_data/base_data","err":"Get \"http://192.168.2.100:7999/sensor_data/base_data\": context deadline exceeded"}
+{"time":"2026-09-23T12:57:16.141510171+08:00","level":"WARN","msg":"HTTP 轮询失败","module":"adapter","dataSourceId":"ds_ikw5mzb51e03fizp","url":"http://192.168.2.100:7999/sensor_data/base_data","err":"Get \"http://192.168.2.100:7999/sensor_data/base_data\": context deadline exceeded"}
+{"time":"2026-09-23T13:06:03.679151355+08:00","level":"INFO","msg":"收到退出信号，开始优雅关闭","module":"main"}
+{"time":"2026-09-23T13:06:03.681024391+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1","channels":2}
+{"time":"2026-09-23T13:06:03.687409136+08:00","level":"INFO","msg":"已退出","module":"main"}
+{"time":"2026-09-23T13:06:03.778637841+08:00","level":"INFO","msg":"配置加载完成","module":"main","httpAddr":":8080","httpsAddr":":8443","tlsEnabled":true,"dataDir":"./data"}
+{"time":"2026-09-23T13:06:03.786531327+08:00","level":"INFO","msg":"HTTP 监听已启动","module":"server","addr":":8080"}
+{"time":"2026-09-23T13:06:03.787103333+08:00","level":"INFO","msg":"HTTPS 监听已启动","module":"server","addr":":8443"}
+
+  MonitorAll v1.0.0  (schema v1)
+  ────────────────────────────────────────────────
+    HTTP   →  http://10.42.0.1:8080
+    HTTPS  →  https://10.42.0.1:8443   (自签证书)
+    证书信任指引 → http://10.42.0.1:8080/trust
+    其它地址 → http://10.63.23.135:8080
+    其它地址 → http://192.168.2.201:8080
+    MediaMTX     → embedded @ http://127.0.0.1:9997
+    SQLite       → ./data/monitorall.db
+  ────────────────────────────────────────────────
+
+{"time":"2026-09-23T13:06:05.837107576+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_1"}
+{"time":"2026-09-23T13:06:05.841769742+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_1","clientId":"web-fjzo8cc6"}
+{"time":"2026-09-23T13:06:05.858196338+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_cs267tprqph67had","path":"Streaming/Channels/101","mode":"pull","source":"rtsp://admin:okwy1688@192.168.2.69:554/Streaming/Channels/101"}
+{"time":"2026-09-23T13:06:09.059437431+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_1","channels":2}
+{"time":"2026-09-23T13:06:10.77968182+08:00","level":"INFO","msg":"WS 连接建立","module":"ws","connId":"c_2"}
+{"time":"2026-09-23T13:06:10.842543034+08:00","level":"INFO","msg":"连接就绪","module":"ws","connId":"c_2","clientId":"web-eog56zs7"}
+{"time":"2026-09-23T13:06:10.850780848+08:00","level":"INFO","msg":"视频适配器已启动","module":"adapter","dataSourceId":"ds_cs267tprqph67had","path":"Streaming/Channels/101","mode":"pull","source":"rtsp://admin:okwy1688@192.168.2.69:554/Streaming/Channels/101"}
+{"time":"2026-09-23T13:06:57.007799153+08:00","level":"INFO","msg":"收到退出信号，开始优雅关闭","module":"main"}
+{"time":"2026-09-23T13:06:57.009885245+08:00","level":"INFO","msg":"WS 连接关闭，订阅已释放","module":"ws","connId":"c_2","channels":2}
+{"time":"2026-09-23T13:06:57.010536329+08:00","level":"INFO","msg":"已退出","module":"main"}
