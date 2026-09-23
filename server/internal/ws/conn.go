@@ -165,6 +165,8 @@ func (c *Conn) readPump() {
 	}()
 	helloTimeout := time.Duration(config.HelloTimeoutMs) * time.Millisecond
 	_ = c.ws.SetReadDeadline(time.Now().Add(helloTimeout))
+	// 握手完成后的读超时（见 aliveDeadline：心跳周期 × (MaxMissedPong+1)）。
+	aliveDeadline := c.aliveDeadline()
 	for {
 		_, data, err := c.ws.ReadMessage()
 		if err != nil {
@@ -178,12 +180,16 @@ func (c *Conn) readPump() {
 			c.Send(NewError(WSErrBadRequest, "JSON 解析失败", ""))
 			continue
 		}
+		// 已握手：每读到一条上行消息就顺延读超时。pong 是客户端唯一的心跳回应，
+		// 若只在 hello 时设一次，连接仍会在固定时长后被掐断（只是循环变慢）。
+		if c.helloDone.Load() {
+			_ = c.ws.SetReadDeadline(time.Now().Add(aliveDeadline))
+		}
 		switch msg.Op {
 		case OpHello:
 			c.handleHello(&msg)
 			// hello 之后取消握手超时，改由心跳维持
-			_ = c.ws.SetReadDeadline(time.Now().Add(
-				time.Duration(config.PongTimeoutMs) * time.Millisecond * time.Duration(config.MaxMissedPong+1)))
+			_ = c.ws.SetReadDeadline(time.Now().Add(aliveDeadline))
 		case OpSubscribe:
 			if !c.helloDone.Load() {
 				c.Send(NewError(WSErrBadRequest, "请先发送 hello", msg.Ref))
@@ -204,6 +210,23 @@ func (c *Conn) readPump() {
 			c.Send(NewError(WSErrBadRequest, "未知 op: "+msg.Op, msg.Ref))
 		}
 	}
+}
+
+// aliveDeadline 返回握手完成后的读超时：心跳周期 × (允许连续丢失 pong 次数 + 1)。
+//
+// 关键约束：读超时必须【大于】服务端心跳周期。心跳是服务端主动发的，
+// 客户端只在收到 ping 后才回 pong；若读超时短于心跳周期，客户端还没等到
+// 第一个 ping（也就无从回 pong）就会被读超时判死，表现为连接按固定秒数
+// 断开并重连的死循环。
+//
+// 历史 bug：这里曾用 PongTimeoutMs(3s)×(MaxMissedPong+1)=12s，而
+// pingIntervalMs 默认 15s（12s < 15s），导致每条连接精确存活 12s 后断开。
+func (c *Conn) aliveDeadline() time.Duration {
+	ping := time.Duration(c.hub.cfg.Bus.PingIntervalMs) * time.Millisecond
+	if ping <= 0 {
+		ping = time.Duration(config.DefaultPingIntervalMs) * time.Millisecond
+	}
+	return ping * time.Duration(config.MaxMissedPong+1)
 }
 
 // handleHello 校验协议版本并回复 welcome。
