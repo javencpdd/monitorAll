@@ -413,6 +413,10 @@ export interface MediaMTXPath {
 export interface RuntimeConfig {
   /** 空串 = 未配置，地图渲染器显示配置提示。 */
   amapKey: string
+  /** 高德安全密钥 securityJsCode；2021-12-02 后申请的 Key 必填，缺失时样式切换静默失败。 */
+  amapSecurityCode: string
+  /** 是否强制启用 WebGL 绘制（无 GPU/软件渲染/手机 WebView 必须开，否则样式不生效）。 */
+  amapForceWebGL: boolean
   wsUrl: string
   protocolVersion: number
   secureContext: boolean

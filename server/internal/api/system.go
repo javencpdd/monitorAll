@@ -18,13 +18,15 @@ import (
 
 // RuntimeConfig 为前端启动所需的运行期配置。
 type RuntimeConfig struct {
-	AMapKey         string   `json:"amapKey"`
-	WSUrl           string   `json:"wsUrl"`
-	ProtocolVersion int      `json:"protocolVersion"`
-	SecureContext   bool     `json:"secureContext"`
-	VideoBackends   []string `json:"videoBackends"`
-	LanHosts        []string `json:"lanHosts"`
-	ServerTimeMs    int64    `json:"serverTimeMs"`
+	AMapKey          string   `json:"amapKey"`
+	AMapSecurityCode string   `json:"amapSecurityCode"`
+	AMapForceWebGL   bool     `json:"amapForceWebGL"`
+	WSUrl            string   `json:"wsUrl"`
+	ProtocolVersion  int      `json:"protocolVersion"`
+	SecureContext    bool     `json:"secureContext"`
+	VideoBackends    []string `json:"videoBackends"`
+	LanHosts         []string `json:"lanHosts"`
+	ServerTimeMs     int64    `json:"serverTimeMs"`
 }
 
 // HealthzResp 为健康检查响应。
@@ -102,13 +104,15 @@ func (d *Deps) runtime(c *gin.Context) {
 		hosts = []string{d.Cfg.Server.LANHost}
 	}
 	OK(c, RuntimeConfig{
-		AMapKey:         d.Cfg.Web.AMapKey,
-		WSUrl:           d.wsURL(c),
-		ProtocolVersion: config.WSProtocolVersion,
-		SecureContext:   d.Cfg.Server.TLSEnabled,
-		VideoBackends:   backends,
-		LanHosts:        hosts,
-		ServerTimeMs:    model.NowMs(),
+		AMapKey:          d.Cfg.Web.AMapKey,
+		AMapSecurityCode: d.Cfg.Web.AMapSecurityCode,
+		AMapForceWebGL:   d.Cfg.Web.AMapForceWebGL,
+		WSUrl:            d.wsURL(c),
+		ProtocolVersion:  config.WSProtocolVersion,
+		SecureContext:    d.Cfg.Server.TLSEnabled,
+		VideoBackends:    backends,
+		LanHosts:         hosts,
+		ServerTimeMs:     model.NowMs(),
 	})
 }
 

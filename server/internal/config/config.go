@@ -253,7 +253,18 @@ type HTTPPollConfig struct {
 // WebConfig 为前端运行所需配置。
 type WebConfig struct {
 	AMapKey string `yaml:"amapKey"`
-	Theme   string `yaml:"theme"`
+	// AMapSecurityCode 为高德「安全密钥 securityJsCode」。
+	// 2021-12-02 之后申请的 Key 必须配合安全密钥使用，否则样式服务等能力会静默失败
+	// （表现为 setMapStyle 切换暗色/自定义样式不生效，底图始终回落标准样式）。
+	// 在高德控制台「应用管理 → 我的应用」里与 Key 一同展示。
+	AMapSecurityCode string `yaml:"amapSecurityCode"`
+	// AMapForceWebGL 控制是否在加载 JSAPI 前设置 window.forceWebGL / forceWebGLBaseRender。
+	// JSAPI 默认以 failIfMajorPerformanceCaveat 取 WebGL 上下文：无 GPU / 软件渲染 / 部分手机 WebView
+	// 会被判定为"性能不足"从而**不启用 WebGL 绘制**，控制台报"浏览器版本过低"，
+	// 表现为底图能出、但 mapStyle/setMapStyle 一律不生效（卫星图层这类纯瓦片不受影响）。
+	// 置为 true 可强制启用 WebGL 渲染（高德官方给出的解法）。
+	AMapForceWebGL bool `yaml:"amapForceWebGL"`
+	Theme         string `yaml:"theme"`
 }
 
 // LogConfig 为日志配置。
@@ -323,8 +334,11 @@ func DefaultConfig() *Config {
 			FailureThreshold: DefaultFailureThreshold,
 		},
 		Web: WebConfig{
-			AMapKey: "",
-			Theme:   DefaultTheme,
+			AMapKey:          "",
+			AMapSecurityCode: "",
+			// 默认开启：绝大多数"样式不生效"的环境问题都由未启用 WebGL 绘制导致。
+			AMapForceWebGL: true,
+			Theme:          DefaultTheme,
 		},
 		Log: LogConfig{
 			Level:      DefaultLogLevel,

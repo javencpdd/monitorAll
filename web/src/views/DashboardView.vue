@@ -62,13 +62,20 @@ watch(
 <template>
   <div class="ma-view">
     <top-bar />
-    <connection-banner />
-    <div class="ma-view__main">
-      <source-panel />
-      <div class="ma-view__stage">
-        <dashboard-canvas />
-        <card-config-drawer />
-        <data-source-wizard />
+    <!--
+      横幅改为悬浮：外面包一层定位容器。
+      若横幅处于文档流，它 26px 的显隐会把下方画布整块顶上顶下（肉眼「跳一下」）；
+      改为 absolute 后不再参与布局，WS 抖动时只有它自己出现/消失。
+    -->
+    <div class="ma-view__body">
+      <connection-banner />
+      <div class="ma-view__main">
+        <source-panel />
+        <div class="ma-view__stage">
+          <dashboard-canvas />
+          <card-config-drawer />
+          <data-source-wizard />
+        </div>
       </div>
     </div>
   </div>
@@ -79,6 +86,15 @@ watch(
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
+}
+
+/* 横幅的绝对定位参照容器：高度 = 视口 - TopBar，横幅浮在它顶部不占布局。 */
+.ma-view__body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
   min-height: 0;
 }
 

@@ -60,7 +60,11 @@ httpPoll:
   failureThreshold: 3         # 连续失败 3 次才置 reconnecting
 
 web:
-  amapKey: "40ce0fa4713ac6e2e063c6962e3da718"                 # 高德 JS API Key（地图渲染器必需）；留空则地图卡显示配置指引
+  amapKey: "f5922105bd3cbd7ad51cffba616beba9"                 # 高德 JS API Key（地图渲染器必需）；留空则地图卡显示配置指引
+  amapSecurityCode: "72d2bb962e02df629fc30ea018a02995"        # 高德安全密钥 securityJsCode（与上面 Key 一一对应，不可混用）。2021-12-02 后申请的 Key 必填；
+                                                              # 缺失时地图样式切换（暗色等）会静默失败回落标准样式
+  amapForceWebGL: true                                        # 无 GPU / 软件渲染 / 手机 WebView 环境必须开：否则高德不启用 WebGL 绘制，
+                                                              # 报"浏览器版本过低"且 setMapStyle 一律不生效（卫星图层不受影响）
   theme: "dark"
 
 log:

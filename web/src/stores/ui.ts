@@ -46,6 +46,10 @@ export const useUiStore = defineStore('ui', () => {
 
   /** 高德 Key：优先运行时下发，其次构建期环境变量（ARCH D7）。 */
   const amapKey = computed<string>(() => runtime.value?.amapKey ?? import.meta.env.VITE_AMAP_KEY ?? '')
+  /** 高德安全密钥 securityJsCode：2021-12-02 后申请的 Key 必须配合使用，否则样式切换等能力静默失败。 */
+  const amapSecurityCode = computed<string>(() => runtime.value?.amapSecurityCode ?? '')
+  /** 强制启用 WebGL 绘制：默认开（未下发时也开），否则无 GPU/手机 WebView 环境下样式一律不生效。 */
+  const amapForceWebGL = computed<boolean>(() => runtime.value?.amapForceWebGL !== false)
   /** 地图是否可用（无 Key 时地图卡降级为坐标列表，绝不换境外底图）。 */
   const amapReady = computed<boolean>(() => amapKey.value.length > 0)
   /** 后端允许的视频后端（默认 webrtc + hls，D1）。 */
@@ -174,6 +178,8 @@ export const useUiStore = defineStore('ui', () => {
     wsNextRetryAt,
     wsLastError,
     amapKey,
+    amapSecurityCode,
+    amapForceWebGL,
     amapReady,
     videoBackends,
     setTheme,

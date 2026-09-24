@@ -1532,3 +1532,406 @@
 2026/09/23 13:06:57 INF [RTSP] closing
 2026/09/23 13:06:57 INF [path Streaming/Channels/101] [RTSP source] stopped: path is closing
 2026/09/23 13:06:57 INF waiting for running hooks
+2026/09/24 02:30:39 INF MediaMTX v1.21.1, linux, amd64
+2026/09/24 02:30:39 INF configuration loaded from /home/jack/monitorAll/mediamtx/mediamtx.yml
+2026/09/24 02:30:39 INF [RTSP] started with listeners on :8554 (TCP/RTSP), :8000 (UDP/RTP), :8001 (UDP/RTCP)
+2026/09/24 02:30:39 INF [RTMP] started with listener on :1935 (TCP/RTMP)
+2026/09/24 02:30:39 INF [HLS] started with listener on :8888 (TCP/HTTP)
+2026/09/24 02:30:39 INF [WebRTC] started with listeners on :8889 (TCP/HTTP), :8189 (UDP/ICE)
+2026/09/24 02:30:39 INF [SRT] started with listener on :8890 (UDP/SRT)
+2026/09/24 02:30:39 INF [MoQ] started with listeners on :8892 (TCP/HTTP2), :8892 (UDP/HTTP3), :8893 (UDP/QUIC)
+2026/09/24 02:30:39 INF [API] started with listener on :9997 (TCP/HTTP)
+2026/09/24 10:05:30 INF MediaMTX v1.21.1, linux, amd64
+2026/09/24 10:05:30 INF configuration loaded from /home/jack/monitorAll/mediamtx/mediamtx.yml
+2026/09/24 10:05:30 INF [RTSP] started with listeners on :8554 (TCP/RTSP), :8000 (UDP/RTP), :8001 (UDP/RTCP)
+2026/09/24 10:05:30 INF [RTMP] started with listener on :1935 (TCP/RTMP)
+2026/09/24 10:05:30 INF [HLS] started with listener on :8888 (TCP/HTTP)
+2026/09/24 10:05:30 INF [WebRTC] started with listeners on :8889 (TCP/HTTP), :8189 (UDP/ICE)
+2026/09/24 10:05:30 INF [SRT] started with listener on :8890 (UDP/SRT)
+2026/09/24 10:05:30 INF [MoQ] started with listeners on :8892 (TCP/HTTP2), :8892 (UDP/HTTP3), :8893 (UDP/QUIC)
+2026/09/24 10:05:30 INF [API] started with listener on :9997 (TCP/HTTP)
+2026/09/24 10:05:41 INF reloading configuration (API request)
+2026/09/24 10:05:41 INF [WebRTC] [session 7eace317] created by 10.42.0.1:47354
+2026/09/24 10:05:41 INF [path Streaming/Channels/101] [RTSP source] started on demand
+2026/09/24 10:05:42 INF [path Streaming/Channels/101] stream is available and online, 2 tracks (H264, G711)
+2026/09/24 10:05:42 INF [WebRTC] [session 7eace317] peer connection established, local candidate: host/udp/10.42.0.1/8189, remote candidate: prflx/udp/127.0.0.1/38165
+2026/09/24 10:05:42 INF [WebRTC] [session 7eace317] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/24 10:06:14 WAR [path Streaming/Channels/101] 2 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:06:14 WAR [path Streaming/Channels/101] [RTSP source] 2 RTP packets lost
+2026/09/24 10:07:55 WAR [path Streaming/Channels/101] 70 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:07:55 WAR [path Streaming/Channels/101] [RTSP source] 4 RTP packets lost
+2026/09/24 10:08:37 INF [WebRTC] [session 7eace317] closed: peer connection closed
+2026/09/24 10:08:37 INF reloading configuration (API request)
+2026/09/24 10:08:37 INF reloading configuration (API request)
+2026/09/24 10:08:37 INF [WebRTC] [session 54384967] created by 10.42.0.1:59526
+2026/09/24 10:08:37 INF [path live/nest] [RTMP source] started on demand
+2026/09/24 10:08:37 INF [WebRTC] [session 4fa5e3ce] created by 10.42.0.1:59522
+2026/09/24 10:08:37 INF [path live/lite3] [RTMP source] started on demand
+2026/09/24 10:08:39 INF [path live/lite3] stream is available and online, 1 track (H264)
+2026/09/24 10:08:39 INF [WebRTC] [session 4fa5e3ce] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/35257
+2026/09/24 10:08:39 INF [WebRTC] [session 4fa5e3ce] is reading from path 'live/lite3', 1 track (H264)
+2026/09/24 10:08:39 INF [path live/nest] stream is available and online, 1 track (H264)
+2026/09/24 10:08:39 INF [WebRTC] [session 54384967] peer connection established, local candidate: host/udp/10.42.0.1/8189, remote candidate: prflx/udp/127.0.0.1/36376
+2026/09/24 10:08:39 INF [WebRTC] [session 54384967] is reading from path 'live/nest', 1 track (H264)
+2026/09/24 10:08:47 INF [path Streaming/Channels/101] [RTSP source] stopped: not needed by anyone
+2026/09/24 10:09:15 INF [WebRTC] [session 4fa5e3ce] closed: peer connection closed
+2026/09/24 10:09:15 INF [WebRTC] [session 54384967] closed: peer connection closed
+2026/09/24 10:09:15 ERR [API] path already exists
+2026/09/24 10:09:16 INF [WebRTC] [session d5ca341c] created by 10.42.0.1:59244
+2026/09/24 10:09:16 INF [path Streaming/Channels/101] [RTSP source] started on demand
+2026/09/24 10:09:16 INF [path Streaming/Channels/101] stream is available and online, 2 tracks (H264, G711)
+2026/09/24 10:09:16 INF [WebRTC] [session d5ca341c] peer connection established, local candidate: host/udp/10.63.23.135/8189, remote candidate: prflx/udp/127.0.0.1/42740
+2026/09/24 10:09:16 INF [WebRTC] [session d5ca341c] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/24 10:09:25 INF [path live/lite3] [RTMP source] stopped: not needed by anyone
+2026/09/24 10:09:25 INF [path live/nest] [RTMP source] stopped: not needed by anyone
+2026/09/24 10:11:03 INF [WebRTC] [session d5ca341c] closed: peer connection closed
+2026/09/24 10:11:04 ERR [API] path already exists
+2026/09/24 10:11:05 INF [WebRTC] [session 57ceb9f3] created by 10.42.0.1:36196
+2026/09/24 10:11:05 INF [WebRTC] [session 57ceb9f3] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/50087
+2026/09/24 10:11:05 INF [WebRTC] [session 57ceb9f3] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/24 10:14:29 WAR [path Streaming/Channels/101] 73 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:14:30 WAR [path Streaming/Channels/101] [RTSP source] 4 RTP packets lost
+2026/09/24 10:15:36 WAR [path Streaming/Channels/101] [RTSP source] 6 RTP packets lost
+2026/09/24 10:15:36 WAR [path Streaming/Channels/101] 17 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:16:00 WAR [path Streaming/Channels/101] [RTSP source] 2 RTP packets lost
+2026/09/24 10:16:00 WAR [path Streaming/Channels/101] 71 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:16:13 WAR [path Streaming/Channels/101] [RTSP source] 4 RTP packets lost
+2026/09/24 10:16:13 WAR [path Streaming/Channels/101] 7 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:16:27 WAR [path Streaming/Channels/101] [RTSP source] 1 RTP packet lost
+2026/09/24 10:16:27 WAR [path Streaming/Channels/101] processing error: discarding frame since a RTP packet is missing
+2026/09/24 10:16:36 WAR [path Streaming/Channels/101] 2 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:16:37 WAR [path Streaming/Channels/101] [RTSP source] 1965 RTP packets lost
+2026/09/24 10:16:37 WAR [path Streaming/Channels/101] 4 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:18:11 WAR [path Streaming/Channels/101] [RTSP source] 3 RTP packets lost
+2026/09/24 10:18:11 WAR [path Streaming/Channels/101] 19 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:18:35 WAR [path Streaming/Channels/101] [RTSP source] 4 RTP packets lost
+2026/09/24 10:18:35 WAR [path Streaming/Channels/101] 7 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:18:38 WAR [path Streaming/Channels/101] [RTSP source] 2 RTP packets lost
+2026/09/24 10:18:38 WAR [path Streaming/Channels/101] 109 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:20:47 WAR [path Streaming/Channels/101] 7 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:20:48 WAR [path Streaming/Channels/101] [RTSP source] 7 RTP packets lost
+2026/09/24 10:28:44 WAR [path Streaming/Channels/101] [RTSP source] 826 RTP packets lost
+2026/09/24 10:28:44 WAR [path Streaming/Channels/101] 2 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:28:45 WAR [path Streaming/Channels/101] [RTSP source] 5 RTP packets lost
+2026/09/24 10:29:12 WAR [path Streaming/Channels/101] [RTSP source] 3744 RTP packets lost
+2026/09/24 10:29:12 WAR [path Streaming/Channels/101] 9 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:29:14 WAR [path Streaming/Channels/101] [RTSP source] 6 RTP packets lost
+2026/09/24 10:29:24 WAR [path Streaming/Channels/101] [RTSP source] 8 RTP packets lost
+2026/09/24 10:29:24 WAR [path Streaming/Channels/101] 95 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:29:25 WAR [path Streaming/Channels/101] [RTSP source] 6 RTP packets lost
+2026/09/24 10:29:25 WAR [path Streaming/Channels/101] 7 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:29:29 WAR [path Streaming/Channels/101] [RTSP source] 2 RTP packets lost
+2026/09/24 10:29:29 WAR [path Streaming/Channels/101] 87 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:29:38 WAR [path Streaming/Channels/101] [RTSP source] 1 RTP packet lost
+2026/09/24 10:29:38 WAR [path Streaming/Channels/101] 2 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:29:41 WAR [path Streaming/Channels/101] [RTSP source] 1 RTP packet lost
+2026/09/24 10:29:52 WAR [path Streaming/Channels/101] [RTSP source] 176 RTP packets lost
+2026/09/24 10:29:52 WAR [path Streaming/Channels/101] 8 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:30:04 WAR [path Streaming/Channels/101] [RTSP source] 2428 RTP packets lost
+2026/09/24 10:30:05 WAR [path Streaming/Channels/101] [RTSP source] 203 RTP packets lost
+2026/09/24 10:30:05 WAR [path Streaming/Channels/101] processing error: invalid FU-A packet (non-starting)
+2026/09/24 10:30:06 WAR [path Streaming/Channels/101] [RTSP source] 453 RTP packets lost
+2026/09/24 10:30:06 WAR [path Streaming/Channels/101] processing error: invalid FU-A packet (non-starting)
+2026/09/24 10:30:07 WAR [path Streaming/Channels/101] [RTSP source] 41 RTP packets lost
+2026/09/24 10:43:35 ERR [API] path already exists
+2026/09/24 10:43:35 ERR [API] path already exists
+2026/09/24 10:43:37 INF [WebRTC] [session 52e51a68] created by 10.42.0.1:37686
+2026/09/24 10:43:37 INF [path live/lite3] [RTMP source] started on demand
+2026/09/24 10:43:39 INF [path live/lite3] stream is available and online, 1 track (H264)
+2026/09/24 10:43:39 INF [WebRTC] [session 52e51a68] peer connection established, local candidate: host/udp/172.19.0.1/8189, remote candidate: prflx/udp/127.0.0.1/35399
+2026/09/24 10:43:39 INF [WebRTC] [session 52e51a68] is reading from path 'live/lite3', 1 track (H264)
+2026/09/24 10:43:40 INF [WebRTC] [session 3654578b] created by 10.42.0.1:37686
+2026/09/24 10:43:40 INF [WebRTC] [session 3654578b] peer connection established, local candidate: host/udp/10.63.23.135/8189, remote candidate: prflx/udp/127.0.0.1/39467
+2026/09/24 10:43:40 INF [WebRTC] [session 3654578b] is reading from path 'live/lite3', 1 track (H264)
+2026/09/24 10:44:22 ERR [API] path already exists
+2026/09/24 10:44:38 ERR [API] path already exists
+2026/09/24 10:44:38 ERR [API] path already exists
+2026/09/24 10:44:41 INF [WebRTC] [session 97c40ddf] created by 10.42.0.1:57656
+2026/09/24 10:44:41 INF [path live/nest] [RTMP source] started on demand
+2026/09/24 10:44:42 INF [WebRTC] [session bf12a570] created by 10.42.0.1:57672
+2026/09/24 10:44:43 INF [path live/nest] stream is available and online, 1 track (H264)
+2026/09/24 10:44:43 INF [WebRTC] [session bf12a570] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/60148
+2026/09/24 10:44:43 INF [WebRTC] [session bf12a570] is reading from path 'live/nest', 1 track (H264)
+2026/09/24 10:44:43 INF [WebRTC] [session 97c40ddf] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/47146
+2026/09/24 10:44:43 INF [WebRTC] [session 97c40ddf] is reading from path 'live/nest', 1 track (H264)
+2026/09/24 10:45:41 WAR [path Streaming/Channels/101] [RTSP source] 5 RTP packets lost
+2026/09/24 10:45:41 WAR [path Streaming/Channels/101] 45 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:45:45 WAR [path Streaming/Channels/101] [RTSP source] 14 RTP packets lost
+2026/09/24 10:45:45 WAR [path Streaming/Channels/101] 49 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:45:49 WAR [path Streaming/Channels/101] [RTSP source] 15 RTP packets lost
+2026/09/24 10:45:49 WAR [path Streaming/Channels/101] 73 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:45:50 WAR [path Streaming/Channels/101] [RTSP source] 8 RTP packets lost
+2026/09/24 10:45:51 WAR [path Streaming/Channels/101] [RTSP source] 1 RTP packet lost
+2026/09/24 10:46:23 INF [path live/lite3] [RTMP source] stopped: an error occurred
+2026/09/24 10:46:23 INF [WebRTC] [session 52e51a68] closed: terminated
+2026/09/24 10:46:23 INF [WebRTC] [session 3654578b] closed: terminated
+2026/09/24 10:48:28 WAR [path Streaming/Channels/101] [RTSP source] 5 RTP packets lost
+2026/09/24 10:48:28 WAR [path Streaming/Channels/101] 9 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 10:48:30 WAR [path Streaming/Channels/101] [RTSP source] 2 RTP packets lost
+2026/09/24 10:48:32 WAR [path Streaming/Channels/101] [RTSP source] 6 RTP packets lost
+2026/09/24 10:56:49 INF [WebRTC] [session 57ceb9f3] closed: peer connection closed
+2026/09/24 10:56:49 INF [WebRTC] [session 97c40ddf] closed: peer connection closed
+2026/09/24 10:56:49 INF [WebRTC] [session bf12a570] closed: peer connection closed
+2026/09/24 10:56:51 ERR [API] path already exists
+2026/09/24 10:56:51 INF [WebRTC] [session 594abb92] created by 10.42.0.1:33840
+2026/09/24 10:56:51 INF [WebRTC] [session 4a1660c7] created by 10.42.0.1:33834
+2026/09/24 10:56:51 INF [path live/lite3] [RTMP source] started on demand
+2026/09/24 10:56:51 INF [WebRTC] [session a8469166] created by 10.42.0.1:33830
+2026/09/24 10:56:51 INF [WebRTC] [session 594abb92] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/32910
+2026/09/24 10:56:51 INF [WebRTC] [session 594abb92] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/24 10:56:51 INF [WebRTC] [session a8469166] peer connection established, local candidate: host/udp/172.17.0.1/8189, remote candidate: prflx/udp/127.0.0.1/48826
+2026/09/24 10:56:51 INF [WebRTC] [session a8469166] is reading from path 'live/nest', 1 track (H264)
+2026/09/24 10:56:54 INF [HLS] [session 03ff79a8] created by 10.42.0.1:56710
+2026/09/24 10:57:00 INF [WebRTC] [session 03975ee5] created by 10.42.0.1:33840
+2026/09/24 10:57:01 INF [path live/lite3] [RTMP source] stopped: timed out
+2026/09/24 10:57:01 INF [HLS] [session 03ff79a8] closed: source of path 'live/lite3' has timed out
+2026/09/24 10:57:01 INF [WebRTC] [session 4a1660c7] closed: source of path 'live/lite3' has timed out
+2026/09/24 10:57:01 INF [WebRTC] [session 03975ee5] closed: source of path 'live/lite3' has timed out
+2026/09/24 10:57:01 INF [HLS] [session 811d7267] created by 10.42.0.1:51868
+2026/09/24 10:57:01 INF [path live/lite3] [RTMP source] started on demand
+2026/09/24 10:57:11 INF [path live/lite3] [RTMP source] stopped: timed out
+2026/09/24 10:57:11 INF [HLS] [session 811d7267] closed: source of path 'live/lite3' has timed out
+2026/09/24 11:00:29 WAR [path Streaming/Channels/101] [RTSP source] 2 RTP packets lost
+2026/09/24 11:00:29 WAR [path Streaming/Channels/101] 48 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 11:02:59 INF [WebRTC] [session 30641588] created by 10.42.0.1:34678
+2026/09/24 11:02:59 INF [path live/lite3] [RTMP source] started on demand
+2026/09/24 11:03:02 INF [path live/lite3] stream is available and online, 1 track (H264)
+2026/09/24 11:03:02 INF [WebRTC] [session 30641588] peer connection established, local candidate: host/udp/10.63.23.135/8189, remote candidate: prflx/udp/127.0.0.1/34670
+2026/09/24 11:03:02 INF [WebRTC] [session 30641588] is reading from path 'live/lite3', 1 track (H264)
+2026/09/24 11:10:42 ERR [API] path already exists
+2026/09/24 11:10:42 ERR [API] path already exists
+2026/09/24 11:10:42 ERR [API] path already exists
+2026/09/24 11:14:25 WAR [path Streaming/Channels/101] [RTSP source] 2 RTP packets lost
+2026/09/24 11:14:25 WAR [path Streaming/Channels/101] 31 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/24 11:19:03 INF [path Streaming/Channels/101] [RTSP source] stopped: an error occurred
+2026/09/24 11:19:03 INF [WebRTC] [session 594abb92] closed: terminated
+2026/09/24 11:30:45 INF [WebRTC] [session a8469166] closed: peer connection closed
+2026/09/24 11:30:45 INF [WebRTC] [session 30641588] closed: peer connection closed
+2026/09/24 11:30:55 INF [path live/nest] [RTMP source] stopped: not needed by anyone
+2026/09/24 11:30:55 INF shutting down gracefully
+2026/09/24 11:30:55 INF [API] closing
+2026/09/24 11:30:55 INF [SRT] closing
+2026/09/24 11:30:55 INF [MoQ] closing
+2026/09/24 11:30:55 INF [WebRTC] closing
+2026/09/24 11:30:55 INF [HLS] closing
+2026/09/24 11:30:55 INF [RTMP] closing
+2026/09/24 11:30:55 INF [RTSP] closing
+2026/09/24 11:30:55 INF [path live/lite3] [RTMP source] stopped: path is closing
+2026/09/24 11:30:55 INF waiting for running hooks
+2026/09/24 23:13:57 INF MediaMTX v1.21.1, linux, amd64
+2026/09/24 23:13:57 INF configuration loaded from /home/jack/monitorAll/mediamtx/mediamtx.yml
+2026/09/24 23:13:57 INF [RTSP] started with listeners on :8554 (TCP/RTSP), :8000 (UDP/RTP), :8001 (UDP/RTCP)
+2026/09/24 23:13:57 INF [RTMP] started with listener on :1935 (TCP/RTMP)
+2026/09/24 23:13:57 INF [HLS] started with listener on :8888 (TCP/HTTP)
+2026/09/24 23:13:57 INF [WebRTC] started with listeners on :8889 (TCP/HTTP), :8189 (UDP/ICE)
+2026/09/24 23:13:57 INF [SRT] started with listener on :8890 (UDP/SRT)
+2026/09/24 23:13:57 INF [MoQ] started with listeners on :8892 (TCP/HTTP2), :8892 (UDP/HTTP3), :8893 (UDP/QUIC)
+2026/09/24 23:13:57 INF [API] started with listener on :9997 (TCP/HTTP)
+2026/09/24 23:39:26 INF MediaMTX v1.21.1, linux, amd64
+2026/09/24 23:39:26 INF configuration loaded from /home/jack/monitorAll/mediamtx/mediamtx.yml
+2026/09/24 23:39:26 INF [RTSP] started with listeners on :8554 (TCP/RTSP), :8000 (UDP/RTP), :8001 (UDP/RTCP)
+2026/09/24 23:39:26 INF [RTMP] started with listener on :1935 (TCP/RTMP)
+2026/09/24 23:39:26 INF [HLS] started with listener on :8888 (TCP/HTTP)
+2026/09/24 23:39:26 INF [WebRTC] started with listeners on :8889 (TCP/HTTP), :8189 (UDP/ICE)
+2026/09/24 23:39:26 INF [SRT] started with listener on :8890 (UDP/SRT)
+2026/09/24 23:39:26 INF [MoQ] started with listeners on :8892 (TCP/HTTP2), :8892 (UDP/HTTP3), :8893 (UDP/QUIC)
+2026/09/24 23:39:26 INF [API] started with listener on :9997 (TCP/HTTP)
+2026/09/24 23:39:34 INF reloading configuration (API request)
+2026/09/24 23:39:34 INF reloading configuration (API request)
+2026/09/24 23:39:34 INF reloading configuration (API request)
+2026/09/24 23:39:34 INF [WebRTC] [session 5b2b0a66] created by 10.42.0.1:34362
+2026/09/24 23:39:34 INF [path Streaming/Channels/101] [RTSP source] started on demand
+2026/09/24 23:39:34 INF [WebRTC] [session 9ee2d840] created by 10.42.0.1:34346
+2026/09/24 23:39:34 INF [path live/lite3] [RTMP source] started on demand
+2026/09/24 23:39:34 INF [WebRTC] [session 134f8441] created by 10.42.0.1:34342
+2026/09/24 23:39:34 INF [path live/nest] [RTMP source] started on demand
+2026/09/24 23:39:36 INF [path live/nest] stream is available and online, 1 track (H264)
+2026/09/24 23:39:36 INF [path live/lite3] stream is available and online, 1 track (H264)
+2026/09/24 23:39:36 INF [WebRTC] [session 134f8441] peer connection established, local candidate: host/udp/10.42.0.1/8189, remote candidate: prflx/udp/127.0.0.1/56131
+2026/09/24 23:39:36 INF [WebRTC] [session 134f8441] is reading from path 'live/nest', 1 track (H264)
+2026/09/24 23:39:36 INF [WebRTC] [session 9ee2d840] peer connection established, local candidate: host/udp/10.63.23.135/8189, remote candidate: prflx/udp/127.0.0.1/59323
+2026/09/24 23:39:36 INF [WebRTC] [session 9ee2d840] is reading from path 'live/lite3', 1 track (H264)
+2026/09/24 23:39:37 INF [HLS] [session a37246f8] created by 10.42.0.1:56148
+2026/09/24 23:39:44 INF [path Streaming/Channels/101] [RTSP source] stopped: timed out
+2026/09/24 23:39:44 INF [HLS] [session a37246f8] closed: source of path 'Streaming/Channels/101' has timed out
+2026/09/24 23:39:44 INF [WebRTC] [session 5b2b0a66] closed: source of path 'Streaming/Channels/101' has timed out
+2026/09/25 00:07:18 INF [WebRTC] [session 9ee2d840] closed: peer connection closed
+2026/09/25 00:07:18 INF [WebRTC] [session 134f8441] closed: peer connection closed
+2026/09/25 00:07:20 ERR [API] path already exists
+2026/09/25 00:07:20 ERR [API] path already exists
+2026/09/25 00:07:20 ERR [API] path already exists
+2026/09/25 00:07:20 INF [WebRTC] [session b948b7f6] created by 10.42.0.1:53594
+2026/09/25 00:07:20 INF [path Streaming/Channels/101] [RTSP source] started on demand
+2026/09/25 00:07:20 INF [WebRTC] [session fe041c4b] created by 10.42.0.1:53578
+2026/09/25 00:07:20 INF [WebRTC] [session 1fb60a64] created by 10.42.0.1:53562
+2026/09/25 00:07:20 INF [path Streaming/Channels/101] stream is available and online, 2 tracks (H264, G711)
+2026/09/25 00:07:20 INF [WebRTC] [session 1fb60a64] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/34472
+2026/09/25 00:07:20 INF [WebRTC] [session 1fb60a64] is reading from path 'live/nest', 1 track (H264)
+2026/09/25 00:07:20 INF [WebRTC] [session fe041c4b] peer connection established, local candidate: host/udp/10.63.23.135/8189, remote candidate: prflx/udp/127.0.0.1/33794
+2026/09/25 00:07:20 INF [WebRTC] [session fe041c4b] is reading from path 'live/lite3', 1 track (H264)
+2026/09/25 00:07:20 INF [WebRTC] [session b948b7f6] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/44896
+2026/09/25 00:07:20 INF [WebRTC] [session b948b7f6] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/25 00:07:41 INF [WebRTC] [session b948b7f6] closed: peer connection closed
+2026/09/25 00:07:41 INF [WebRTC] [session fe041c4b] closed: peer connection closed
+2026/09/25 00:07:41 INF [WebRTC] [session 1fb60a64] closed: peer connection closed
+2026/09/25 00:07:42 ERR [API] path already exists
+2026/09/25 00:07:42 ERR [API] path already exists
+2026/09/25 00:07:42 ERR [API] path already exists
+2026/09/25 00:07:42 INF [WebRTC] [session 7710a47c] created by 10.42.0.1:53578
+2026/09/25 00:07:42 INF [WebRTC] [session e64f02eb] created by 10.42.0.1:53562
+2026/09/25 00:07:42 INF [WebRTC] [session d3dad1be] created by 10.42.0.1:53594
+2026/09/25 00:07:42 INF [WebRTC] [session 7710a47c] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/54904
+2026/09/25 00:07:42 INF [WebRTC] [session 7710a47c] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/25 00:07:42 INF [WebRTC] [session e64f02eb] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/49933
+2026/09/25 00:07:42 INF [WebRTC] [session e64f02eb] is reading from path 'live/lite3', 1 track (H264)
+2026/09/25 00:07:42 INF [WebRTC] [session d3dad1be] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/34763
+2026/09/25 00:07:42 INF [WebRTC] [session d3dad1be] is reading from path 'live/nest', 1 track (H264)
+2026/09/25 00:09:21 WAR [path Streaming/Channels/101] [RTSP source] 2 RTP packets lost
+2026/09/25 00:12:25 ERR [API] path already exists
+2026/09/25 00:12:25 ERR [API] path already exists
+2026/09/25 00:12:25 ERR [API] path already exists
+2026/09/25 00:12:49 INF [WebRTC] [session 7710a47c] closed: peer connection closed
+2026/09/25 00:12:49 INF [WebRTC] [session e64f02eb] closed: peer connection closed
+2026/09/25 00:12:49 INF [WebRTC] [session d3dad1be] closed: peer connection closed
+2026/09/25 00:12:51 ERR [API] path already exists
+2026/09/25 00:12:51 ERR [API] path already exists
+2026/09/25 00:12:51 ERR [API] path already exists
+2026/09/25 00:12:51 INF [WebRTC] [session 145b38c3] created by 10.42.0.1:34040
+2026/09/25 00:12:51 INF [WebRTC] [session f8b79f63] created by 10.42.0.1:34028
+2026/09/25 00:12:51 INF [WebRTC] [session 9ad0b838] created by 10.42.0.1:34014
+2026/09/25 00:12:52 INF [WebRTC] [session 145b38c3] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/48572
+2026/09/25 00:12:52 INF [WebRTC] [session 145b38c3] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/25 00:12:52 INF [WebRTC] [session f8b79f63] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/49218
+2026/09/25 00:12:52 INF [WebRTC] [session f8b79f63] is reading from path 'live/lite3', 1 track (H264)
+2026/09/25 00:12:52 INF [WebRTC] [session 9ad0b838] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/33852
+2026/09/25 00:12:52 INF [WebRTC] [session 9ad0b838] is reading from path 'live/nest', 1 track (H264)
+2026/09/25 00:22:41 INF [WebRTC] [session 145b38c3] closed: peer connection closed
+2026/09/25 00:22:41 INF [WebRTC] [session f8b79f63] closed: peer connection closed
+2026/09/25 00:22:41 INF [WebRTC] [session 9ad0b838] closed: peer connection closed
+2026/09/25 00:22:42 ERR [API] path already exists
+2026/09/25 00:22:42 ERR [API] path already exists
+2026/09/25 00:22:42 ERR [API] path already exists
+2026/09/25 00:22:43 INF [WebRTC] [session c3152c6d] created by 10.42.0.1:33484
+2026/09/25 00:22:43 INF [WebRTC] [session dbb9efce] created by 10.42.0.1:33478
+2026/09/25 00:22:43 INF [WebRTC] [session 00821df8] created by 10.42.0.1:33468
+2026/09/25 00:22:43 INF [WebRTC] [session dbb9efce] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/37161
+2026/09/25 00:22:43 INF [WebRTC] [session dbb9efce] is reading from path 'live/lite3', 1 track (H264)
+2026/09/25 00:22:43 INF [WebRTC] [session c3152c6d] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/47056
+2026/09/25 00:22:43 INF [WebRTC] [session c3152c6d] is reading from path 'Streaming/Channels/101', 2 tracks (G711, H264)
+2026/09/25 00:22:43 INF [WebRTC] [session 00821df8] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/34119
+2026/09/25 00:22:43 INF [WebRTC] [session 00821df8] is reading from path 'live/nest', 1 track (H264)
+2026/09/25 00:22:53 INF [WebRTC] [session c3152c6d] closed: peer connection closed
+2026/09/25 00:22:53 INF [WebRTC] [session dbb9efce] closed: peer connection closed
+2026/09/25 00:22:53 INF [WebRTC] [session 00821df8] closed: peer connection closed
+2026/09/25 00:22:54 ERR [API] path already exists
+2026/09/25 00:22:54 ERR [API] path already exists
+2026/09/25 00:22:54 ERR [API] path already exists
+2026/09/25 00:22:55 INF [WebRTC] [session 91e2a8bb] created by 10.42.0.1:33478
+2026/09/25 00:22:55 INF [WebRTC] [session c795786a] created by 10.42.0.1:33484
+2026/09/25 00:22:55 INF [WebRTC] [session 30e016cb] created by 10.42.0.1:33468
+2026/09/25 00:22:55 INF [WebRTC] [session 30e016cb] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/58729
+2026/09/25 00:22:55 INF [WebRTC] [session 30e016cb] is reading from path 'live/nest', 1 track (H264)
+2026/09/25 00:22:55 INF [WebRTC] [session 91e2a8bb] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/51806
+2026/09/25 00:22:55 INF [WebRTC] [session 91e2a8bb] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/25 00:22:55 INF [WebRTC] [session c795786a] peer connection established, local candidate: host/udp/172.19.0.1/8189, remote candidate: prflx/udp/127.0.0.1/49406
+2026/09/25 00:22:55 INF [WebRTC] [session c795786a] is reading from path 'live/lite3', 1 track (H264)
+2026/09/25 00:23:14 INF [WebRTC] [session 91e2a8bb] closed: peer connection closed
+2026/09/25 00:23:14 INF [WebRTC] [session c795786a] closed: peer connection closed
+2026/09/25 00:23:14 INF [WebRTC] [session 30e016cb] closed: peer connection closed
+2026/09/25 00:23:15 ERR [API] path already exists
+2026/09/25 00:23:15 ERR [API] path already exists
+2026/09/25 00:23:15 ERR [API] path already exists
+2026/09/25 00:23:16 INF [WebRTC] [session 2c699496] created by 10.42.0.1:33484
+2026/09/25 00:23:16 INF [WebRTC] [session 4df18c89] created by 10.42.0.1:33468
+2026/09/25 00:23:16 INF [WebRTC] [session 3c5c8bd1] created by 10.42.0.1:33478
+2026/09/25 00:23:16 INF [WebRTC] [session 2c699496] peer connection established, local candidate: host/udp/10.42.0.1/8189, remote candidate: prflx/udp/127.0.0.1/33335
+2026/09/25 00:23:16 INF [WebRTC] [session 2c699496] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/25 00:23:16 INF [WebRTC] [session 4df18c89] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/54943
+2026/09/25 00:23:16 INF [WebRTC] [session 4df18c89] is reading from path 'live/lite3', 1 track (H264)
+2026/09/25 00:23:16 INF [WebRTC] [session 3c5c8bd1] peer connection established, local candidate: host/udp/10.42.0.1/8189, remote candidate: prflx/udp/127.0.0.1/41119
+2026/09/25 00:23:16 INF [WebRTC] [session 3c5c8bd1] is reading from path 'live/nest', 1 track (H264)
+2026/09/25 00:34:20 WAR [path Streaming/Channels/101] [RTSP source] 12 RTP packets lost
+2026/09/25 00:34:20 WAR [path Streaming/Channels/101] 8 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/25 00:46:19 ERR [API] path already exists
+2026/09/25 00:46:19 ERR [API] path already exists
+2026/09/25 00:46:19 ERR [API] path already exists
+2026/09/25 00:46:39 INF [WebRTC] [session 2c699496] closed: peer connection closed
+2026/09/25 00:46:39 INF [WebRTC] [session 4df18c89] closed: peer connection closed
+2026/09/25 00:46:39 INF [WebRTC] [session 3c5c8bd1] closed: peer connection closed
+2026/09/25 00:46:40 ERR [API] path already exists
+2026/09/25 00:46:40 ERR [API] path already exists
+2026/09/25 00:46:40 ERR [API] path already exists
+2026/09/25 00:46:41 INF [WebRTC] [session 90010e4b] created by 10.42.0.1:38394
+2026/09/25 00:46:41 INF [WebRTC] [session afe74200] created by 10.42.0.1:38380
+2026/09/25 00:46:41 INF [WebRTC] [session dbd9623e] created by 10.42.0.1:38378
+2026/09/25 00:46:41 INF [WebRTC] [session 90010e4b] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/35239
+2026/09/25 00:46:41 INF [WebRTC] [session 90010e4b] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/25 00:46:41 INF [WebRTC] [session afe74200] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/37316
+2026/09/25 00:46:41 INF [WebRTC] [session afe74200] is reading from path 'live/lite3', 1 track (H264)
+2026/09/25 00:46:41 INF [WebRTC] [session dbd9623e] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/57171
+2026/09/25 00:46:41 INF [WebRTC] [session dbd9623e] is reading from path 'live/nest', 1 track (H264)
+2026/09/25 00:54:14 INF [WebRTC] [session 90010e4b] closed: peer connection closed
+2026/09/25 00:54:14 INF [WebRTC] [session afe74200] closed: peer connection closed
+2026/09/25 00:54:14 INF [WebRTC] [session dbd9623e] closed: peer connection closed
+2026/09/25 00:54:16 ERR [API] path already exists
+2026/09/25 00:54:16 ERR [API] path already exists
+2026/09/25 00:54:16 ERR [API] path already exists
+2026/09/25 00:54:16 INF [WebRTC] [session c57bf4b2] created by 10.42.0.1:48472
+2026/09/25 00:54:16 INF [WebRTC] [session 3d6e485d] created by 10.42.0.1:48466
+2026/09/25 00:54:16 INF [WebRTC] [session d00240d1] created by 10.42.0.1:48452
+2026/09/25 00:54:16 INF [WebRTC] [session 3d6e485d] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/49925
+2026/09/25 00:54:16 INF [WebRTC] [session 3d6e485d] is reading from path 'live/lite3', 1 track (H264)
+2026/09/25 00:54:16 INF [WebRTC] [session d00240d1] peer connection established, local candidate: host/udp/10.42.0.1/8189, remote candidate: prflx/udp/127.0.0.1/56365
+2026/09/25 00:54:16 INF [WebRTC] [session d00240d1] is reading from path 'live/nest', 1 track (H264)
+2026/09/25 00:54:17 INF [WebRTC] [session c57bf4b2] peer connection established, local candidate: host/udp/10.63.23.135/8189, remote candidate: prflx/udp/127.0.0.1/44123
+2026/09/25 00:54:17 INF [WebRTC] [session c57bf4b2] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/25 00:54:36 INF [WebRTC] [session c57bf4b2] closed: peer connection closed
+2026/09/25 00:54:36 INF [WebRTC] [session 3d6e485d] closed: peer connection closed
+2026/09/25 00:54:36 INF [WebRTC] [session d00240d1] closed: peer connection closed
+2026/09/25 00:54:36 ERR [API] path already exists
+2026/09/25 00:54:36 ERR [API] path already exists
+2026/09/25 00:54:36 ERR [API] path already exists
+2026/09/25 00:54:37 INF [WebRTC] [session b6ce7ada] created by 10.42.0.1:48472
+2026/09/25 00:54:37 INF [WebRTC] [session 0ebf81c1] created by 10.42.0.1:48466
+2026/09/25 00:54:37 INF [WebRTC] [session 47c31c3d] created by 10.42.0.1:48452
+2026/09/25 00:54:37 INF [WebRTC] [session b6ce7ada] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/35318
+2026/09/25 00:54:37 INF [WebRTC] [session b6ce7ada] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/25 00:54:37 INF [WebRTC] [session 47c31c3d] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/37872
+2026/09/25 00:54:37 INF [WebRTC] [session 47c31c3d] is reading from path 'live/nest', 1 track (H264)
+2026/09/25 00:54:37 INF [WebRTC] [session 0ebf81c1] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/59247
+2026/09/25 00:54:37 INF [WebRTC] [session 0ebf81c1] is reading from path 'live/lite3', 1 track (H264)
+2026/09/25 00:57:19 WAR [path Streaming/Channels/101] [RTSP source] 7 RTP packets lost
+2026/09/25 00:57:19 WAR [path Streaming/Channels/101] 30 processing errors, last was: invalid FU-A packet (non-starting)
+2026/09/25 01:25:36 ERR [API] path already exists
+2026/09/25 01:25:36 ERR [API] path already exists
+2026/09/25 01:25:36 ERR [API] path already exists
+2026/09/25 01:25:42 INF [WebRTC] [session b6ce7ada] closed: peer connection closed
+2026/09/25 01:25:42 INF [WebRTC] [session 0ebf81c1] closed: peer connection closed
+2026/09/25 01:25:42 INF [WebRTC] [session 47c31c3d] closed: peer connection closed
+2026/09/25 01:25:44 ERR [API] path already exists
+2026/09/25 01:25:44 ERR [API] path already exists
+2026/09/25 01:25:44 ERR [API] path already exists
+2026/09/25 01:25:46 INF [WebRTC] [session eccbd33a] created by 10.42.0.1:60010
+2026/09/25 01:25:46 INF [WebRTC] [session bffb0cde] created by 10.42.0.1:60000
+2026/09/25 01:25:46 INF [WebRTC] [session 344fbcbe] created by 10.42.0.1:59984
+2026/09/25 01:25:46 INF [WebRTC] [session eccbd33a] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/48176
+2026/09/25 01:25:46 INF [WebRTC] [session eccbd33a] is reading from path 'Streaming/Channels/101', 2 tracks (H264, G711)
+2026/09/25 01:25:46 INF [WebRTC] [session bffb0cde] peer connection established, local candidate: host/udp/127.0.0.1/8189, remote candidate: prflx/udp/127.0.0.1/43767
+2026/09/25 01:25:46 INF [WebRTC] [session bffb0cde] is reading from path 'live/lite3', 1 track (H264)
+2026/09/25 01:25:46 INF [WebRTC] [session 344fbcbe] peer connection established, local candidate: host/udp/10.42.0.1/8189, remote candidate: prflx/udp/127.0.0.1/54298
+2026/09/25 01:25:46 INF [WebRTC] [session 344fbcbe] is reading from path 'live/nest', 1 track (H264)
+2026/09/25 01:27:36 INF shutting down gracefully
+2026/09/25 01:27:36 INF [API] closing
+2026/09/25 01:27:36 INF [SRT] closing
+2026/09/25 01:27:36 INF [MoQ] closing
+2026/09/25 01:27:36 INF [WebRTC] closing
+2026/09/25 01:27:36 INF [WebRTC] [session bffb0cde] closed: terminated
+2026/09/25 01:27:36 INF [WebRTC] [session eccbd33a] closed: terminated
+2026/09/25 01:27:36 INF [WebRTC] [session 344fbcbe] closed: terminated
+2026/09/25 01:27:36 INF [HLS] closing
+2026/09/25 01:27:36 INF [RTMP] closing
+2026/09/25 01:27:36 INF [RTSP] closing
+2026/09/25 01:27:36 INF [path live/lite3] [RTMP source] stopped: path is closing
+2026/09/25 01:27:36 INF [path Streaming/Channels/101] [RTSP source] stopped: path is closing
+2026/09/25 01:27:36 INF [path live/nest] [RTMP source] stopped: path is closing
+2026/09/25 01:27:36 INF waiting for running hooks

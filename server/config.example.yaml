@@ -61,6 +61,10 @@ httpPoll:
 
 web:
   amapKey: "40ce0fa4713ac6e2e063c6962e3da718"                 # 高德 JS API Key（地图渲染器必需）；留空则地图卡显示配置指引
+  amapSecurityCode: ""                                        # 高德安全密钥 securityJsCode（与 Key 同页展示）。2021-12-02 后申请的 Key 必填；
+                                                              # 缺失时地图样式切换（暗色等）会静默失败回落标准样式
+  amapForceWebGL: true                                        # 无 GPU / 软件渲染 / 手机 WebView 环境必须开：否则高德不启用 WebGL 绘制，
+                                                              # 报"浏览器版本过低"且 setMapStyle 一律不生效（卫星图层不受影响）
   theme: "dark"
 
 log:

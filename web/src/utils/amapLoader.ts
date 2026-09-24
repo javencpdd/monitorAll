@@ -41,6 +41,11 @@ export interface AMapInfoWindow {
   setContent(content: string): void
 }
 
+export interface AMapTileLayer {
+  show(): void
+  hide(): void
+}
+
 /** AMap 命名空间的最小结构化描述。 */
 export interface AMapNamespace {
   Map: new (container: HTMLElement | string, options: Record<string, unknown>) => AMapMap
@@ -50,6 +55,11 @@ export interface AMapNamespace {
   Pixel: new (x: number, y: number) => unknown
   Size: new (w: number, h: number) => unknown
   Icon: new (options: Record<string, unknown>) => unknown
+  /** 卫星等瓦片图层（JSAPI 2.0 内置；卫星图不是 mapStyle，是独立图层）。 */
+  TileLayer?: {
+    Satellite?: new (options?: Record<string, unknown>) => AMapTileLayer
+    RoadNet?: new (options?: Record<string, unknown>) => AMapTileLayer
+  }
 }
 
 /** 加载错误信息。 */
@@ -67,14 +77,33 @@ function readBuildTimeKey(): string {
 /**
  * 加载高德 JS API。
  * @param key 高德 Key；空串一律返回 null（并给出明确原因，交由 UI 展示配置指引）
+ * @param securityCode 高德安全密钥 securityJsCode。2021-12-02 之后申请的 Key 必须配置，
+ *        否则样式切换（setMapStyle 暗色等）等能力会**静默失败**回落默认样式。
+ *        必须在 JSAPI 脚本加载之前挂到 window._AMapSecurityConfig（官方 Loader 要求）。
+ * @param forceWebGL 强制启用 WebGL 绘制。JSAPI 默认以 failIfMajorPerformanceCaveat 取 WebGL 上下文，
+ *        无 GPU / 软件渲染 / 手机 WebView 会被判为"性能不足"而不启用 WebGL，
+ *        控制台报"浏览器版本过低"，且 mapStyle / setMapStyle 一律不生效（卫星等纯瓦片图层不受影响）。
+ *        置 true 即高德官方给出的解法：脚本加载前置 window.forceWebGL / forceWebGLBaseRender。
  */
-export function loadAMap(key: string): Promise<AMapNamespace | null> {
+export function loadAMap(key: string, securityCode = '', forceWebGL = true): Promise<AMapNamespace | null> {
   const effectiveKey = key.length > 0 ? key : readBuildTimeKey()
   if (effectiveKey.length === 0) {
     return Promise.resolve(null)
   }
-  if (loadPromise && cachedKey === effectiveKey) return loadPromise
-  cachedKey = effectiveKey
+  const cacheId = `${effectiveKey}|${securityCode}`
+  if (loadPromise && cachedKey === cacheId) return loadPromise
+  cachedKey = cacheId
+  if (securityCode.length > 0) {
+    ;(window as unknown as { _AMapSecurityConfig?: { securityJsCode: string } })._AMapSecurityConfig = {
+      securityJsCode: securityCode,
+    }
+  }
+  if (forceWebGL) {
+    const w = window as unknown as { forceWebGL?: boolean; forceWebGLBaseRender?: boolean }
+    w.forceWebGL = true
+    // 2.0 增强版开关：一并置上，覆盖基础底图渲染路径
+    w.forceWebGLBaseRender = true
+  }
   loadPromise = import('@amap/amap-jsapi-loader')
     .then((mod) => {
       const loader = (mod.default ?? mod) as {
