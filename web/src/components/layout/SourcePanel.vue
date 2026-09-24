@@ -3,7 +3,7 @@
  * 左侧数据源面板（PRD §5.1 / §5.2）：
  * 按数据源类型分组的树形结构 DataSource → Channel，四态角标，可拖拽到画布建档。
  */
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { NButton, NInput, useDialog } from 'naive-ui'
 import { useDatasourceStore } from '@/stores/datasource'
 import { useUiStore } from '@/stores/ui'
@@ -20,6 +20,30 @@ const props = withDefaults(defineProps<{ readonly?: boolean }>(), { readonly: fa
 const keyword = ref('')
 const collapsed = ref<Record<string, boolean>>({})
 const editing = ref<Record<string, boolean>>({})
+
+/* ——— 整栏折叠（窄屏 / 想给画布腾地方时用）——— */
+const PANEL_FOLD_KEY = 'monitorall.sourcePanelCollapsed'
+const panelCollapsed = ref<boolean>(
+  (() => {
+    try {
+      return localStorage.getItem(PANEL_FOLD_KEY) === '1'
+    } catch {
+      return false
+    }
+  })(),
+)
+
+function togglePanel(): void {
+  panelCollapsed.value = !panelCollapsed.value
+}
+
+watch(panelCollapsed, (v) => {
+  try {
+    localStorage.setItem(PANEL_FOLD_KEY, v ? '1' : '0')
+  } catch {
+    /* localStorage 不可用（隐私模式等）时仅退化为不记忆 */
+  }
+})
 
 function toggle(key: string): void {
   collapsed.value[key] = !collapsed.value[key]
@@ -91,10 +115,24 @@ async function removeChannel(sourceId: string, channel: ChannelRuntime): Promise
 </script>
 
 <template>
-  <aside class="ma-panel" :style="{ width: `${SOURCE_PANEL_WIDTH}px` }">
-    <div class="ma-panel__head">
-      <n-input v-model:value="keyword" size="small" placeholder="搜索数据源 / 通道" clearable />
-    </div>
+  <aside
+    class="ma-panel"
+    :class="{ 'ma-panel--collapsed': panelCollapsed }"
+    :style="panelCollapsed ? undefined : { width: `${SOURCE_PANEL_WIDTH}px` }"
+  >
+    <!-- 折叠态：只留一个展开按钮的细条 -->
+    <button
+      v-if="panelCollapsed"
+      class="ma-panel__fold"
+      title="展开数据源面板"
+      @click="togglePanel"
+    >»</button>
+
+    <template v-else>
+      <div class="ma-panel__head">
+        <n-input v-model:value="keyword" size="small" placeholder="搜索数据源 / 通道" clearable />
+        <button class="ma-panel__fold" title="收起数据源面板" @click="togglePanel">«</button>
+      </div>
 
     <div class="ma-panel__body ma-scroll-y">
       <div v-for="group in groups" :key="group.kind" class="ma-panel__group">
@@ -155,6 +193,7 @@ async function removeChannel(sourceId: string, channel: ChannelRuntime): Promise
     <div class="ma-panel__foot">
       <n-button size="small" block secondary @click="ui.openSourceWizard()">+ 新建数据源</n-button>
     </div>
+    </template>
   </aside>
 </template>
 
@@ -169,8 +208,43 @@ async function removeChannel(sourceId: string, channel: ChannelRuntime): Promise
 }
 
 .ma-panel__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px;
   border-bottom: 1px solid var(--ma-border);
+}
+
+.ma-panel__head :deep(.n-input) {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* 折叠/展开按钮：展开时在搜索框右侧，折叠时独占整条细栏 */
+.ma-panel__fold {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--ma-border);
+  border-radius: var(--ma-radius);
+  background: var(--ma-bg-base);
+  color: var(--ma-text-3);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.ma-panel__fold:hover {
+  color: var(--ma-accent);
+  border-color: var(--ma-accent);
+}
+
+/* 折叠态：30px 细条，只显示展开按钮 */
+.ma-panel--collapsed {
+  width: 30px;
+  align-items: center;
+  padding-top: 8px;
 }
 
 .ma-panel__body {

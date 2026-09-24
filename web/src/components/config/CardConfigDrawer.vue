@@ -346,9 +346,30 @@ const hintMap = computed(() => sampleFrame.value?.schemaHint)
   color: var(--ma-accent);
 }
 
+/*
+ * 关键修复：禁止主体直接子项参与 flex 收缩。
+ * 「实时预览」框带 overflow:hidden —— 按 CSS 规范这类子项的自动最小尺寸是 0，
+ * 内容超高时 flex 会先把它压扁来消化溢出，导致容器永远"装得下"，
+ * overflow-y:auto 永不出现滚动条 —— 表现就是"配置栏不能滚动、预览显示不全"。
+ * 子项一律不收缩，溢出才会真实发生，滚动条才会出现。
+ */
+.ma-drawer__body > * {
+  flex-shrink: 0;
+}
+
+/*
+ * 抽屉主体滚动：
+ *  - flex-basis 用 0 而不是 auto：高度完全由父容器分配，绝不被内容撑开；
+ *  - overflow 显式声明在这里，不依赖全局 .ma-scroll-y（避免工具类被改动/漏掉后整栏不可滚）；
+ *  - scrollbar-gutter 防止滚动条出现时表单宽度抖动。
+ */
 .ma-drawer__body {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
   padding: 12px;
   display: flex;
   flex-direction: column;

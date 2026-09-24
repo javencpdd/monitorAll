@@ -11,7 +11,7 @@
  */
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import type { RendererProps } from '@/types'
-import type { AMapMap, AMapMarker, AMapNamespace, AMapPolyline } from '@/utils/amapLoader'
+import type { AMapMap, AMapMarker, AMapNamespace, AMapPolyline, AMapTileLayer } from '@/utils/amapLoader'
 import { loadAMap } from '@/utils/amapLoader'
 import { describeCrs, isValidLngLat, toGCJ02, toGCJ02Batch } from '@/utils/geo'
 import type { LngLat } from '@/utils/geo'
@@ -48,8 +48,34 @@ const amap = shallowRef<AMapNamespace | null>(null)
 const mapInstance = shallowRef<AMapMap | null>(null)
 const poly = shallowRef<AMapPolyline | null>(null)
 const marker = shallowRef<AMapMarker | null>(null)
+/** 卫星图层实例（卫星不是 mapStyle，是叠加在底图上的瓦片图层）。 */
+const satLayer = shallowRef<AMapTileLayer | null>(null)
 const loadError = ref('')
 const ready = ref(false)
+
+/** 卫星"样式"的哨兵值（manifest 里的选项值；官方 mapStyle 列表中并无 satellite）。 */
+const SATELLITE_STYLE = 'amap://styles/satellite'
+
+/**
+ * 按配置同步卫星图层。
+ * 官方 mapStyle 列表没有 satellite —— 传给 setMapStyle 会被静默忽略回落标准样式，
+ * 这就是"选了卫星/暗色却没变化"的组成部分之一。卫星图必须用 TileLayer.Satellite 图层实现。
+ */
+function syncSatelliteLayer(style: string): void {
+  const map = mapInstance.value
+  const ns = amap.value
+  if (!map || !ns) return
+  const wantSatellite = style === SATELLITE_STYLE
+  const Ctor = ns.TileLayer?.Satellite
+  if (wantSatellite && !satLayer.value && Ctor) {
+    const layer = new Ctor()
+    satLayer.value = layer
+    map.add(layer)
+  } else if (!wantSatellite && satLayer.value) {
+    map.remove(satLayer.value)
+    satLayer.value = null
+  }
+}
 
 /** 降级坐标列表：无 Key 时展示最近若干点。 */
 const recentPoints = ref<Pos[]>([])
@@ -212,13 +238,31 @@ const MAP_MARKER_SIZE = 24
 watch(version, () => paint(false))
 watch([trailLength, sourceCRS, follow, showYaw], () => paint(true))
 
+/**
+ * 底图样式热切换（标准路网 / 暗色 / 卫星）。
+ * mapStyle 只在 new Map() 时传入，改配置后若不调用 setMapStyle，
+ * 画面不会变——必须刷新页面重建卡片才生效。AMap 2.0 提供 setMapStyle，直接切即可。
+ * 卫星是独立图层（见 syncSatelliteLayer），不走 setMapStyle。
+ */
+watch(mapStyle, (style) => {
+  if (!mapInstance.value || !ready.value) return
+  syncSatelliteLayer(style)
+  if (style !== SATELLITE_STYLE) mapInstance.value.setMapStyle(style)
+})
+
+/** 缩放级别变更同步到已存在的地图实例（与底图样式同类的"改配置不生效"问题）。 */
+watch(zoom, (z) => {
+  if (!mapInstance.value || !ready.value) return
+  mapInstance.value.setZoom(z)
+})
+
 async function init(): Promise<void> {
   const key = ui.amapKey
   if (key.length === 0 || !ui.amapReady) {
     loadError.value = '未配置高德 Key'
     return
   }
-  const instance = await loadAMap(key)
+  const instance = await loadAMap(key, ui.amapSecurityCode, ui.amapForceWebGL)
   if (!instance) {
     loadError.value = '高德 JS API 加载失败（Key 无效或无法访问外网）'
     return
@@ -233,10 +277,16 @@ async function init(): Promise<void> {
     zoom: zoom.value,
     center,
     viewMode: '2D',
-    mapStyle: mapStyle.value,
+    // satellite 不是合法 mapStyle（官方列表没有），传给 SDK 会被静默忽略；
+    // 卫星走独立图层，见 syncSatelliteLayer。
+    mapStyle: mapStyle.value === SATELLITE_STYLE ? 'amap://styles/normal' : mapStyle.value,
     resizeEnable: true,
   })
   mapInstance.value = map
+  syncSatelliteLayer(mapStyle.value)
+  // 诊断出口：控制台可用 __maMap.getMapStyle() / __maMap.setMapStyle('amap://styles/dark')
+  // 直接读写当前样式，用于区分「前端没调用」与「高德侧静默拒绝」。
+  ;(window as unknown as { __maMap?: unknown }).__maMap = map
   ready.value = true
   paint(true)
 }
@@ -246,7 +296,7 @@ onMounted(() => {
 })
 
 watch(
-  () => ui.amapKey,
+  () => [ui.amapKey, ui.amapSecurityCode] as const,
   () => {
     if (!mapInstance.value && ui.amapReady) void init()
   },
@@ -255,6 +305,7 @@ watch(
 onBeforeUnmount(() => {
   marker.value = null
   poly.value = null
+  satLayer.value = null
   mapInstance.value?.destroy()
   mapInstance.value = null
   ready.value = false

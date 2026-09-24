@@ -253,6 +253,10 @@ const dbg = computed(
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  /* 滚动条出现/消失会改变可用宽度，进而让 grid 重算列宽 → 所有卡片重排。
+     锁定滚动条槽位（经典滚动条平台）可消除这类回流导致的视觉跳动。
+     overlay 滚动条（macOS 默认）下该属性自动退化为 no-op，无副作用。 */
+  scrollbar-gutter: stable;
   padding: 4px;
 }
 

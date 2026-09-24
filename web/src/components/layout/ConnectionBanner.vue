@@ -44,7 +44,17 @@ const detail = computed<string>(() => {
 </template>
 
 <style scoped>
+/*
+ * 悬浮样式：absolute 于 .ma-view__body 顶部。
+ * 原来它参与 flex 文档流，26px 的显隐会把整个画布推上推下 —— 这是「界面突然跳一下」的主因。
+ * 现在只覆盖画布顶部约 26px，不挤占任何布局。
+ */
 .ma-banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -52,6 +62,7 @@ const detail = computed<string>(() => {
   padding: 0 12px;
   background: color-mix(in srgb, var(--ma-status-reconnecting) 16%, var(--ma-bg-card));
   border-bottom: 1px solid color-mix(in srgb, var(--ma-status-reconnecting) 30%, var(--ma-border));
+  box-shadow: 0 2px 6px color-mix(in srgb, #000 18%, transparent);
   color: var(--ma-text-1);
   font-size: var(--ma-font-sm);
 }

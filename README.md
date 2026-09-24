@@ -10,7 +10,7 @@
 
 | 数据源 | 说明 |
 |---|---|
-| 视频流 | 输入 RTMP（如 `rtmp://172.31.68.227:1936/live/lite3`），MediaMTX 转封装为 **WebRTC（亚秒级）**，不可用时自动降级 **HLS（1–3s）** |
+| 视频流 | 输入 RTMP / RTSP（`rtmp://172.31.68.227:1936/live/lite3`、`rtsp://user:pass@192.168.1.64:554/…`），MediaMTX 转封装为 **WebRTC（亚秒级）**，不可用时自动降级 **HLS（1–3s）**；另支持 **publish 模式**（接收远端 WHIP / RTMP 推流，创建后回显推流地址） |
 | ROS1 / ROS2 | 经 rosbridge WebSocket 统一代理，运行时切换版本，配置体验一致 |
 | HTTP 接口 | 定时轮询 + JSONPath 提取，规避跨域，统一鉴权与缓存 |
 
@@ -21,7 +21,7 @@
 | 仪表 Gauge | 量程 / 单位 / 红黄绿阈值区段 |
 | XY 折线图 | 多字段映射、时间窗口、CSV 导出 |
 | 图像 | ROS Image / 网络图片，时间戳水印 |
-| 地图 | 高德 JS API（GCJ-02），轨迹 + 位姿 Marker |
+| 地图 | 高德 JS API（GCJ-02），轨迹 + 位姿 Marker；底图可切 **标准 / 暗色 / 卫星**（卫星走官方瓦片图层，非 mapStyle） |
 | 视频播放器 | WebRTC→HLS 降级、协议指示 |
 
 - **卡片式布局**：`grid-layout-plus` 拖拽 / 缩放 / 网格吸附 / 布局持久化。
@@ -158,17 +158,57 @@ ros2 launch rosbridge_server rosbridge_websocket_launch.xml
 > MVP 主路径是**手工填写 topic**（ROS2 各发行版 rosapi 服务名不一致，话题下拉为软增强，失败静默降级）。
 > 图像话题限流 10Hz + JPEG 压缩（rosbridge 侧 `compression: jpeg`），从源头降低 JSON 序列化压力。
 
-## 高德地图 Key
+### 用卡片订阅话题（三步）
+
+1. **建数据源**：新建 → 选「ROS 话题」→ 选 ROS1/ROS2 → 填 `ws://<机器人IP>:9090`（ROS2 填 Domain ID）→ 填话题列表（换行或逗号分隔，如 `/odom`、`/imu/data`）→ 测试连接 → 保存。
+2. **自动建通道**：保存后**每个 topic 生成一个 Channel**；自动发现不全时可在通道选择器点「从数据源发现」或「+ 手工新增」。
+3. **建卡片**：新建卡片 → 选该 Channel → 渲染器按消息类型自动推荐（NavSatFix→地图、Imu/Odometry→折线图、BatteryState→仪表、Image→图像）→ 卡片挂载即自动订阅并实时刷新。
+
+> **网络要求**：需要的是「**运行后端的主机 → 机器人 rosbridge 的 9090 端口**」TCP 可达。
+> 同一局域网是最省事的充分条件（机器人 WiFi 热点直连天然满足），但不是必要条件——异地组网 / VPN 同样可行。
+> 浏览器只连后端 `:8080`，**不必**与机器人同网。真正必须同处一个 ROS 图的是 **rosbridge 与话题发布者**（建议同机部署）：
+> ROS2 需 `ROS_DOMAIN_ID` 一致（跨网段还需配 `ROS_DISCOVERY_SERVER`），ROS1 需 `ROS_MASTER_URI` 一致。
+
+> **ROS1 注意**：subscribe 报文的 `type` 字段必填，而向导只收话题名，因此 ROS1 依赖 **rosapi 在线**自动补消息类型；
+> ROS2 无此要求。ROS2 订阅后无数据是**静默**的，后端以 3s 超时判定并 10s 后重试一次订阅。
+
+> ROS 数据源**不需要配字段路径**：`sensor_msgs/NavSatFix` 会直接归一化成 `geo_pose` 帧，
+> 地图卡只需设「输入坐标系」，不必填 latPath/lonPath（这与 JSON / HTTP 通道不同）。
+
+## 高德地图配置（Key / 安全密钥 / WebGL）
 
 地图卡片使用高德 JS API 2.0（国内合规底图，GCJ-02）。在 `server/config.yaml` 配置：
 
 ```yaml
 web:
   amapKey: "你的高德 Key"
+  # 与 Key 一一对应的安全密钥（控制台「应用管理 → 我的应用」里和 Key 同页展示）
+  amapSecurityCode: "你的 securityJsCode"
+  # 无 GPU / 软件渲染 / 部分手机 WebView 必须开，否则样式切换无效
+  amapForceWebGL: true
 ```
+
+| 配置项 | 作用 | 缺失后果 |
+|---|---|---|
+| `amapKey` | 高德 JS API Key | 地图卡降级为「配置指引 + 坐标列表」，**不会**换境外底图 |
+| `amapSecurityCode` | 2021-12-02 之后申请的 Key 必须配对 | 样式服务静默失败：底图正常，但切暗色等样式无反应 |
+| `amapForceWebGL` | 关闭 WebGL 性能保护、强制启用 WebGL 绘制 | 无 GPU/手机 WebView 下高德报"浏览器版本过低"且不渲染样式 |
 
 > **未配置 Key 时**，地图卡显示配置指引 + 纯坐标/轨迹列表，**不会**降级到境外底图（合规硬约束）。
 > 坐标系转换在前端 `gcoord` 离线完成（WGS-84 → GCJ-02），后端只盖章 `crs` 不改坐标值。
+
+### 底图样式切换不生效？按顺序排查
+
+| 排查项 | 说明 |
+|---|---|
+| 样式值是否合法 | 官方内置样式只有 normal / dark / light / whitesmoke / fresh / grey / graffiti / macaron / blue / darkblue / wine。**卫星不是 mapStyle**，本平台用官方 `TileLayer.Satellite` 图层实现 |
+| 是否配了安全密钥 | 见上表 `amapSecurityCode` |
+| 是否启用 WebGL | 见上表 `amapForceWebGL`；控制台出现"浏览器版本过低"基本就是它 |
+| 区分「没调用」还是「没渲染」 | 控制台执行 `__maMap.getMapStyle()`：有值说明前端已调用成功、是高德侧没画出来；`undefined` 才是前端没走到 |
+
+### 地图卡的字段路径（JSON / HTTP 通道）
+
+JSON 通道的载荷被后端包成 `{ root: 原始响应 }`，因此字段路径**必须带 `root.` 前缀**或由前端自动补（`data.pose.latitude` 会被自动尝试为 `root.data.pose.latitude`）。路径分隔符 **点分与斜杠均可**（`data.pose.latitude` 与 `data/pose/latitude` 等价）。
 
 ## 视频降级说明（重要）
 
@@ -180,6 +220,11 @@ mediamtx:
 ```
 
 配置后视频播放器会启用 FLV 后端（`mpegts.js`），无需改代码。
+
+补充两条：
+
+- **RTSP 源**：默认走 **TCP** 传输（UDP 易花屏 / 连不上），新建数据源时可切换；地址支持 `rtsp://user:pass@host:554/…`，凭据会完整保留。
+- **publish 模式**（接收远端推流）：不必填可拉的源地址，填 MediaMTX 路径即可；创建成功后页面会**回显 WHIP 与 RTMP 推流地址**供复制。
 
 ## 测试
 
