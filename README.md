@@ -40,7 +40,10 @@
 
 ```
 monitorAll/
-├── docs/                 # PRD、架构设计、任务分解
+├── docs/                 # 开发文档 + 操作手册
+│   ├── DEVELOPMENT.md    # 开发文档（数据契约、协议、API、配置全表）
+│   └── USER_GUIDE.md     # 操作手册（部署、接入数据源、编排看板、FAQ）
+├── note/                 # 踩坑笔记（环境/后端/前端/地图/ROS/调试/视频）
 ├── web/                  # Vue3 前端（构建产物 → server/internal/web/dist）
 ├── server/               # Go 后端（cmd / internal / config / Makefile）
 ├── deploy/               # Dockerfile、docker-compose.yml、mediamtx 配置
@@ -244,6 +247,8 @@ make smoke   # 冒烟自测（启动 → 探活 → 默认看板 → 前端产�
 ## 更多
 
 - **操作手册**：`docs/USER_GUIDE.md`（部署、接入数据源、编排看板、渲染器参考、FAQ 排查）
-- 需求文档：`docs/PRD.md`
-- 架构设计：`docs/ARCHITECTURE.md`（含统一 Frame 契约、WS 协议、REST API、错误码）
-- 任务分解：`docs/TASKS.md`
+- **开发文档**：`docs/DEVELOPMENT.md`（仓库结构、数据模型与 TS/Go 契约对照、WS 协议、REST API 与错误码、渲染器与适配器扩展、配置全表）
+- **踩坑笔记**：`note/`（7 篇，按「现象 → 根因 → 修复 → 教训」组织）
+
+> 早期的过程性文档（PRD / 架构设计 / 任务分解）已从仓库移除：它们写于开发之前，多处结论已被实测推翻
+> （如 HTTP-FLV 兜底、状态枚举、目录结构）。需要找回来可 `git checkout <commit> -- docs/PRD.md`。

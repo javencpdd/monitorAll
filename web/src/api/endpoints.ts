@@ -1,5 +1,5 @@
 /**
- * REST 端点集合（契约来源：docs/ARCHITECTURE.md §7.3 接口表）。
+ * REST 端点集合（契约来源：docs/DEVELOPMENT.md §8 REST API 与错误码）。
  * 路径、请求体字段名与后端逐字对齐；此文件不做任何业务判断，只负责发请求。
  */
 import { API_PREFIX, SAMPLE_TIMEOUT_MS, WS_PATH } from '@/utils/constants'

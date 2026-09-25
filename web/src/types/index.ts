@@ -1,7 +1,7 @@
 /**
  * MonitorAll 前端业务类型总表。
  *
- * 🚨 契约来源：docs/ARCHITECTURE.md §4（核心数据模型）与 §5（统一 Frame 契约）。
+ * 🚨 契约来源：docs/DEVELOPMENT.md §6（核心数据模型，含统一 Frame 契约）。
  * 字段名与 Go struct 的 json tag 逐一对齐，禁止自行改写：
  *   - 全 camelCase
  *   - 时间统一毫秒 number（int64 ms），禁止秒、禁止 RFC3339 字符串
