@@ -55,6 +55,33 @@ monitorAll/
 └── README.md
 ```
 
+## 首次 clone 后先做什么
+
+### 环境要求
+
+| 部署方式 | 必需 | 说明 |
+|---|---|---|
+| **裸跑（本地进程，推荐开发用）** | Go **≥ 1.22**（`server/go.mod`）、MediaMTX | 前端产物**已随仓库提交**（`server/internal/web/dist`），不改前端就**不需要 Node** |
+| **改过 `web/` 之后** | 再追加 Node **≥ 20**（`web/package.json` 的 `engines`） | 需 `make build-web` 重新产出前端产物 |
+| **Docker Compose（推荐交付用）** | Docker + Compose 插件 | Node/Go 的构建都在**镜像内**完成，宿主机无需安装 |
+
+> 模块下载被网络拦住时（常见报错 `Bad Gateway` / `timeout`），用国内代理：
+> `export GOPROXY=https://goproxy.cn,direct`（Dockerfile 中已内置该设置）。
+
+> **MediaMTX 二进制的平台限制**：仓库自带的是 **Linux x86_64** 版本（`mediamtx/mediamtx`，约 55MB）。
+> macOS / Windows / ARM 机器请到 [releases](https://github.com/bluenviron/mediamtx/releases) 下载对应版本替换，
+> 或直接走 **Docker 方案**（用官方镜像，不依赖本机二进制）。
+
+### 两条路径怎么选
+
+| | 裸跑 | Docker Compose |
+|---|---|---|
+| 一条命令 | `./scripts/start-local.sh` | `cd deploy && ./start.sh` |
+| 构成 | MediaMTX 进程 + `server/bin/monitorall` | 两个容器，自动编排与拉起依赖 |
+| 适合 | 开发调试、机器上没有 Docker | 长期运行、团队交付、多台机器复制 |
+
+两种方案都**不冲突地提供完整能力**，但**不能同时跑**（8080 / 8888 / 9997 端口会打架，见下节步骤 0）。
+
 ## 快速开始（裸跑 · 不使用 Docker）
 
 裸跑是**两个独立进程**，通过 MediaMTX 的 `:9997` HTTP API 协作：
