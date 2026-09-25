@@ -4,7 +4,7 @@
 # 自包含：本调用内拉起后端 → 验证 → 清理收尾。
 # 原因：沙箱下 setsid 起的进程不跨 Bash 调用存活，验证必须和启动在同一调用里。
 set -uo pipefail
-cd /home/jack/monitorAll
+cd "$(dirname "$0")/.."   # 仓库根目录（相对脚本位置，避免硬编码绝对路径）
 ROOT="$(pwd)"
 BE="$ROOT/server/bin/monitorall"
 LOG="$ROOT/logs/monitorall.log"

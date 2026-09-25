@@ -18,7 +18,12 @@ OUT_DIR     := ./bin
 WEB_DIR     := ../web
 DIST_DIR    := ./internal/web/dist
 GO          := go
-GOTMPDIR    ?= /home/jack/.tmp
+# Go 构建会产生较大的中间产物，若系统 /tmp 很小（tmpfs 仅几十 MB 的机器上很常见）
+# 会失败并报 "no space left on device"。这里默认用用户缓存目录并自动创建，
+# 需要自定义时用环境变量覆盖即可： GOTMPDIR=/mnt/bigdisk/tmp make build
+# ⚠️ 不要写成某个具体的绝对路径——那样换台机器构建就会立刻报
+#    "creating work dir: stat <路径>: no such file or directory"。
+GOTMPDIR    ?= $(HOME)/.cache/monitorall/tmp
 
 # 单二进制多平台分发必须关闭 CGO（modernc.org/sqlite 为纯 Go 实现）
 export CGO_ENABLED := 0
@@ -26,6 +31,10 @@ export GOTMPDIR
 export GOFLAGS := -mod=mod
 
 .PHONY: all deps build run test vet fmt smoke cert build-web docker clean help
+
+## gotmpdir: 确保 Go 临时目录存在（多数目标的 order-only 前置）
+gotmpdir:
+	@mkdir -p "$(GOTMPDIR)"
 
 all: deps vet test build
 
@@ -35,7 +44,7 @@ deps:
 	$(GO) mod tidy
 
 ## build: 编译（embed 前端产物，产物在 bin/monitorall）
-build:
+build: | gotmpdir
 	@mkdir -p $(OUT_DIR)
 	$(GO) build -trimpath -ldflags "-s -w" -o $(OUT_DIR)/$(BINARY) $(CMD_DIR)
 	@echo "构建完成: $(OUT_DIR)/$(BINARY)"
@@ -45,12 +54,12 @@ run: build
 	$(OUT_DIR)/$(BINARY)
 
 ## test: 单元测试 + 覆盖率
-test:
+test: | gotmpdir
 	$(GO) test ./... -count=1 -coverprofile=$(OUT_DIR)/coverage.out
 	$(GO) tool cover -func=$(OUT_DIR)/coverage.out | tail -1
 
 ## vet: 静态检查（go vet）
-vet:
+vet: | gotmpdir
 	$(GO) vet ./...
 
 ## fmt: 格式化
