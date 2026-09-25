@@ -1,6 +1,6 @@
 /**
  * WebSocket 客户端：单连接多路复用 + 心跳 + 指数退避重连 + 重连后重放订阅表。
- * 契约来源：docs/ARCHITECTURE.md §6。
+ * 契约来源：docs/DEVELOPMENT.md §7（WebSocket 协议）。
  *
  * 生命周期要点：
  *   - 打开后 5s 内必须发 hello，否则服务端关闭（因此我们一开就发）

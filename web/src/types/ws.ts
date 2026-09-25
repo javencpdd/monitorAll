@@ -1,5 +1,5 @@
 /**
- * WebSocket 消息契约（契约来源：docs/ARCHITECTURE.md §6）。
+ * WebSocket 消息契约（契约来源：docs/DEVELOPMENT.md §7）。
  *
  * 🚨 op 名称、字段名必须与后端 `server/internal/ws/protocol.go` 逐字一致。
  * 端点：ws(s)://{host}:{port}/api/v1/ws?protocol=1

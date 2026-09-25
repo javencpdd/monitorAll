@@ -1,5 +1,5 @@
 /**
- * 7 个 P0 渲染器 Manifest 定义（契约来源：docs/ARCHITECTURE.md §9）。
+ * 7 个 P0 渲染器 Manifest 定义（契约来源：docs/DEVELOPMENT.md §9 渲染器系统）。
  *
  * 字段含义：
  *   accepts      —— 声明能吃的 payloadType
