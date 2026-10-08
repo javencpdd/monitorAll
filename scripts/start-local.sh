@@ -71,7 +71,7 @@ echo "【1】后端二进制"
 if [ ! -x "$BE_BIN" ] || [ "$BUILD" = "1" ]; then
   echo "    编译中（cd server && make build，需 Go 1.22+）…"
   export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"
-  export GOTMPDIR="${GOTMPDIR:-$HOME/.tmp}"
+  export GOTMPDIR="${GOTMPDIR:-$HOME/.cache/monitorall/tmp}"   # 与 server/Makefile 保持一致
   mkdir -p "$GOTMPDIR"
   ( cd "$ROOT/server" && make build ) || { echo "    ❌ 编译失败，见上方错误"; exit 1; }
 fi

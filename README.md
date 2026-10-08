@@ -80,7 +80,7 @@ monitorAll/
 | 构成 | MediaMTX 进程 + `server/bin/monitorall` | 两个容器，自动编排与拉起依赖 |
 | 适合 | 开发调试、机器上没有 Docker | 长期运行、团队交付、多台机器复制 |
 
-两种方案都**不冲突地提供完整能力**，但**不能同时跑**（8080 / 8888 / 9997 端口会打架，见下节步骤 0）。
+两种方案提供的**能力完全一致**，区别只在运行形态；但**不能同时跑**（8080 / 8888 / 9997 端口会打架，见下节步骤 0）。
 
 ## 快速开始（裸跑 · 不使用 Docker）
 
@@ -105,30 +105,41 @@ monitorAll/
 # 0. 若 Docker 栈正在运行，先停掉（否则 8080/8888/9997 端口冲突）
 cd deploy && ./stop.sh && cd ..
 
-# 1. 启动 MediaMTX（转封装进程，独立于后端）
-#    下载：https://github.com/bluenviron/mediamtx/releases（本仓库 mediamtx/ 已自带）
-cd ~/monitorAll/mediamtx && ./mediamtx          # 前台运行，会占用当前终端
-# 等价后台写法（不 cd 进去时【必须】显式传配置路径）：
-#   nohup ~/monitorAll/mediamtx/mediamtx ~/monitorAll/mediamtx/mediamtx.yml &
-# ⚠️ MediaMTX 按【当前目录】查找配置文件（mediamtx.yml → 系统路径）。不 cd 也不传路径时
-#    会 WARN "configuration file not found ... using an empty configuration" 并以空配置启动，
-#    api 可能被关闭 → 后端连不上 :9997。
+# 1. 全新 clone 必做：编译后端单二进制（server/bin/ 不入版本库，必须本地编译）
+cd server && make build && cd ..                 # 产物 server/bin/monitorall
 
-# 2. 构建前端并嵌入（首次，或改过 web/ 之后；已构建过可跳过）
-cd server && make build-web && cd ..
+# 2. 只有改过 web/ 前端源码时才需要重建前端产物；仓库已自带 dist，其余情况整行跳过
+#    cd server && make build-web && cd ..
 
-# 3. 编译后端单二进制
-cd server && make build && cd ..                # 产物 server/bin/monitorall
+# 3. 启动（推荐）：一条命令拉起 MediaMTX + 后端，预检端口、等待就绪并打印访问地址
+./scripts/start-local.sh                          # 二进制缺失时会自动补做步骤 1
 
-# 4. 启动后端（读取 server/config.yaml；./data 相对当前目录，故在仓库根目录执行）
-./server/bin/monitorall --config server/config.yaml
-#   想一条命令搞定 1+4：./scripts/start-local.sh（自动起 MediaMTX、预检端口、等待就绪）
-
-# 5. 停止
-./scripts/stop-local.sh                          # 或手工 kill 两个进程
+# 4. 停止
+./scripts/stop-local.sh
 ```
 
-启动后访问 `http://<本机局域网IP>:8080`（脚本会打印）。
+<details>
+<summary>手工分步版（与上面等价，排障时用）</summary>
+
+```bash
+# MediaMTX（独立于后端的转封装进程；二进制见上方「MediaMTX 平台限制」说明）
+cd mediamtx && ./mediamtx                         # 前台运行，占用当前终端
+#   ⚠️ MediaMTX 按【当前目录】查找 mediamtx.yml，不 cd 也不传配置路径时会以空配置启动
+#      （WARN "configuration file not found"），api 可能被关闭 → 后端连不上 :9997
+#   后台等价写法： ./mediamtx/mediamtx ./mediamtx/mediamtx.yml &
+
+# 后端（在仓库根目录执行：./data 里的 SQLite / 密钥 / 证书都相对当前目录解析）
+./server/bin/monitorall --config server/config.yaml
+```
+
+</details>
+
+启动后访问 `http://<本机局域网IP>:8080`（脚本会打印）。验证是否真的起来：
+
+```bash
+curl --noproxy '*' http://127.0.0.1:8080/healthz      # 期望 {"ok":true,...}
+cd deploy && ./diag.sh                                 # 视频链路逐项自检
+```
 
 ### 裸跑配置要点（`server/config.yaml`）
 
@@ -159,6 +170,18 @@ cd deploy
 
 > **⚠️ 首次部署必做**：编辑 `deploy/config.yaml`，把 `server.lanHost` 和 `mediamtx.publicHost` 改成**你宿主机访问看板用的局域网 IP**（`hostname -I` 查看）。
 > 留空会退化成 `127.0.0.1` 或容器内网 IP，浏览器将拉不到视频。
+>
+> 注意 Docker 方案读的是 **`deploy/config.yaml`**（由 compose 挂载进容器），**不是** `server/config.yaml`——改错文件不会生效。
+
+首次 clone 后同样可以一条命令启动，**宿主机无需 Go / Node**（都在镜像里构建）。
+
+启动后验证：
+
+```bash
+docker compose ps                                      # 两个容器都应 healthy/up
+curl --noproxy '*' http://127.0.0.1:8080/healthz       # 期望 {"ok":true,...}
+./diag.sh                                              # 视频链路逐项自检（诊断首选）
+```
 
 ### 改动后要不要重建镜像？
 
