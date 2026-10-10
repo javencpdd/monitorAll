@@ -16,25 +16,39 @@ import (
 
 // ————————————————— 系统接口（架构 §7.3） —————————————————
 
+// MediaMTXRuntime 为前端修正播放地址所需的 MediaMTX 运行期信息。
+//
+// embedded 为真时 MediaMTX 与后端同机，「浏览器能打开页面的 host」必然也能直连 MediaMTX，
+// 前端可据此把播放地址里的 host 替换成当前页面 host；publicHost 只是后端启动时探测到的
+// 第一个私有 IPv4（多网卡 / VPN 场景常是浏览器不可达的地址，如 10.42.0.1）。
+type MediaMTXRuntime struct {
+	Embedded     bool   `json:"embedded"`
+	PublicHost   string `json:"publicHost"`
+	PublicScheme string `json:"publicScheme"`
+	PortHLS      int    `json:"portHls"`
+	PortWebRTC   int    `json:"portWebrtc"`
+}
+
 // RuntimeConfig 为前端启动所需的运行期配置。
 type RuntimeConfig struct {
-	AMapKey          string   `json:"amapKey"`
-	AMapSecurityCode string   `json:"amapSecurityCode"`
-	AMapForceWebGL   bool     `json:"amapForceWebGL"`
-	WSUrl            string   `json:"wsUrl"`
-	ProtocolVersion  int      `json:"protocolVersion"`
-	SecureContext    bool     `json:"secureContext"`
-	VideoBackends    []string `json:"videoBackends"`
-	LanHosts         []string `json:"lanHosts"`
-	ServerTimeMs     int64    `json:"serverTimeMs"`
+	AMapKey          string          `json:"amapKey"`
+	AMapSecurityCode string          `json:"amapSecurityCode"`
+	AMapForceWebGL   bool            `json:"amapForceWebGL"`
+	WSUrl            string          `json:"wsUrl"`
+	ProtocolVersion  int             `json:"protocolVersion"`
+	SecureContext    bool            `json:"secureContext"`
+	VideoBackends    []string        `json:"videoBackends"`
+	LanHosts         []string        `json:"lanHosts"`
+	MediaMTX         MediaMTXRuntime `json:"mediaMtx"`
+	ServerTimeMs     int64           `json:"serverTimeMs"`
 }
 
 // HealthzResp 为健康检查响应。
 type HealthzResp struct {
-	OK         bool   `json:"ok"`
-	Goroutines int    `json:"goroutines"`
-	UptimeSec  int64  `json:"uptimeSec"`
-	WSConns    int    `json:"wsConns"`
+	OK         bool  `json:"ok"`
+	Goroutines int   `json:"goroutines"`
+	UptimeSec  int64 `json:"uptimeSec"`
+	WSConns    int   `json:"wsConns"`
 }
 
 // LANResp 为局域网地址响应。
@@ -112,8 +126,37 @@ func (d *Deps) runtime(c *gin.Context) {
 		SecureContext:    d.Cfg.Server.TLSEnabled,
 		VideoBackends:    backends,
 		LanHosts:         hosts,
+		MediaMTX:         d.mediaMTXRuntime(),
 		ServerTimeMs:     model.NowMs(),
 	})
+}
+
+// mediaMTXRuntime 汇总前端修正播放地址所需的 MediaMTX 信息。
+// publicHost 的回退链必须与 media.BuildPlayURLs 一致（publicHost → lanHost → 127.0.0.1），
+// 否则前端拿到的 host 与实际下发 URL 里的 host 不一致。
+func (d *Deps) mediaMTXRuntime() MediaMTXRuntime {
+	host := d.Cfg.MediaMTX.PublicHost
+	if host == "" {
+		host = d.Cfg.Server.LANHost
+	}
+	if host == "" {
+		host = "127.0.0.1"
+	}
+	portHLS := d.Cfg.MediaMTX.PortHLS
+	if portHLS <= 0 {
+		portHLS = config.DefaultPortHLS
+	}
+	portWebRTC := d.Cfg.MediaMTX.PortWebRTC
+	if portWebRTC <= 0 {
+		portWebRTC = config.DefaultPortWebRTC
+	}
+	return MediaMTXRuntime{
+		Embedded:     d.Cfg.MediaMTX.Mode == config.MediaMTXModeEmbedded,
+		PublicHost:   host,
+		PublicScheme: d.Cfg.PublicScheme(),
+		PortHLS:      portHLS,
+		PortWebRTC:   portWebRTC,
+	}
 }
 
 // lan 返回局域网可访问地址与端口（OP-01）。
