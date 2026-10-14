@@ -8,6 +8,7 @@
  *   - 可选字段用 `?:`（对应 Go 的 omitempty），不用 null 表达未设置
  */
 import type { Component } from 'vue'
+import type { AnchorMode } from '@/types/mapboard'
 
 /* ——————————————————————————————
  * 4.1 枚举
@@ -168,6 +169,16 @@ export interface Card {
   renderConfig: Record<string, unknown>
   displayOptions: DisplayOptions
   layout: Layout
+  /** [v3] 所属地图节点；空/undefined = 未挂载到节点（网格卡片恒为空）。 */
+  nodeId?: string
+  /**
+   * [v3] 相对节点的锚定模式；只有 `'node'` 一种。
+   *
+   * `'free'` 已从契约移除：未锚定由 `nodeId = ''` 完整表达（详见 `types/mapboard.ts` 的 AnchorMode）。
+   */
+  anchorMode?: 'node'
+  /** [v3] 地图看板中的几何（容器 px），与 layout（格单位）语义隔离。`v` 由后端盖章，读侧字段。 */
+  mapGeom?: { v?: number; x: number; y: number; w: number; h: number }
   createdAt: number
   updatedAt: number
 }
@@ -182,6 +193,8 @@ export interface Dashboard {
   rowHeight: number
   margin: [number, number]
   globalConfig: Record<string, unknown>
+  /** [v3] 看板种类；缺省视为 'grid'，保证 v2 行为不变（C1）。 */
+  kind?: 'grid' | 'map'
   createdAt: number
   updatedAt: number
 }
@@ -234,6 +247,17 @@ export interface VideoPayload {
   bytesPerSec?: number
   /** 降级后重试首选协议的倒计时（秒）。 */
   retryInSec?: number
+  /**
+   * 异常原因的人话描述（后端 emitStatus 按场景填充；正常时为空）。
+   * 区分「MediaMTX API 不通 / 拉流上游未就绪 / 等待推流端连接」，
+   * 前端失败态优先展示它，没有才回落通用文案。
+   */
+  detail?: string
+  /**
+   * publish（接收推流）模式下推流方应推送的地址（rtmp://host:port/path）。
+   * 拉流模式为空；该地址就是要被原样复制给推流端的，**不打码**。
+   */
+  publishUrl?: string
 }
 
 /** ② image */
@@ -364,6 +388,8 @@ export interface CreateCardReq {
   renderConfig: Record<string, unknown>
   displayOptions?: DisplayOptions
   layout: Layout
+  /** [v3] 挂载到的地图节点（地图看板用）。 */
+  nodeId?: string
 }
 
 export interface UpdateCardReq {
@@ -374,11 +400,38 @@ export interface UpdateCardReq {
   renderConfig?: Record<string, unknown>
   displayOptions?: DisplayOptions
   layout?: Layout
+  /**
+   * [v3] 挂载到的地图节点。
+   *
+   * ⚠️ **解绑必须显式送空串** `{ nodeId: '' }`：后端补丁语义把「字段缺失 / undefined」
+   * 当作"不修改"，所以省略它 ≠ 解绑。前端目前**没有**解绑入口（未锚定卡由「删除节点」
+   * 的服务端级联产生，见 B3/C10），此注释是给未来实现者上锁：
+   * 想解绑就送 `''`，**不要**用 `undefined` / `delete` 表达。
+   */
+  nodeId?: string
+  /**
+   * [v3] 锚定模式。
+   *
+   * ⚠️ 引用唯一来源 `AnchorMode`（`types/mapboard.ts`），**不写字面量联合**：
+   * 该类型只有 `'node'` 一种，`'free'` 已从契约移除（`nodeId = ''` 才是"未锚定"的表示）。
+   * 之前这里写死 `'node' | 'free'`，等于在写侧复活了一个已删除的取值 —— 单点定义漂移。
+   */
+  anchorMode?: AnchorMode
+  /**
+   * [v3] 地图几何（容器 px）。
+   *
+   * `v` 是**后端盖章的读侧字段**：`PUT .../geometry` 用 `model.MapGeometryVersion`
+   * 覆盖 V，请求体里带 v 不会被采纳。这里保留 `v?` 是为了与读侧 `Card.mapGeom` 同构
+   * （B1：两处形状必须一致，否则"同一字段两种形状"迟早对不上）。
+   */
+  mapGeom?: { v?: number; x: number; y: number; w: number; h: number }
 }
 
 export interface CreateDashboardReq {
   name: string
   gridCols?: number
+  /** [v3] 'grid'（默认）| 'map'。 */
+  kind?: 'grid' | 'map'
 }
 
 export interface UpdateDashboardReq {
@@ -410,6 +463,82 @@ export interface MediaMTXPath {
   tracks?: string[]
 }
 
+/**
+ * MediaMTX 运行期信息（后端 internal/api/system.go 下发）。
+ *
+ * 全部可选：后端尚未合入该对象时前端按缺省处理 —— **缺省视为 external（不改写播放地址 host）**，
+ * 宁可保留后端给的原始地址，也不要在不确定同机的情况下把地址指错。
+ */
+export interface MediaMTXRuntime {
+  /** true = MediaMTX 与后端同机运行（embedded 模式），此时「能打开页面的 host」必然可达。 */
+  embedded?: boolean
+  mode?: string
+  publicHost?: string
+  publicHostSource?: string
+  publicScheme?: string
+  portHls?: number
+  portWebrtc?: number
+  samplePlayUrl?: string
+}
+
+/* ——————————————————————————————
+ * 全局设置：品牌 + 当日天气
+ * —————————————————————————————— */
+
+/** 品牌三件套。title 为空时前端回落内置默认名（后端允许存空串）。 */
+export interface BrandingPayload {
+  title: string
+  subtitle: string
+  logoUrl: string
+}
+
+export interface WeatherSettingsPayload {
+  enabled: boolean
+  provider: string
+  lat: number
+  lon: number
+  label: string
+  refreshMin: number
+}
+
+/** GET/PUT /api/v1/settings 的整体读写的载荷（整体写，不支持局部 patch）。 */
+export interface SettingsPayload {
+  branding: BrandingPayload
+  weather: WeatherSettingsPayload
+}
+
+/** POST /api/v1/settings/logo 的响应。 */
+export interface LogoUploadResp {
+  logoUrl: string
+}
+
+/**
+ * GET /api/v1/weather 的快照。
+ *
+ * ⚠️ `ok:false` **不是请求失败**：它是后端给出的明确结论（开关关闭 / 坐标非法 / 上游不可达 …），
+ * HTTP 仍然 200，原因码在 `reason`、中文说明在 `message`。
+ * 真正的请求失败（网络/超时/非 0 code）走异常路径，不会产出本对象。
+ */
+export interface WeatherSnapshot {
+  ok: boolean
+  temp?: number
+  /** 温度单位，后端下发（如 `°C`）。 */
+  unit?: string
+  code?: number
+  text?: string
+  wind?: number
+  windUnit?: string
+  lat?: number
+  lon?: number
+  provider?: string
+  fetchedAtMs?: number
+  /** true = 超过预期刷新窗口仍未取到新值，UI 需视觉降级。 */
+  stale?: boolean
+  /** ok=false 时的原因码：disabled | coords_invalid | provider_unreachable | provider_rejected。 */
+  reason?: string
+  message?: string
+}
+
 export interface RuntimeConfig {
   /** 空串 = 未配置，地图渲染器显示配置提示。 */
   amapKey: string
@@ -422,8 +551,24 @@ export interface RuntimeConfig {
   secureContext: boolean
   videoBackends: ('webrtc' | 'hls' | 'flv')[]
   lanHosts: string[]
+  /** MediaMTX 运行期信息；缺失时前端不做任何播放地址改写。 */
+  mediaMtx?: MediaMTXRuntime
   /** 前端据此校正时钟差。 */
   serverTimeMs: number
+  /**
+   * 全局品牌（后端下发）。
+   *
+   * 全部可选：后端尚未合入该对象时前端按内置默认显示。
+   * 它的意义是**首屏去闪** —— GET /settings 是异步的，而品牌名在首帧就要渲染，
+   * runtime 与 WS 同批下发，能先把顶栏顶上去。
+   */
+  branding?: BrandingPayload
+  /** 天气挂件开关摘要（后端下发）；只含开关与 provider，坐标仍需 GET /settings。 */
+  weather?: { enabled: boolean; provider: string }
+  /** 排障信息（后端下发）；三项全空时设置抽屉的「关于」分组整组隐藏，不显示空白字段。 */
+  version?: string
+  commit?: string
+  dataDir?: string
 }
 
 export interface LanInfo {
