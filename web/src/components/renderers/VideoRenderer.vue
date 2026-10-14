@@ -18,6 +18,7 @@ import {
   negotiateTimeoutMs,
   probePlayable,
   resolvePlayback,
+  replaceUrlHost,
   rewritePlayUrlsHost,
 } from '@/utils/video'
 import { useFrameFeed } from '@/composables/useFrameFeed'
@@ -77,8 +78,18 @@ const failureDetail = computed<string>(
  * publish（接收推流）模式下推流方应推送的地址。
  * 后端用 BuildPublishURLs 生成（publicHost 回落 lanHost）；原样展示不打码 ——
  * 它就是要被复制给推流端的那一个地址（与 DataSourceDetailDrawer 同口径）。
+ *
+ * embedded 模式与播放地址同一口径改写 host：后端只能按网卡字典序探测 lanHost
+ * （实测是 VPN 网卡 10.42.0.1），推流方够不到；改成「用户访问看板所用的 host」——
+ * 那正是推流方视角里本机服务器的可达地址。external 模式（MediaMTX 在别的主机）
+ * 绝不改写，否则会把推流地址指向看板所在主机的错误端口。
  */
-const publishUrl = computed<string>(() => payload.value?.publishUrl ?? '')
+const publishUrl = computed<string>(() => {
+  const raw = payload.value?.publishUrl ?? ''
+  if (!raw) return ''
+  if (ui.runtime?.mediaMtx?.embedded !== true) return raw
+  return replaceUrlHost(raw, window.location.hostname)
+})
 
 /** 拉流模式的上游地址：RTSP 常带内联凭据（rtsp://admin:pw@host/...），展示前必须脱敏。 */
 const maskedSourceUrl = computed<string>(() => {

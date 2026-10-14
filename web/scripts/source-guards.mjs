@@ -636,6 +636,30 @@ check('R. 视频异常诊断链路：后端下发 detail/publishUrl，前端失�
   )
   assert.ok(/\{\{\s*publishUrl\s*\}\}/.test(tpl), '推流地址没有展示出来（只给复制按钮不给可见地址）')
 
+  // ⑤b embedded 模式必须把 publishUrl 的 host 改写成页面 host（与播放地址同一口径）：
+  //     后端 lanHost 是「按网卡字典序探测的第一个私有 IPv4」，实测为 VPN 网卡 10.42.0.1，
+  //     推流方根本够不到；external 模式（MediaMTX 在别的主机）绝不改写。
+  const puAt = vr.indexOf('const publishUrl = computed')
+  assert.ok(puAt >= 0, '取不到 publishUrl 计算属性')
+  const puBody = vr.slice(puAt, puAt + 900)
+  assert.ok(
+    /replaceUrlHost\(/.test(puBody),
+    'publishUrl 没有经 replaceUrlHost 改写 —— 卡片会展示后端探测到的 VPN 网卡地址，推流方够不到',
+  )
+  assert.ok(
+    /embedded !== true\)\s*return raw/.test(puBody),
+    'publishUrl 的改写没有 embedded 门禁 —— external 模式（MediaMTX 在别的主机）会被错误改写',
+  )
+  assert.ok(
+    /import\s*\{[^}]*replaceUrlHost[^}]*\}\s*from\s*'@\/utils\/video'/.test(vr),
+    'VideoRenderer 没有从 @/utils/video 导入 replaceUrlHost',
+  )
+  const uv = read(join(SRC, 'utils/video.ts'))
+  assert.ok(
+    /export function replaceUrlHost\(/.test(uv),
+    'utils/video.ts 没有导出 replaceUrlHost —— 组件里会另抄一份 URL 解析，两版必然漂移',
+  )
+
   // ⑥ 拉流模式：上游地址必须脱敏后展示（RTSP 内联口令不得明文上屏）
   assert.ok(
     /const maskedSourceUrl = computed/.test(vr) && /maskUrlCredentials\(/.test(vr),

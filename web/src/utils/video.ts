@@ -8,7 +8,7 @@
  * 像素流从浏览器直连 MediaMTX，**绝不经过 Go 后端**。
  */
 import type { VideoPayload } from '@/types'
-import { VIDEO_MAX_MSE_BUFFER_SEC } from './constants'
+import { VIDEO_HLS_TIMEOUT_MS, VIDEO_MAX_MSE_BUFFER_SEC, VIDEO_NEGOTIATE_TIMEOUT_MS } from './constants'
 
 export type VideoProtocol = 'webrtc' | 'hls' | 'flv'
 
@@ -313,5 +313,76 @@ export async function probeWebrtc(url: string, timeoutMs: number): Promise<boole
 
 /** 是否为安全上下文（WebRTC 在 http 非 localhost 下不可用）。 */
 export function isPlayableSecureContext(): boolean {
+  // isSecureContext 在 https、以及 http 下的 localhost / 127.0.0.1 / [::1] 均为 true，
+  // 与「http 且非本机」才剔除 webrtc 的口径一致，无需再自行判断 host。
   return window.isSecureContext
+}
+
+/**
+ * 按协议取协商超时预算。
+ *
+ * HLS 需要更长的窗口：MediaMTX on-demand 源「收到首个请求才开始拉上游」，实测冷启动到
+ * ready 约 8 秒，3 秒窗口会把正在就绪的流误判为超时。WebRTC(WHEP) / FLV 沿用 3 秒。
+ */
+export function negotiateTimeoutMs(protocol: VideoProtocol): number {
+  return protocol === 'hls' ? VIDEO_HLS_TIMEOUT_MS : VIDEO_NEGOTIATE_TIMEOUT_MS
+}
+
+/**
+ * 把播放地址里的 host 替换为指定 hostname，**保留后端下发的 scheme 与端口**，路径查询串不变。
+ *
+ * 为什么只在 embedded 模式调用：embedded 下 MediaMTX 与后端必然同机，所以「浏览器加载页面
+ * 用的那个 host」一定也能连到 MediaMTX；而后端启动时无从得知用户会从哪个网卡访问，
+ * publicHost 只能探测成第一个私有 IPv4 —— 多网卡/VPN 场景实测是 10.42.0.1，
+ * 浏览器跨主机访问时不可达，hls.js 拿不到 m3u8 就报「协商超时」。
+ * external 模式（MediaMTX 在别的主机）绝不能改写，否则会把地址指向页面所在主机的错误端口。
+ */
+export function rewritePlayUrlsHost(
+  urls: Partial<Record<VideoProtocol, string>>,
+  hostname: string,
+): Partial<Record<VideoProtocol, string>> {
+  if (!hostname) return urls
+  const out: Partial<Record<VideoProtocol, string>> = {}
+  for (const key of ['webrtc', 'hls', 'flv'] as const) {
+    const raw = urls[key]
+    out[key] = typeof raw === 'string' && raw.length > 0 ? replaceUrlHost(raw, hostname) : raw
+  }
+  return out
+}
+
+/** 单条 URL 换 host；解析失败（相对地址/畸形）时原样返回，绝不抛错打断播放链。 */
+export function replaceUrlHost(url: string, hostname: string): string {
+  try {
+    const parsed = new URL(url, window.location.href)
+    if (parsed.hostname === hostname) return url
+    parsed.hostname = hostname
+    return parsed.toString()
+  } catch {
+    return url
+  }
+}
+
+/**
+ * 后台探测某个协议是否恢复可用（用于降级后自动切回，ARCH §11.3）。
+ *
+ * 原来是硬编码的 probeWebrtc：一旦用户把「首选协议」手动设成 HLS，回切探测就永久失效。
+ * 这里按协议分派，只做轻量探测，不 attach 到 video 元素、不产生画面。
+ */
+export async function probePlayable(protocol: VideoProtocol, url: string, timeoutMs: number): Promise<boolean> {
+  if (protocol === 'webrtc') return probeWebrtc(url, timeoutMs)
+  const controller = new AbortController()
+  const timer = window.setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    const res = await fetch(url, { method: 'GET', signal: controller.signal })
+    if (!res.ok) return false
+    // HLS 特殊处理：源未就绪时 MediaMTX 也会返回 200，但播放列表里只有 #EXT-X-GAP（空分片）。
+    // 只有出现真实分片（#EXTINF）才算真正可用，否则会「探测通过 → 切回去 → 又立刻失败」。
+    if (protocol === 'hls') return (await res.text()).includes('#EXTINF')
+    return true
+  } catch {
+    return false
+  } finally {
+    window.clearTimeout(timer)
+    controller.abort()
+  }
 }
