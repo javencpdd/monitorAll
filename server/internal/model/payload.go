@@ -4,17 +4,26 @@ package model
 
 // VideoPayload 为 video_stream 的载荷：只含地址与状态，不含像素。
 type VideoPayload struct {
-	Protocol       string            `json:"protocol"`                 // webrtc | hls | flv
-	State          string            `json:"state"`                    // ready | not_ready | degraded
-	DegradedFrom   string            `json:"degradedFrom,omitempty"`   // 从 webrtc 降级时 = "webrtc"
+	Protocol       string            `json:"protocol"`               // webrtc | hls | flv
+	State          string            `json:"state"`                  // ready | not_ready | degraded
+	DegradedFrom   string            `json:"degradedFrom,omitempty"` // 从 webrtc 降级时 = "webrtc"
 	DegradedReason string            `json:"degradedReason,omitempty"`
-	URLs           map[string]string `json:"urls"`                     // {"webrtc":"...","hls":"...","flv":"..."} 只含有值的
-	SourceURL      string            `json:"sourceUrl"`                // rtmp://172.31.68.227:1936/live/lite3
-	Path           string            `json:"path"`                     // live/lite3
+	URLs           map[string]string `json:"urls"`      // {"webrtc":"...","hls":"...","flv":"..."} 只含有值的
+	SourceURL      string            `json:"sourceUrl"` // rtmp://172.31.68.227:1936/live/lite3
+	Path           string            `json:"path"`      // live/lite3
 	Ready          bool              `json:"ready"`
 	Readers        int               `json:"readers"`
 	BytesPerSec    int64             `json:"bytesPerSec,omitempty"`
-	RetryInSec     int               `json:"retryInSec,omitempty"`     // 降级后重试首选协议的倒计时
+	// Detail 为异常原因的人话描述；正常（ready）时为空。
+	//
+	// 为什么必须有：MediaMTX 的 paths/list 只回 ready=false，不带任何原因，
+	// 用户看到「未收到流」无从下手（最常见的是推流方把流推到了别的 IP / 端口不对）。
+	// 这里把「拉不到」和「没人推」分开说，并给出该检查什么。
+	Detail string `json:"detail,omitempty"`
+	// PublishURL 为 publish（接收推流）模式下推流方应推送的地址，形如
+	// rtmp://<host>:<port>/<path>；pull 模式为空。
+	PublishURL string `json:"publishUrl,omitempty"`
+	RetryInSec int    `json:"retryInSec,omitempty"` // 降级后重试首选协议的倒计时
 }
 
 // VideoPayload 状态常量。
@@ -26,12 +35,12 @@ const (
 
 // ImagePayload 为 image 的载荷（base64 不带 data: 前缀，mime 单独给）。
 type ImagePayload struct {
-	Mime     string `json:"mime"`               // image/jpeg | image/png
-	Encoding string `json:"encoding"`           // base64 | url
-	Data     string `json:"data"`               // base64 串 或 可访问 URL
+	Mime     string `json:"mime"`     // image/jpeg | image/png
+	Encoding string `json:"encoding"` // base64 | url
+	Data     string `json:"data"`     // base64 串 或 可访问 URL
 	Width    int    `json:"width,omitempty"`
 	Height   int    `json:"height,omitempty"`
-	StampMs  int64  `json:"stampMs,omitempty"`  // 图像采集时刻（来自 msg header.stamp）
+	StampMs  int64  `json:"stampMs,omitempty"` // 图像采集时刻（来自 msg header.stamp）
 }
 
 // 图像编码方式常量。
@@ -44,7 +53,7 @@ const (
 type ScalarPayload struct {
 	Value   float64 `json:"value"`
 	Unit    string  `json:"unit,omitempty"`
-	Min     float64 `json:"min,omitempty"`     // 已知量程，未知则省略
+	Min     float64 `json:"min,omitempty"` // 已知量程，未知则省略
 	Max     float64 `json:"max,omitempty"`
 	Label   string  `json:"label,omitempty"`   // 字段语义名，如 "voltage"
 	RawPath string  `json:"rawPath,omitempty"` // 从 json 挑字段时的 JSONPath
@@ -52,8 +61,8 @@ type ScalarPayload struct {
 
 // TimeSeriesPayload 为 time_series_sample 的载荷。
 type TimeSeriesPayload struct {
-	T      int64              `json:"t"`                // 采样时刻 ms（优先用 msg header.stamp）
-	Fields map[string]float64 `json:"fields"`           // 扁平化后的数值字段 → 值
+	T      int64              `json:"t"`      // 采样时刻 ms（优先用 msg header.stamp）
+	Fields map[string]float64 `json:"fields"` // 扁平化后的数值字段 → 值
 	Units  map[string]string  `json:"units,omitempty"`
 }
 

@@ -184,7 +184,7 @@ monitorAll/
 
 | 载荷 | 关键字段 | 位置 |
 |------|---------|------|
-| `VideoPayload` | `protocol`/`state`/`urls{webrtc,hls,flv}`/`sourceUrl`/`path`/`degradedFrom` | `payload.go:6-18` |
+| `VideoPayload` | `protocol`/`state`/`urls{webrtc,hls,flv}`/`sourceUrl`/`path`/`degradedFrom`/`detail`（异常原因人话描述，正常时为空）/`publishUrl`（仅 publish 模式：推流方应推的 rtmp 地址） | `payload.go:6-27` |
 | `ImagePayload` | `mime`/`encoding(base64\|url)`/`data`/`width`/`height` | `payload.go:28-35` |
 | `ScalarPayload` | `value`/`unit` | `payload.go:44-51` |
 | `TimeSeriesPayload` | `metric`/`samples[]` | `payload.go:54-58` |

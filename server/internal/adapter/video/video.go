@@ -13,6 +13,7 @@ import (
 	"github.com/monitorall/monitorall/internal/adapter"
 	"github.com/monitorall/monitorall/internal/apperr"
 	"github.com/monitorall/monitorall/internal/config"
+	"github.com/monitorall/monitorall/internal/logx"
 	"github.com/monitorall/monitorall/internal/media"
 	"github.com/monitorall/monitorall/internal/model"
 )
@@ -146,7 +147,8 @@ func (a *Adapter) Start(ctx context.Context) error {
 			a.log.Warn("注册 MediaMTX 路径失败", "path", path, "err", err)
 		}
 	}
-	a.log.Info("视频适配器已启动", "path", path, "mode", mode, "source", a.sourceFor())
+	// source 里可能带内联凭据（rtsp://admin:pw@host/...），必须脱敏后再落日志
+	a.log.Info("视频适配器已启动", "path", path, "mode", mode, "source", logx.RedactURL(a.sourceFor()))
 	return nil
 }
 
@@ -177,15 +179,8 @@ func (a *Adapter) isLocalPublishLocked() bool {
 	if a.cfg == nil || a.info == nil || a.mode == config.VideoModePublish {
 		return false
 	}
-	if !a.info.IsRTMP() {
-		return false
-	}
-	if a.info.Port != a.cfg.MediaMTX.PortRTMP {
-		return false
-	}
-	host := a.info.Host
-	return host == "127.0.0.1" || host == "localhost" ||
-		(a.cfg.Server.LANHost != "" && host == a.cfg.Server.LANHost)
+	// 判定口径统一收敛在 media.IsLocalPublishURL（api 层的同路径冲突检测也用它）
+	return media.IsLocalPublishURL(a.info.Raw, a.cfg.MediaMTX.PortRTMP, a.cfg.Server.LANHost)
 }
 
 // streamPath 计算 MediaMTX 路径：mediaMtxPath 优先，否则取自流地址。
@@ -359,10 +354,22 @@ func (a *Adapter) emitStatus(ctx context.Context, channelID string, client media
 	if emit == nil || path == "" {
 		return
 	}
+	mode := normalizeMode(params.Mode)
+	// apiBase 用于「管理 API 不通」的提示：用户不知道 MediaMTX 的管理端口是多少，
+	// 报错里带上地址才能自查。配置里可能为空（嵌入式之外的部署），兜底一句占位。
+	apiBase := ""
+	if a.cfg != nil {
+		apiBase = a.cfg.MediaMTX.APIBase
+	}
+	if apiBase == "" {
+		apiBase = "未配置"
+	}
+
 	ready := false
 	readers := 0
 	var bytesPerSec int64
 	apiOK := true
+	lastErr := ""
 
 	if client != nil {
 		qCtx, cancel := context.WithTimeout(ctx, time.Duration(config.DefaultTimeoutMs)*time.Millisecond)
@@ -372,6 +379,7 @@ func (a *Adapter) emitStatus(ctx context.Context, channelID string, client media
 			apiOK = false
 			a.mu.Lock()
 			a.lastErr = err.Error()
+			lastErr = a.lastErr
 			a.mu.Unlock()
 			a.log.Warn("查询 MediaMTX 路径失败", "path", path, "err", err)
 		} else if len(paths) > 0 {
@@ -412,6 +420,12 @@ func (a *Adapter) emitStatus(ctx context.Context, channelID string, client media
 		Ready:       ready,
 		Readers:     readers,
 		BytesPerSec: bytesPerSec,
+		Detail:      videoDetail(client == nil, apiOK, ready, mode, apiBase, lastErr),
+	}
+	if mode == config.VideoModePublish {
+		// 只在 publish 模式下给推流地址（pull 模式没有「该推到哪里」的概念）。
+		// 无论 ready 与否都给：推流断了之后前端要靠它告诉用户往哪推。
+		payload.PublishURL = media.BuildPublishURLs(a.cfg, publicHost, path)[config.PublishProtocolRTMP]
 	}
 	if protocol != params.PreferredProtocol {
 		// 首选协议不可用时给出降级标记（前端据此显示角标）
@@ -426,6 +440,36 @@ func (a *Adapter) emitStatus(ctx context.Context, channelID string, client media
 		return
 	}
 	emit(channelID, f)
+}
+
+// videoDetail 把「为什么没画面」翻译成人话，写入 VideoPayload.Detail；正常时为空串。
+//
+// 为什么需要：MediaMTX 的 paths/list 只回 ready=false，不带任何原因。用户看到「未收到流」
+// 无从下手，而最常见的两种故障（MediaMTX 自己没起来 / 推流方推错了地方）处置方式完全不同。
+// 按优先级判定，越靠前越是根因：
+//
+//  1. client 未初始化      → 后端自身编排问题，不是用户能修的
+//  2. 管理 API 调不通      → MediaMTX 没起来或端口不通，附上 apiBase 让人能自查
+//  3. ready                → 正常，Detail 留空（degraded 分支也走这里，不能被覆盖）
+//  4. 拉流模式没收到        → 上游不可达 / 推流方不在线
+//  5. 推流模式没人推        → 提示去核对推流地址与流名
+//
+// ⚠️ 严禁把源地址（sourceUrl）拼进 Detail：RTSP 常带内联凭据
+// （rtsp://admin:pw@host/...），而 Detail 会经 WS 推到所有订阅了该通道的浏览器。
+// 拉流场景只泛化说「上游地址」，具体地址前端从 payload.sourceUrl 自己取并脱敏展示。
+func videoDetail(noClient, apiOK, ready bool, mode, apiBase, lastErr string) string {
+	switch {
+	case noClient:
+		return "MediaMTX 客户端未初始化"
+	case !apiOK:
+		return "MediaMTX 服务未运行或管理 API 不通（" + apiBase + "）：" + lastErr
+	case ready:
+		return ""
+	case mode == config.VideoModePull:
+		return "未收到流：MediaMTX 拉取上游未就绪，请确认推流方在线、上游地址可达"
+	default:
+		return "等待推流端连接：请确认推流方已将流推送至下方地址，且流名与本数据源一致"
+	}
 }
 
 // StopChannel 停止该通道的轮询（幂等）。

@@ -12,6 +12,7 @@ import (
 	"github.com/monitorall/monitorall/internal/apperr"
 	"github.com/monitorall/monitorall/internal/config"
 	"github.com/monitorall/monitorall/internal/crypto"
+	"github.com/monitorall/monitorall/internal/logx"
 	"github.com/monitorall/monitorall/internal/media"
 	"github.com/monitorall/monitorall/internal/model"
 )
@@ -112,6 +113,12 @@ func (d *Deps) createDataSource(c *gin.Context) {
 		return
 	}
 	if err := validateConnParams(req.Kind, req.ConnParams); err != nil {
+		Fail(c, err)
+		return
+	}
+	// 同路径冲突检测：MediaMTX 一个路径只能对应一路流，重名会静默顶掉前一个。
+	// 必须在落库前拦，落库后适配器已经把路径注册进 MediaMTX，伤害就发生了。
+	if err := d.checkMediaMTXPathConflictIn("", req.Kind, req.ConnParams); err != nil {
 		Fail(c, err)
 		return
 	}
@@ -258,6 +265,11 @@ func (d *Deps) updateDataSource(c *gin.Context) {
 	}
 	if req.ConnParams != nil {
 		if err := validateConnParams(ds.Kind, req.ConnParams); err != nil {
+			Fail(c, err)
+			return
+		}
+		// 排除自己（ds.ID）：否则改名字以外的小字段也会把自己判成冲突
+		if err := d.checkMediaMTXPathConflictIn(ds.ID, ds.Kind, req.ConnParams); err != nil {
 			Fail(c, err)
 			return
 		}
@@ -609,6 +621,169 @@ func (d *Deps) deleteChannel(c *gin.Context) {
 	OK(c, map[string]any{"deleted": true})
 }
 
+// ————————————————— MediaMTX 同路径冲突检测 —————————————————
+
+// VideoPathRef 描述一个 video 数据源占用的 MediaMTX 路径与它的上游身份。
+type VideoPathRef struct {
+	// ID 为数据源 ID（更新时用于排除自己）。
+	ID string
+	// Name 为数据源名称，报错时用来点名是谁占着。
+	Name string
+	// Path 为归一化后的 MediaMTX 路径（已 trim 空白与首尾斜杠）。
+	Path string
+	// Upstream 为上游身份：publish 或推给本机的 RTMP → "publisher"；
+	// 拉流 → trim 后的完整流地址（含 RTSP 内联凭据）。
+	Upstream string
+}
+
+// checkMediaMTXPathConflict 在已有数据源里找出与 incoming 同路径但上游不同的那个；
+// 没有冲突返回 nil。
+//
+// 为什么必须拦：MediaMTX 里「一个路径 = 一条流」，且 mediamtx.yml 开着
+// overridePublisher: true —— 重名时后来者会**静默顶掉**前者（实测：两个 ffmpeg 推同一
+// 路径，前一个直接 Broken pipe 退出，后来的接管画面，前端毫无提示）。
+// 系统此前没有任何唯一性约束（store 层无索引，create/update 也不查重）。
+//
+// 判定规则的关键是「不能一律拦截」：
+//   - 同路径 + 同上游 → 放行。同一路相机被多个看板/多张卡复用是合法的，
+//     一律拦截会误伤，而且这种复用本来就是设计内的。
+//   - 同路径 + 不同上游 → 拦截。两路不同的流抢同一个路径，必然互相顶掉。
+func checkMediaMTXPathConflict(existing []VideoPathRef, incoming VideoPathRef) *VideoPathRef {
+	if incoming.Path == "" {
+		return nil
+	}
+	for i := range existing {
+		// 排除自己：更新数据源时 incoming.ID 是它自己的 ID，不排除的话
+		// 改个名字以外的小字段就会把自己判成跟自己冲突，任何更新都失败。
+		if incoming.ID != "" && existing[i].ID == incoming.ID {
+			continue
+		}
+		if existing[i].Path == incoming.Path && existing[i].Upstream != incoming.Upstream {
+			return &existing[i]
+		}
+	}
+	return nil
+}
+
+// pathConflictError 构造同路径冲突的报错：点名占用方、说清两边上游、给出可改的名字。
+// 只给「路径非法」不给「怎么改」等于把问题抛回给用户，这里必须给建议值。
+func pathConflictError(incoming VideoPathRef, conflict *VideoPathRef) error {
+	return apperr.Newf(apperr.InvalidParam,
+		"MediaMTX 路径 %q 已被数据源「%s」占用，且两者上游不同（当前：%s，已存在：%s）。"+
+			"同一路径只能对应一路流，重名会让后推的设备静默顶掉前一个。请改用唯一路径，如 %s 或 live/<设备>-<机位>",
+		conflict.Path, conflict.Name,
+		displayUpstream(incoming.Upstream), displayUpstream(conflict.Upstream),
+		suggestAltPath(conflict.Path))
+}
+
+// displayUpstream 把上游身份渲染进面向用户的报错文案。
+// 拉流地址常带内联凭据（rtsp://admin:pw@host/...），原样回显等于把口令塞进前端弹窗
+// 与接口响应里，必须脱敏（本项目真实发生过口令进日志/进仓库的事故）。
+func displayUpstream(u string) string {
+	switch u {
+	case "":
+		return "未知"
+	case media.SourcePublisher:
+		return u
+	default:
+		return logx.RedactURL(u)
+	}
+}
+
+// suggestAltPath 给出一个简单的备选路径（live/cam1 → live/cam1-b）。
+func suggestAltPath(path string) string {
+	if path == "" {
+		return "live/cam1"
+	}
+	return path + "-b"
+}
+
+// normalizeVideoPath 归一化 MediaMTX 路径用于比较：trim 空白与首尾斜杠。
+// 与 fallbackSpecs 里的 trim 逻辑保持一致 —— /live/cam1 与 live/cam1 是同一条路径。
+func normalizeVideoPath(v string) string {
+	return strings.Trim(strings.TrimSpace(v), "/")
+}
+
+// videoPathRef 从连接参数构造路径引用；非 video 或路径为空时返回 false（调用方跳过）。
+func videoPathRef(id, name string, params map[string]any, cfg *config.Config) (VideoPathRef, bool) {
+	vp, err := adapter.ParamsTo[model.VideoConnParams](params)
+	if err != nil {
+		return VideoPathRef{}, false
+	}
+	path := normalizeVideoPath(vp.MediaMTXPath)
+	if path == "" {
+		return VideoPathRef{}, false
+	}
+	return VideoPathRef{ID: id, Name: name, Path: path, Upstream: videoUpstream(cfg, vp.Mode, vp.RtmpURL)}, true
+}
+
+// videoUpstream 计算 video 数据源的上游身份。
+//
+// publish 模式，或地址是推给本机 MediaMTX 的 RTMP → "publisher"（MediaMTX 侧就是
+// 被动等远端推流，不管是谁推的都算同一个上游）。其余为 trim 空白后的完整流地址：
+// 只 trim、不改大小写、不做 host 归一化 —— RTSP 常带内联凭据，逐字相同才算同一上游。
+func videoUpstream(cfg *config.Config, mode, rtmpURL string) string {
+	if normalizeVideoMode(mode) == config.VideoModePublish {
+		return media.SourcePublisher
+	}
+	u := strings.TrimSpace(rtmpURL)
+	if u == "" {
+		// 无上游地址（存量脏数据才会出现）：身份未知，两个都未知视为同一上游
+		return ""
+	}
+	if cfg != nil && media.IsLocalPublishURL(u, cfg.MediaMTX.PortRTMP, cfg.Server.LANHost) {
+		return media.SourcePublisher
+	}
+	return u
+}
+
+// checkMediaMTXPathConflictIn 查库并做同路径冲突检测：命中返回可行动的 40001 错误。
+//
+// excludeID 为被更新的数据源自身 ID —— 必须排除自己，否则改个名字以外的小字段
+// 就会把自己判成跟自己冲突，导致任何更新都失败。
+func (d *Deps) checkMediaMTXPathConflictIn(excludeID string, kind model.DataSourceKind, params map[string]any) error {
+	if kind != model.KindVideo || d.Store == nil {
+		return nil
+	}
+	incoming, ok := videoPathRef(excludeID, "", params, d.Cfg)
+	if !ok {
+		return nil // 非 video 或 mediaMtxPath 为空 → 不查
+	}
+	refs, err := d.existingVideoPathRefs(excludeID)
+	if err != nil {
+		return err
+	}
+	if conflict := checkMediaMTXPathConflict(refs, incoming); conflict != nil {
+		return pathConflictError(incoming, conflict)
+	}
+	return nil
+}
+
+// existingVideoPathRefs 取出库里其它 video 数据源的路径引用（排除 excludeID）。
+//
+// 用 ConnParamsFor 而不是 ListDataSources 直接返回的 connParams：后者里被声明为敏感
+// 字段的键是 ***，拿 *** 去比对上游会把两路不同的流误判成同一个上游。
+func (d *Deps) existingVideoPathRefs(excludeID string) ([]VideoPathRef, error) {
+	list, err := d.Store.ListDataSources()
+	if err != nil {
+		return nil, err
+	}
+	out := make([]VideoPathRef, 0, len(list))
+	for i := range list {
+		if list[i].ID == excludeID || list[i].Kind != model.KindVideo {
+			continue
+		}
+		params, err := d.Store.ConnParamsFor(list[i].ID)
+		if err != nil || params == nil {
+			continue // 单个源取不出真实参数时不阻塞创建，跳过即可
+		}
+		if r, ok := videoPathRef(list[i].ID, list[i].Name, params, d.Cfg); ok {
+			out = append(out, r)
+		}
+	}
+	return out, nil
+}
+
 // ————————————————— 校验 —————————————————
 
 // validateProtocol 校验 kind 与 protocol 的匹配关系。
@@ -645,6 +820,12 @@ func validateConnParams(kind model.DataSourceKind, params map[string]any) error 
 	case model.KindVideo:
 		vp, err := adapter.ParamsTo[model.VideoConnParams](params)
 		if err != nil {
+			return err
+		}
+		// mediaMtxPath 只要填了就必须是合法路径名（不是完整地址）。
+		// 填成 rtmp://host:1936/live/x 会让 MediaMTX 以 500 "invalid path name" 拒绝，
+		// 前端只会显示「HLS 协商超时」，根因完全被掩盖（真实事故）。入口直接拒绝。
+		if _, err := media.ValidateMediaMTXPath(vp.MediaMTXPath); err != nil {
 			return err
 		}
 		if strings.TrimSpace(vp.RtmpURL) == "" {
