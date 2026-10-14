@@ -10,9 +10,10 @@
 
 | 数据源 | 说明 |
 |---|---|
-| 视频流 | 输入 RTMP / RTSP（`rtmp://172.31.68.227:1936/live/lite3`、`rtsp://user:pass@192.168.1.64:554/…`），MediaMTX 转封装为 **WebRTC（亚秒级）**，不可用时自动降级 **HLS（1–3s）**；另支持 **publish 模式**（接收远端 WHIP / RTMP 推流，创建后回显推流地址） |
+| 视频流 | 输入 RTMP / RTSP（`rtmp://172.31.68.227:1936/live/lite3`、`rtsp://user:pass@192.168.1.64:554/…`），MediaMTX 转封装为 **WebRTC（亚秒级）**，不可用时自动降级 **HLS（1–3s）**；另支持 **publish 模式**（接收远端 WHIP / RTMP 推流，创建后回显推流地址）。拉不到画面时卡片直接展示**诊断原因**（拉流未就绪 / 等待推流 / 管理 API 不通），不再只有一句通用文案 |
 | ROS1 / ROS2 | 经 rosbridge WebSocket 统一代理，运行时切换版本，配置体验一致 |
 | HTTP 接口 | 定时轮询 + JSONPath 提取，规避跨域，统一鉴权与缓存 |
+| 离线回放 | 上传 `.json` / `.jsonl` 记录文件（≤200MB）建回放数据源，之后与普通数据源一样建卡订阅 |
 
 | 渲染器（P0） | 说明 |
 |---|---|
@@ -25,6 +26,8 @@
 | 视频播放器 | WebRTC→HLS 降级、协议指示 |
 
 - **卡片式布局**：`grid-layout-plus` 拖拽 / 缩放 / 网格吸附 / 布局持久化。
+- **地图看板（v3）**：与网格看板并列的独立看板类型——以高德地图为画布挂载节点与浮层卡片，详见下方专节。
+- **平台细节**：顶栏天气徽标；品牌 Logo / 站点名在设置抽屉内自定义（存于 `data/branding/`）。
 - **稳定性**：四态可视化（在线/离线/重连中/错误）、指数退避重连、单卡片错误不白屏、前端 WS 断线自动恢复。
 
 ## 技术栈
@@ -40,18 +43,24 @@
 
 ```
 monitorAll/
-├── docs/                 # 开发文档 + 操作手册
-│   ├── DEVELOPMENT.md    # 开发文档（数据契约、协议、API、配置全表）
-│   └── USER_GUIDE.md     # 操作手册（部署、接入数据源、编排看板、FAQ）
-├── note/                 # 踩坑笔记（环境/后端/前端/地图/ROS/调试/视频）
-├── web/                  # Vue3 前端（构建产物 → server/internal/web/dist）
-├── server/               # Go 后端（cmd / internal / config / Makefile）
-├── deploy/               # Dockerfile、docker-compose.yml、mediamtx 配置
+├── docs/                     # 开发文档 + 操作手册 + v3 计划书/测试计划
+│   ├── DEVELOPMENT.md        # 开发文档（数据契约、协议、API、配置全表）
+│   ├── USER_GUIDE.md         # 操作手册（部署、接入数据源、编排看板、FAQ）
+│   ├── 系统第三版计划书.md   # v3 地图看板（MapBoard）设计与被否方案
+│   └── v3-mapboard-test-plan.md  # MapBoard 验收用例
+├── note/                     # 踩坑笔记 01–07（环境/后端/前端/地图/ROS/调试/视频）+ README 索引
+├── web/                      # Vue3 前端（构建产物 → server/internal/web/dist）
+├── server/                   # Go 后端（cmd / internal / config.example.yaml / Makefile）
+├── mediamtx/                 # MediaMTX 二进制（Linux x86_64）+ mediamtx.yml
+├── deploy/                   # Dockerfile、docker-compose.yml、config.yaml、mediamtx-default.yml
 │   ├── start.sh / stop.sh    # Docker 一键启停 + 就绪检查
 │   └── diag.sh               # 视频链路自检（API/路径/播放地址逐项判定）
 ├── scripts/
 │   ├── start-local.sh / stop-local.sh   # 裸跑（无 Docker）一键启停
-│   └── smoke.sh          # 冒烟自测
+│   ├── smoke.sh              # 冒烟自测
+│   ├── verify-rtsp.sh        # RTSP / publish 端到端验证（自包含：起服务→验证→清理）
+│   └── ws-keepalive-probe.mjs # WS 保活实证（连上→心跳→观测存活时长）
+├── data/                     # 运行时数据（SQLite / 密钥 / 证书 / branding，均 gitignore）
 └── README.md
 ```
 
@@ -259,9 +268,37 @@ web:
 | 是否启用 WebGL | 见上表 `amapForceWebGL`；控制台出现"浏览器版本过低"基本就是它 |
 | 区分「没调用」还是「没渲染」 | 控制台执行 `__maMap.getMapStyle()`：有值说明前端已调用成功、是高德侧没画出来；`undefined` 才是前端没走到 |
 
+### 配了 Key 还是无图？看横幅上的真实错误
+
+地图卡降级时，横幅会区分两种情况，并给出**真实失败原因**（不再一律提示"去配 Key"）：
+
+- **未配置 Key**：显示配置指引（见上方 yaml）。
+- **已配置但加载失败**：显示「高德底图加载失败：{真实错误}」+ 高德控制台链接。常见错误码：
+
+| 错误码 | 含义 | 处理 |
+|---|---|---|
+| `USERKEY_PLAT_NOMATCH` | Key 类型不对 | 必须是**「Web 端（JS API）」**类型；「Web 服务」Key 只能调 REST 接口，不能加载 JS API |
+| `INVALID_USER_SCODE` | Key 与安全密钥不配对 | 两者必须来自控制台**同一个 Key 项** |
+| `DOMAIN_NOT_MATCH` | 域名白名单不含当前访问地址 | 把看板访问 host 加进白名单，或清空白名单 |
+| `KEY_DISABLE` | Key 被禁用 / 过期 / 配额满 | 控制台启用，或新建 Key |
+
+浏览器 F12 → Console 同步打印 `[amap] 高德 JS API 加载失败：` 及完整错误对象，与横幅二选一即可定位。
+
 ### 地图卡的字段路径（JSON / HTTP 通道）
 
 JSON 通道的载荷被后端包成 `{ root: 原始响应 }`，因此字段路径**必须带 `root.` 前缀**或由前端自动补（`data.pose.latitude` 会被自动尝试为 `root.data.pose.latitude`）。路径分隔符 **点分与斜杠均可**（`data.pose.latitude` 与 `data/pose/latitude` 等价）。
+
+## 地图看板（MapBoard · v3）
+
+除「网格看板」外，平台还提供**地图看板**：以一整块高德地图为画布，把已接入的通道挂成**可移动的地图节点**；节点既是位置锚点，也是视频 / 仪表 / 折线 / 图像 / JSON / 表格卡片的宿主。创建入口与网格 Dashboard 并列（看板列表区分 `grid` / `map`），改动自动持久化。
+
+- **节点**：从已有 geo 类通道创建（`sensor_msgs/NavSatFix` 或 JSON 字段路径均可），位置实时驱动；≥3s 无帧自动置灰，恢复数据后解除；支持静态兜底坐标；上限 20 个，超限显式提示。
+- **卡片挂载**：点击节点弹出**跟随浮层卡片**，复用现有 7 类渲染器（`map` 渲染器禁止绑节点，防止嵌套第二张地图）；非视频软上限 6、视频硬上限 4，超限暂停占位、可一键恢复。
+- **跟随与排版**：卡片默认跟随节点移动；可拖拽脱钩、一键「回到跟随」、缩放（视频锁 16:9）；节点移出视口时自动隐藏卡片并断流，回到视野快速恢复——**全程 WS 订阅集合不变**。
+- **地图与合规**：单看板只有**一个** AMap 实例（节点用自研 Web Mercator 投影器以 DOM 叠加，不建 Marker 对象）；底图样式可切（标准 / 暗色 / 卫星图层）；**未配置 Key 时降级为自研虚拟投影器**，核心功能仍可用，且绝不请求境外底图。
+- **可观测**：Key 缺失、字段路径取不到值、持久化失败、节点 / 可见卡 / 视频路计数都有可见出口；诊断 HUD 可开关。
+
+> 设计取舍（含被否方案）见 `docs/系统第三版计划书.md`，验收用例见 `docs/v3-mapboard-test-plan.md`。
 
 ## 视频降级说明（重要）
 
@@ -274,10 +311,12 @@ mediamtx:
 
 配置后视频播放器会启用 FLV 后端（`mpegts.js`），无需改代码。
 
-补充两条：
+补充三条：
 
 - **RTSP 源**：默认走 **TCP** 传输（UDP 易花屏 / 连不上），新建数据源时可切换；地址支持 `rtsp://user:pass@host:554/…`，凭据会完整保留。
 - **publish 模式**（接收远端推流）：不必填可拉的源地址，填 MediaMTX 路径即可；创建成功后页面会**回显 WHIP 与 RTMP 推流地址**供复制。
+- **MediaMTX 路径**：只填**流名**（如 `live/m20pro-f`），填完整地址（`rtmp://…`）会被后端当场拦截（40001）并提示正确写法。路径是流的唯一身份：同路径 + 同上游放行（同一路相机在多看板复用），同路径 + 不同上游会被拦截并点名冲突数据源。
+- **失败态诊断**：拉不到画面时卡片会说明具体原因（拉流未就绪 / 等待推流 / MediaMTX 管理 API 不通），publish 模式直接给出可复制的推流地址；排查首选 `deploy/diag.sh`。
 
 ## 测试
 
@@ -286,6 +325,14 @@ cd server
 make vet     # go vet
 make test    # go test（含 Frame 归一化 / 引用计数 / 限流 / 退避 / 存储 / 加密 / 坐标合规）
 make smoke   # 冒烟自测（启动 → 探活 → 默认看板 → 前端产物）
+```
+
+前端另有 **19 条源码级回归守卫**——守的都是 `vue-tsc` 抓不到的运行期 / 静默失败缺陷（改回旧写法必红）：
+
+```bash
+cd web
+npm run typecheck   # vue-tsc --noEmit
+npm test            # source-guards.mjs
 ```
 
 ## 合规红线（地图）
@@ -298,6 +345,7 @@ make smoke   # 冒烟自测（启动 → 探活 → 默认看板 → 前端产�
 
 - **操作手册**：`docs/USER_GUIDE.md`（部署、接入数据源、编排看板、渲染器参考、FAQ 排查）
 - **开发文档**：`docs/DEVELOPMENT.md`（仓库结构、数据模型与 TS/Go 契约对照、WS 协议、REST API 与错误码、渲染器与适配器扩展、配置全表）
+- **v3 地图看板**：`docs/系统第三版计划书.md`（设计与被否方案）、`docs/v3-mapboard-test-plan.md`（验收用例）
 - **踩坑笔记**：`note/`（7 篇，按「现象 → 根因 → 修复 → 教训」组织）
 
 > 早期的过程性文档（PRD / 架构设计 / 任务分解）已从仓库移除：它们写于开发之前，多处结论已被实测推翻
