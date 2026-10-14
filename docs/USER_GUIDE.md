@@ -295,13 +295,13 @@ curl http://127.0.0.1:9997/v3/paths/list   # 必须 200（401 见 §8.5）
 | --- | --- | --- |
 | 名称 | `lite3 相机` | 显示名 |
 | **接入模式** | `pull`（拉流，默认）/ `publish`（接收远端推流） | `pull`：让 MediaMTX 主动去拉；`publish`：远端 WHIP/RTMP 推给本机 |
-| 流地址 | `rtsp://admin:REDACTED-CAMERA-PASSWORD@192.168.2.69:554/Streaming/Channels/101`<br>`rtmp://172.31.68.227:1935/live/lite3` | 支持 **`rtmp` / `rtmps` / `rtsp` / `rtsps`** 四种（`server/internal/media/url.go:74`）；端口缺省按协议补：RTMP 1935、RTSP 554（`url.go:53-58`、`config.go:100-102`）；`user:pass@` 凭据**原样保留**给 MediaMTX 拉流（`url.go:35-36`）；`publish` 模式可留空 |
+| 流地址 | `rtsp://admin:your-password@192.168.2.69:554/Streaming/Channels/101`<br>`rtmp://172.31.68.227:1935/live/lite3` | 支持 **`rtmp` / `rtmps` / `rtsp` / `rtsps`** 四种（`server/internal/media/url.go:74`）；端口缺省按协议补：RTMP 1935、RTSP 554（`url.go:53-58`、`config.go:100-102`）；`user:pass@` 凭据**原样保留**给 MediaMTX 拉流（`url.go:35-36`）；`publish` 模式可留空 |
 | **RTSP 传输** | `tcp`（默认）/ `udp` / `automatic` | 仅 RTSP 源且非 `publish` 时出现；UDP 易花屏或连不上故默认 TCP，非法值回落 `tcp`（`video.go:211-219`） |
 | **MediaMTX 路径** | 留空则自动取自流地址；`publish` 模式**必填**，如 `live/whip1` | 优先级高于流地址里的 path（`video.go:192-200`）；大小写与斜杠必须与实际推流一致 |
 | 首选协议 | `webrtc`（默认）/ `hls` / `flv` | `flv` 仅在配了 `mediamtx.flvBase` 时才有意义 |
 | 携带音频 | 关 / 开 | 是否请求音轨 |
 
-**RTSP 摄像头填写示例**（海康/大华常见）：`rtsp://admin:REDACTED-CAMERA-PASSWORD@192.168.2.69:554/Streaming/Channels/101`。前端正则明确放行 `user:pass@` 段（`constants.ts:171`），密码不会被脱敏丢弃。
+**RTSP 摄像头填写示例**（海康/大华常见）：`rtsp://admin:your-password@192.168.2.69:554/Streaming/Channels/101`。前端正则明确放行 `user:pass@` 段（`constants.ts:171`），密码不会被脱敏丢弃。
 
 **pull 还是收流？判定规则（`server/internal/adapter/video/video.go:176-189`）**：
 

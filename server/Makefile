@@ -24,6 +24,19 @@ GO          := go
 # ⚠️ 不要写成某个具体的绝对路径——那样换台机器构建就会立刻报
 #    "creating work dir: stat <路径>: no such file or directory"。
 GOTMPDIR    ?= $(HOME)/.cache/monitorall/tmp
+PKG         := github.com/monitorall/monitorall
+
+# ——— 构建期版本追溯 ———
+# 为什么需要：两个不同版本的二进制长得一模一样，回滚时无法确认机器上跑的是哪一版。
+# 用【递归赋值 =】（不是 :=）保证惰性求值：只在 build 真正执行时才调用 git；
+# 非 git 环境（解压的源码包、CI 里没拉 .git）下 git 命令失败，2>/dev/null 使其返回空串，
+# 构建照常成功，GitCommit 回落到源码里的 "unknown"。
+GIT_COMMIT   = $(shell git rev-parse --short HEAD 2>/dev/null)
+GIT_DIRTY    = $(shell git status --porcelain 2>/dev/null | head -1)
+# dirty 后缀：当前工作区有大量未提交改动时，纯 commit hash 会让人误以为跑的是干净版本。
+BUILD_COMMIT = $(if $(GIT_COMMIT),$(GIT_COMMIT)$(if $(GIT_DIRTY),-dirty),unknown)
+# 同样用递归赋值，保持整条链惰性（:= 会在 Makefile 解析阶段就展开右侧、提前调用 git）。
+LDFLAGS       = -s -w -X $(PKG)/internal/config.GitCommit=$(BUILD_COMMIT)
 
 # 单二进制多平台分发必须关闭 CGO（modernc.org/sqlite 为纯 Go 实现）
 export CGO_ENABLED := 0
@@ -46,8 +59,8 @@ deps:
 ## build: 编译（embed 前端产物，产物在 bin/monitorall）
 build: | gotmpdir
 	@mkdir -p $(OUT_DIR)
-	$(GO) build -trimpath -ldflags "-s -w" -o $(OUT_DIR)/$(BINARY) $(CMD_DIR)
-	@echo "构建完成: $(OUT_DIR)/$(BINARY)"
+	$(GO) build -trimpath -ldflags "$(LDFLAGS)" -o $(OUT_DIR)/$(BINARY) $(CMD_DIR)
+	@echo "构建完成: $(OUT_DIR)/$(BINARY)  (commit $(BUILD_COMMIT))"
 
 ## run: 编译并运行（读取 ./config.yaml，缺省使用内置默认值）
 run: build

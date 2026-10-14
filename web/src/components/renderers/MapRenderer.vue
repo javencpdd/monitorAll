@@ -4,8 +4,9 @@
  *
  * 合规红线实现要点：
  *   1. 底图**只**用高德 JS API 2.0（utils/amapLoader.ts 是唯一加载入口）
- *   2. 坐标转换**只**在 utils/geo.ts 用 gcoord 完成，本文件只调用 toGCJ02 / toGCJ02Batch
- *   3. sourceCRS 由用户在卡片配置里显式声明，优先级高于 payload.crs
+ *   2. 坐标转换**只**在 utils/geo.ts 用 gcoord 完成，本文件只调用 toGCJ02（逐点，各用自己那帧的生效 crs）
+ *   3. sourceCRS 由用户在卡片配置里显式声明，但**帧内 `payload.crs` 优先**（后端逐帧盖章）；
+ *      判定复用 `useGeoPosition.resolveFrameCrs`（与节点侧同一实现，绝不另写一份白名单）
  *   4. amapKey 为空时降级为「配置指引 + 纯坐标列表」，**绝不切换任何境外底图**
  *   5. 脚注/悬浮面板显示「坐标系 GCJ-02（源 WGS-84，已离线换算）」
  */
@@ -13,9 +14,10 @@ import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vu
 import type { RendererProps } from '@/types'
 import type { AMapMap, AMapMarker, AMapNamespace, AMapPolyline, AMapTileLayer } from '@/utils/amapLoader'
 import { loadAMap } from '@/utils/amapLoader'
-import { describeCrs, isValidLngLat, toGCJ02, toGCJ02Batch } from '@/utils/geo'
+import { describeCrs, isValidLngLat, toGCJ02 } from '@/utils/geo'
 import type { LngLat } from '@/utils/geo'
 import { useFrameFeed } from '@/composables/useFrameFeed'
+import { resolveFrameCrs, type CrsSource } from '@/composables/useGeoPosition'
 import { useUiStore } from '@/stores/ui'
 import { MAP_DEFAULT_TRAIL, MAP_DEFAULT_ZOOM, MAP_THROTTLE_MS, DEFAULT_MAP_CENTER } from '@/utils/constants'
 import { cssColor } from '@/styles/theme'
@@ -24,7 +26,16 @@ import type { CRS } from '@/types'
 import { getByPath } from '@/utils/jsonpath'
 import EmptyState from '@/components/base/EmptyState.vue'
 
-type Pos = { lat: number; lon: number; yaw?: number; t: number; sourceCRS: CRS }
+type Pos = {
+  lat: number
+  lon: number
+  yaw?: number
+  t: number
+  /** **该帧实际生效**的坐标系（帧内盖章优先，回落卡片声明值）。 */
+  sourceCRS: CRS
+  /** 上面值的来源 —— 脚注要如实说明"这图按什么基准画的"。 */
+  crsSource: CrsSource
+}
 
 const props = defineProps<RendererProps>()
 const ui = useUiStore()
@@ -84,6 +95,9 @@ function extractPosition(frame: { payload: unknown; publishedTs: number } | unde
   if (!frame) return null
   const payload = frame.payload as Record<string, unknown> | undefined
   if (!payload) return null
+  // 帧内 crs 优先、非法/缺失回落卡片声明值。**复用节点侧同一个纯函数**，两个分支共用这一次判定。
+  // （曾经这里直接用 sourceCRS.value，导致同一批帧被节点圆点与卡片地图点两套规则解读 → 互相错开数百米。）
+  const { crs: frameCRS, source: crsSource } = resolveFrameCrs(payload.crs, sourceCRS.value)
   // geo_pose：lat/lon 直读
   const lat = typeof payload.lat === 'number' ? payload.lat : Number.NaN
   const lon = typeof payload.lon === 'number' ? payload.lon : Number.NaN
@@ -93,7 +107,8 @@ function extractPosition(frame: { payload: unknown; publishedTs: number } | unde
       lon,
       ...(typeof payload.yawDeg === 'number' ? { yaw: payload.yawDeg } : {}),
       t: typeof payload.t === 'number' ? payload.t : frame.publishedTs,
-      sourceCRS: sourceCRS.value,
+      sourceCRS: frameCRS,
+      crsSource,
     }
   }
   // json 兜底：优先用配置的字段路径，再试常见候选
@@ -122,7 +137,8 @@ function extractPosition(frame: { payload: unknown; publishedTs: number } | unde
       lat: flatLat,
       lon: flatLon,
       t: frame.publishedTs,
-      sourceCRS: sourceCRS.value,
+      sourceCRS: frameCRS,
+      crsSource,
       ...(yawDeg !== undefined ? { yaw: yawDeg } : {}),
     }
   }
@@ -155,10 +171,16 @@ function collectTrail(): Pos[] {
   return out
 }
 
-/** 单次转换跟着点数走：先按用户声明的坐标系整体换算到 GCJ-02。 */
+/**
+ * 换算到 GCJ-02（投影前最后一步）。
+ *
+ * ⚠️ 必须**逐点用各自的 `p.sourceCRS`**，不能整条轨迹套一个值：帧内 crs 优先之后，
+ * 同一条轨迹里的点可能分别来自"带 crs 的帧"和"不带 crs 的帧"（甚至 crs 中途变过），
+ * 拿一个声明值整批换算会静默算错其中一部分 —— 表现就是轨迹与节点圆点对不上。
+ * 成本无变化：`toGCJ02Batch` 内部本来就是逐点调 `toGCJ02`。
+ */
 function toProjected(points: readonly Pos[]): LngLat[] {
-  const raw = points.map((p) => [p.lon, p.lat] as LngLat)
-  return toGCJ02Batch(raw, sourceCRS.value)
+  return points.map((p) => toGCJ02(p.lon, p.lat, p.sourceCRS))
 }
 
 /** 强调色（Canvas/图标需具体色值，换肤后重新解析）。 */
@@ -271,7 +293,7 @@ async function init(): Promise<void> {
   amap.value = instance
   const first = extractPosition(latest.value)
   const center: LngLat = first
-    ? (toGCJ02(first.lon, first.lat, sourceCRS.value) as LngLat)
+    ? (toGCJ02(first.lon, first.lat, first.sourceCRS) as LngLat)
     : DEFAULT_MAP_CENTER
   const map = new instance.Map(container.value, {
     zoom: zoom.value,
@@ -311,8 +333,26 @@ onBeforeUnmount(() => {
   ready.value = false
 })
 
-const crsText = computed<string>(() => describeCrs(sourceCRS.value))
 const lastPoint = computed<Pos | undefined>(() => recentPoints.value[0])
+
+/**
+ * **实际生效**的坐标系与来源，给脚注用。
+ *
+ * 取"最新一帧"的生效值：脚注要回答的是"这张图现在按什么基准画的"，
+ * 而图上最要紧的就是当前 Marker。轨迹里更早的点可能用了别的 crs（见 toProjected），
+ * 脚注只说当前基准，不做逐点枚举 —— 否则就把一句话说明变成数据表了（过度设计）。
+ * 还没有任何帧时（刚打开、设备离线）回落卡片声明值，标「声明」。
+ */
+const effectiveCrs = computed<{ crs: CRS; source: CrsSource }>(() => {
+  const p = lastPoint.value
+  return p ? { crs: p.sourceCRS, source: p.crsSource } : { crs: sourceCRS.value, source: 'declared' }
+})
+
+/** 脚注：`GCJ-02（源 WGS-84，已离线换算） · 帧`。来源必须说清，否则脚注等于撒谎。 */
+const crsText = computed<string>(() => {
+  const { crs, source } = effectiveCrs.value
+  return `${describeCrs(crs)} · ${source === 'frame' ? '帧' : '声明'}`
+})
 
 /** 降级列表用的投影结果（转换仍在 geo.ts，本文件只调用）。 */
 const recentRows = computed<

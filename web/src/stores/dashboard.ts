@@ -53,16 +53,29 @@ export const useDashboardStore = defineStore('dashboard', () => {
   }
 
   /** D8：无看板时取第一个（后端保证已创建「默认看板」）。 */
-  async function ensureSelected(id?: string): Promise<string | undefined> {
+  /**
+   * 确保有一个选中的看板；未指定 id 时自动挑一个。
+   *
+   * ⚠️ `preferKind` 不是花哨选项，而是修一个真实缺陷：
+   * 原来这里无条件兜底 `dashboards[0]`。当列表里第一个是**地图看板**时，
+   * 从 `/` 或刷新进入会被选中并由**网格视图**渲染 —— 地图看板没有网格卡片，
+   * 页面就是空的，用户会认为"这个看板不存在"。
+   * 现在：只有同类看板一个都没有时，才退化成第一个（再由视图层的 kind 守卫转走）。
+   */
+  async function ensureSelected(id?: string, preferKind: 'grid' | 'map' = 'grid'): Promise<string | undefined> {
     await loadList()
-    const target = id && dashboards.value.some((d) => d.id === id) ? id : dashboards.value[0]?.id
+    const explicit = id && dashboards.value.some((d) => d.id === id) ? id : undefined
+    const target =
+      explicit ??
+      dashboards.value.find((d) => (d.kind ?? 'grid') === preferKind)?.id ??
+      dashboards.value[0]?.id
     if (!target) return undefined
     await select(target)
     return target
   }
 
-  async function create(name: string): Promise<DashboardWithCards> {
-    const created = await api.createDashboard({ name })
+  async function create(name: string, kind: 'grid' | 'map' = 'grid'): Promise<DashboardWithCards> {
+    const created = await api.createDashboard({ name, kind })
     dashboards.value.push(stripCards(created))
     current.value = created
     dirty.value = false
@@ -92,6 +105,18 @@ export const useDashboardStore = defineStore('dashboard', () => {
     return card
   }
 
+  /**
+   * 局部更新一张卡片（补丁语义）。
+   *
+   * ⚠️ **解绑节点必须显式送 `{ nodeId: '' }`**，不能靠"不传 nodeId"：
+   * 后端把字段缺失 / nil 视为"不修改"，所以 `patchCard(id, { title: 'x' })` 之后
+   * 节点归属**保持不变**；只有 `patchCard(id, { nodeId: '' })` 才真正解绑。
+   *
+   * 现状核对（E）：全仓 grep `nodeId` 写入点，**没有任何一处送过空串**
+   * （`CardConfigDrawer` / `useCardCreate` / `ui.openCardDrawer` 全是 `nodeId ? { nodeId } : {}`，
+   * 空值直接省略）。也就是说前端**当前没有"解绑"路径**，未锚定卡由「删除节点」的服务端级联产生。
+   * 这里只是把语义钉在唯一入口上：将来要加解绑 UI，就从这个函数显式传 `''`，别绕。
+   */
   async function patchCard(cardId: string, body: UpdateCardReq): Promise<Card> {
     const updated = await api.updateCard(cardId, body)
     replaceCard(updated)

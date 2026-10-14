@@ -61,10 +61,66 @@ export const CARD_FOOTER_H = 24
 export const TOP_BAR_HEIGHT = 48
 export const SOURCE_PANEL_WIDTH = 260
 export const CARD_DRAWER_WIDTH = 360
+/**
+ * 数据源详情抽屉宽度（只读）。
+ * 比卡片抽屉（360）略宽：配置值是「标签 + 长 URL / 长路径」，太窄会频繁折行。
+ */
+export const DATA_SOURCE_DETAIL_WIDTH = 380
 
 /* ——— 视频（ARCH §2.3 / §11.3） ——— */
 export const VIDEO_NEGOTIATE_TIMEOUT_MS = 3000
+/**
+ * HLS 单独的协商超时预算。
+ *
+ * 为什么比通用值大 4 倍：MediaMTX 的 on-demand 拉流源是「收到第一个请求才开始拉上游」，
+ * 实测完全冷启动到 ready 约 8 秒（源刚空闲时约 2 秒）。而 hls.js 在首帧到达前 attach 不会
+ * resolve，3 秒窗口必然把它误判成「HLS 协商超时」——流其实马上就好了。
+ * WebRTC/FLV 仍用 3 秒：WHEP 是同步 HTTP 协商，慢就是真的连不上，拖长只会让用户干等。
+ */
+export const VIDEO_HLS_TIMEOUT_MS = 12000
 export const VIDEO_RETRY_PREFERRED_DEFAULT_SEC = 30
+/**
+ * MediaMTX 路径（流名）的合法规则。
+ *
+ * ⚠️ **必须与后端逐字一致**：本正则与 `server/internal/media/mediamtx.go` 的
+ * `mediaMTXPathRe` 是同一条规则的两个副本，由 `scripts/source-guards.mjs` 守卫 P 比对。
+ * 任何一侧单独改动都会造成"前端放行、后端 40001 拒绝"的静默不一致 —— 这正是本项目
+ * 反复踩的坑。改之前先看守卫，改完必须同步两侧。
+ *
+ * 规则来源：MediaMTX 拒绝非法路径时返回
+ *   `invalid path name: can contain only alphanumeric characters, underscore, dot, minus, slash`
+ * 即只允许 `A-Za-z0-9`、下划线、点、减号，并以 `/` 分段：
+ *   - 不允许 scheme / `?` / `#` / 空格 / 冒号
+ *   - 不允许前导斜杠、尾斜杠、连续斜杠（`live//cam`）
+ *
+ * ⚠️ 前端必须自己拦：一旦把整条地址（`rtmp://host:1936/live/x`）填进这个字段，
+ * 播放地址会拼成 `/rtmp://host:1936/live/x/index.m3u8`，MediaMTX 返回 500，
+ * 前端只看到「HLS 协商超时」—— 真正的错误（路径名非法）被完全掩盖。
+ */
+/**
+ * MediaMTX 路径名的合法形态。
+ *
+ * ⚠️ **必须与后端 `mediaMTXPathRe` 逐字等价**：
+ * `server/internal/media/mediamtx.go:30` 是 `^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*$`。
+ *
+ * 曾经这里写成 `/^[A-Za-z0-9_.\-/]+$/`（把 `/` 丢进字符类），后果是
+ * `/live/cam1`、`live//cam1` 都能骗过前端，却被后端 40001 拒掉；而 Step 2 上
+ * formError 不显示、错误只靠 toast 一闪而过 —— 用户的体感是"点了创建数据源
+ * 完全没反应"。守卫 Q 断言两边口径一致，改松必然红。
+ */
+export const MEDIA_MTX_PATH_RE = /^[A-Za-z0-9_.-]+(\/[A-Za-z0-9_.-]+)*$/
+
+/**
+ * 归一化 MediaMTX 路径：去首尾空白与首尾斜杠。
+ *
+ * `/live/cam1` → `live/cam1`。前导斜杠是很自然的手误（从地址栏复制的习惯），
+ * 不该让用户对着报错猜；后端给通道名做的就是同一个 Trim（`source.go:192`），
+ * 这里提前到前端，保证"校验用的值"与"提交的值"与"通道名"三者一致。
+ */
+export function normalizeMediaMtxPath(path: string): string {
+  return path.trim().replace(/^\/+/, '').replace(/\/+$/, '')
+}
+
 export const VIDEO_PROTOCOL_LABEL: Record<'webrtc' | 'hls' | 'flv', string> = {
   webrtc: 'WebRTC',
   hls: 'HLS',
@@ -88,6 +144,36 @@ export const DEFAULT_DECIMALS = 2
 export const MAX_EXPORT_ROWS = 100000
 /** JSON 树单个容器的安全深度，超出后折叠。 */
 export const JSON_TREE_MAX_DEPTH = 12
+
+/* ——— 全局设置（品牌 + 天气） ——— */
+/**
+ * 设置抽屉宽度：比卡片抽屉（CARD_DRAWER_WIDTH=360）宽。
+ * 品牌/天气/关于三组内容更长，360 会把「刷新间隔」挤到需要横向滚动。
+ */
+export const SETTINGS_DRAWER_WIDTH = 420
+/** 品牌默认值：后端未下发、或用户清空项目名之后的回落值。 */
+export const DEFAULT_BRAND_TITLE = 'MonitorAll'
+export const DEFAULT_BRAND_SUBTITLE = '多源异构监控看板'
+/** 文本长度上限必须与后端逐字一致，否则用户能输入超长值、保存时才吃 400。
+ *  对应 server/internal/config/config.go：BrandingTitleMaxRunes / SubtitleMaxRunes / WeatherLabelMaxRunes。 */
+export const BRAND_TITLE_MAX = 40
+export const BRAND_SUBTITLE_MAX = 60
+export const WEATHER_LABEL_MAX = 40
+/** Logo 上传限制：类型与大小（前端先拦一次，别等后端 413 才报错）。 */
+export const LOGO_MAX_BYTES = 200 * 1024
+export const LOGO_ACCEPT_MIME: string[] = ['image/png', 'image/jpeg', 'image/webp']
+export const LOGO_ACCEPT_ATTR = 'image/png,image/jpeg,image/webp'
+/**
+ * 天气刷新间隔允许范围与默认值（分钟）。
+ * 与后端 config.go 的 WeatherRefreshMinMin/Max、DefaultWeatherRefreshMin 对齐；
+ * 后端对越界值是**夹取**而非报错，前端则明确拦截并解释（不让用户看到自己填的值被悄悄改掉）。
+ */
+export const WEATHER_REFRESH_MIN = 1
+export const WEATHER_REFRESH_MAX = 120
+export const WEATHER_REFRESH_DEFAULT_MIN = 10
+export const WEATHER_PROVIDER_DEFAULT = 'open-meteo'
+/** 地理定位（浏览器）等待上限。 */
+export const GEOLOCATE_TIMEOUT_MS = 10000
 
 /* ——— 地图（ARCH §13） ——— */
 export const MAP_DEFAULT_ZOOM = 17
@@ -173,3 +259,78 @@ export const STREAM_URL_RE = /^(?:rtmp|rtmps|rtsp|rtsps):\/\/(?:[^\s:@/]+(?::[^\
 export const STREAM_SCHEME_RE = /^(rtmp|rtmps|rtsp|rtsps):\/\//i
 export const WS_URL_RE = /^wss?:\/\/[^\s]+$/i
 export const HTTP_URL_RE = /^https?:\/\/[^\s]+$/i
+
+/* ——— v3 MapBoard（只新增，不改动上面任何既有值） ——— */
+
+/** 卡片边框宽度（px）。chrome 高度的组成项之一，见 CARD_CHROME_H。 */
+export const CARD_BORDER_PX = 1
+
+/**
+ * ⭐ chrome 高度单一真源（U-6）：必须是**函数**而不是常量，因为页脚可关。
+ *
+ * 现状曾存在双真源（JS 常量 `CARD_HEADER_H/CARD_FOOTER_H` 与 CSS 变量
+ * `--ma-card-header-h/--ma-card-footer-h` 各写一份），MapBoard 计算外框时
+ * 若取到不一致的值会产生「卡片外框高度差 24px、视频区被压扁」的静默偏差。
+ * 自此所有外框高度计算一律走本函数。
+ */
+export function CARD_CHROME_H(showFooter: boolean): number {
+  return CARD_HEADER_H + (showFooter ? CARD_FOOTER_H : 0) + CARD_BORDER_PX * 2
+}
+
+/** 视口剔除迟滞：退出方向外扩的像素（进入方向严格、退出方向宽松）。 */
+export const MAP_CULL_HYSTERESIS_PX = 64
+/**
+ * grace period（visible→hidden 的防抖等待）。
+ * 终裁值 1000ms：一次「瞥一眼别处再回来」的平移通常 >1s，一次误触/惯性抖动通常 <300ms。
+ * 注意：hidden→visible 方向【不加 grace】，恢复必须立即，否则 P-04/P-05 超标。
+ */
+export const MAP_CULL_GRACE_MS = 1000
+/**
+ * 视频降载阶段一 / 阶段二。两者均自「出视野」t0 起算，**不串行叠加**。
+ * T2=10000 与 MediaMTX sourceOnDemand「无读者 10s 停止拉上游」对齐：
+ * 超过 10s 上游本来就没了，继续维持 peer 只是为一个已经死了的流付带宽。
+ */
+export const MAP_VIDEO_SHED_T1_MS = 1000
+export const MAP_VIDEO_SHED_T2_MS = 10000
+/** 节点位置 stale 判定阈值（A9）。 */
+export const MAP_STALE_TIMEOUT_MS = 3000
+/** 几何保存 debounce（拖拽结束后）。 */
+export const MAP_GEOM_SAVE_DEBOUNCE_MS = 300
+/** 节点投影位移小于该值则跳过该卡的同步（过滤微抖动）。 */
+export const MAP_SYNC_EPSILON_PX = 0.5
+/** 节点位置更新节流（与地图轨迹同一档 10Hz）。 */
+export const MAP_NODE_THROTTLE_MS = MAP_THROTTLE_MS
+
+/* —— 卡片默认外框尺寸（C9 + 订正：外框口径） —— */
+export const MAP_CARD_DEFAULT_W = 320
+export const MAP_CARD_DEFAULT_H = 220
+/** 视频卡外框宽（播放内容区 352×198 锁 16:9，外框高由 CARD_CHROME_H 推导）。 */
+export const MAP_CARD_VIDEO_W = 354
+export const MAP_CARD_VIDEO_CONTENT_H = 198
+/**
+ * 地图卡编辑态拖拽把手（标题栏）高度。
+ *
+ * ⚠️ 这是**外壳自有**的 chrome，与 CardFrame 的 header/footer 不是一回事（后者在 body 内）。
+ * 必须与 `.mb-card__grip` 的 CSS 高度一致，否则 C26 的开发期断言会误报 ——
+ * 因此模板里用内联 style 写它，不做 CSS/JS 双真源。
+ */
+export const MAP_CARD_GRIP_H = 24
+
+/** 同节点多卡的级联偏移（C8）。 */
+export const MAP_CASCADE_DX = 20
+export const MAP_CASCADE_DY = 16
+/** 同屏上限（A4）：非视频软上限只提示，视频硬上限拒绝打开。 */
+export const MAP_VISIBLE_NONVIDEO_SOFT_LIMIT = 6
+export const MAP_VISIBLE_VIDEO_HARD_LIMIT = 4
+export const MAP_MAX_NODES = 20
+/** 拖拽贴边吸附阈值（A3）。 */
+export const MAP_EDGE_SNAP_PX = 8
+/** 位移小于该值不判定为拖拽（防误触）。 */
+export const MAP_DRAG_THRESHOLD_PX = 3
+/** will-change 上限：合成层数量必须封顶，否则 20 卡会吃掉大量显存。 */
+export const MAP_WILL_CHANGE_MAX = 8
+/** 节点轨迹默认点数。 */
+export const MAP_TRAIL_DEFAULT = 60
+
+/** 诊断层快照刷新间隔（诊断数据全程不进响应式，靠定时拉取与业务渲染解耦）。 */
+export const DIAG_REFRESH_MS = 500

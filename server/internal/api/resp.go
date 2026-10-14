@@ -9,11 +9,16 @@ import (
 	"github.com/monitorall/monitorall/internal/apperr"
 )
 
-// Response 为全局统一响应体（{code,message,data} + 可选 traceId）。
+// Response 为全局统一响应体（{code,message,data} + 可选 traceId/detail）。
 type Response struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    any    `json:"data"`
+	// Detail 为字段级明细（表单红字用）。
+	//
+	// 历史问题（H20）：apperr.AppError 一直有 Detail 字段，但 Fail 不输出它，
+	// 导致"哪个字段不合法、合法区间是多少"这类信息到不了前端，用户只能看到一句笼统的"参数错误"。
+	Detail  any    `json:"detail,omitempty"`
 	TraceID string `json:"traceId,omitempty"`
 }
 
@@ -53,6 +58,7 @@ func Fail(c *gin.Context, err error) {
 		Code:    int(ae.Code),
 		Message: ae.Message,
 		Data:    nil,
+		Detail:  ae.Detail,
 		TraceID: traceIDOf(c),
 	})
 }
@@ -60,6 +66,11 @@ func Fail(c *gin.Context, err error) {
 // FailCode 直接用错误码 + 文案渲染（detail 携带字段级信息时通过 WithDetail 追加）。
 func FailCode(c *gin.Context, code apperr.Code, msg string) {
 	Fail(c, apperr.New(code, msg))
+}
+
+// FailDetail 直接用错误码 + 文案 + 字段级明细渲染（表单红字场景）。
+func FailDetail(c *gin.Context, code apperr.Code, msg string, detail any) {
+	Fail(c, apperr.New(code, msg).WithDetail(detail))
 }
 
 // traceIDOf 从 gin 上下文取出请求 ID（由 mw 写入）。

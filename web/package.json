@@ -12,7 +12,8 @@
     "build": "vue-tsc --noEmit && vite build",
     "build-only": "vite build",
     "preview": "vite preview",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "test": "node scripts/source-guards.mjs"
   },
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",

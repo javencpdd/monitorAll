@@ -10,9 +10,9 @@ import (
 
 // FieldHint 描述 payload 中某个字段的类型与单位，驱动前端字段选择器。
 type FieldHint struct {
-	Type string `json:"type"`           // number | string | boolean | object | array
+	Type string `json:"type"` // number | string | boolean | object | array
 	Unit string `json:"unit,omitempty"`
-	Path string `json:"path"`           // JSONPath，如 "twist.linear.x"
+	Path string `json:"path"` // JSONPath，如 "twist.linear.x"
 }
 
 // SchemaHint 为 path → FieldHint 的映射。

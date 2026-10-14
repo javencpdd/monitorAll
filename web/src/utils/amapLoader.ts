@@ -19,6 +19,20 @@ export interface AMapMap {
   clearMap(): void
   destroy(): void
   getZoom(): number
+  /* ——— v3 MapBoard 新增（全部可选，避免影响既有 MapRenderer）——— */
+  /** 返回经纬度；不同版本可能返回数组或 {lng,lat}，调用方需兼容。 */
+  getCenter?(): [number, number] | { lng: number; lat: number }
+  /** 当前分辨率（米/像素），用于投影交叉校验；不存在则跳过校验。 */
+  getResolution?(): number
+  /** 经纬度 → 容器像素。**仅在校准时低频调用**，主路径由 utils/projector.ts 自算。 */
+  lngLatToContainer?(lngLat: [number, number]): { x: number; y: number }
+  getSize?(): { width: number; height: number }
+  /**
+   * 绑定地图事件。回调参数含事件对象（如 click 的 `lnglat`），由调用方按已知结构断言。
+   * 形参声明为 `(e: unknown) => void`：无参回调 `() => {}` 依然可赋值（形参可少于实参）。
+   */
+  on?(event: string, cb: (e: unknown) => void): unknown
+  off?(event: string, cb: (e: unknown) => void): unknown
 }
 
 export interface AMapPolyline {

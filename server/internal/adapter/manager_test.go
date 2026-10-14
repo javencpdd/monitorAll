@@ -340,12 +340,12 @@ type silentAdapter struct {
 	id string
 }
 
-func (s *silentAdapter) DataSourceID() string                     { return s.id }
-func (s *silentAdapter) Start(ctx context.Context) error          { return nil }
-func (s *silentAdapter) Close() error                             { return nil }
-func (s *silentAdapter) Health(ctx context.Context) Health        { return Health{OK: true} }
+func (s *silentAdapter) DataSourceID() string              { return s.id }
+func (s *silentAdapter) Start(ctx context.Context) error   { return nil }
+func (s *silentAdapter) Close() error                      { return nil }
+func (s *silentAdapter) Health(ctx context.Context) Health { return Health{OK: true} }
 
-func (s *silentAdapter) StopChannel(channelID string) error       { return nil }
+func (s *silentAdapter) StopChannel(channelID string) error { return nil }
 func (s *silentAdapter) ListChannels(ctx context.Context) ([]ChannelSpec, error) {
 	return []ChannelSpec{{Name: "/x", PayloadType: model.PayloadJSON}}, nil
 }

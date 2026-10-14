@@ -43,15 +43,15 @@ const (
 
 // CertInfo 描述当前生效的证书信息（供 /api/v1/system/runtime 与启动横幅使用）。
 type CertInfo struct {
-	Enabled    bool     `json:"enabled"`
-	Dir        string   `json:"dir"`
-	CertPath   string   `json:"certPath"`
-	KeyPath    string   `json:"keyPath"`
-	CAPath     string   `json:"caPath"`
-	Fingerprint string  `json:"fingerprint"`
-	NotAfter   int64    `json:"notAfter"`
-	SANs       []string `json:"sans"`
-	Generated  bool     `json:"generated"`
+	Enabled     bool     `json:"enabled"`
+	Dir         string   `json:"dir"`
+	CertPath    string   `json:"certPath"`
+	KeyPath     string   `json:"keyPath"`
+	CAPath      string   `json:"caPath"`
+	Fingerprint string   `json:"fingerprint"`
+	NotAfter    int64    `json:"notAfter"`
+	SANs        []string `json:"sans"`
+	Generated   bool     `json:"generated"`
 }
 
 // EnsureCertificate 保证证书目录中存在可用的自签 CA 与服务端证书。

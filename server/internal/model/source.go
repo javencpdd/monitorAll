@@ -16,8 +16,8 @@ type DataSource struct {
 	Name          string         `json:"name"`
 	Kind          DataSourceKind `json:"kind"`
 	Protocol      Protocol       `json:"protocol"`
-	ConnParams    map[string]any `json:"connParams"`  // 敏感键已脱敏为 "***"
-	SecretKeys    []string       `json:"secretKeys"`  // 声明哪些 connParams 键是敏感字段
+	ConnParams    map[string]any `json:"connParams"` // 敏感键已脱敏为 "***"
+	SecretKeys    []string       `json:"secretKeys"` // 声明哪些 connParams 键是敏感字段
 	RetryPolicy   *RetryPolicy   `json:"retryPolicy,omitempty"`
 	Status        Status         `json:"status"`
 	LastError     string         `json:"lastError,omitempty"`
@@ -45,8 +45,8 @@ type VideoConnParams struct {
 
 // ROSConnParams 为 ROS 类数据源的连接参数。
 type ROSConnParams struct {
-	Version    string            `json:"version"`              // ros1 | ros2
-	BridgeURL  string            `json:"bridgeUrl"`            // ws://172.31.68.227:9090
+	Version    string            `json:"version"`   // ros1 | ros2
+	BridgeURL  string            `json:"bridgeUrl"` // ws://172.31.68.227:9090
 	NodeName   string            `json:"nodeName,omitempty"`
 	MasterURI  string            `json:"masterUri,omitempty"`  // ROS1 可选 http://host:11311
 	DomainID   int               `json:"domainId,omitempty"`   // ROS2 可选
@@ -63,7 +63,7 @@ type HTTPConnParams struct {
 	Headers     map[string]string `json:"headers,omitempty"` // 敏感：Authorization
 	Body        string            `json:"body,omitempty"`
 	JSONPath    string            `json:"jsonPath,omitempty"`
-	TimeoutMs   int               `json:"timeoutMs"`         // 默认 3000
+	TimeoutMs   int               `json:"timeoutMs"` // 默认 3000
 	InsecureTLS bool              `json:"insecureTls"`
 }
 
@@ -83,7 +83,7 @@ type Channel struct {
 	Name         string         `json:"name"` // live/lite3 | /odom | /api/stat
 	PayloadType  PayloadType    `json:"payloadType"`
 	Meta         map[string]any `json:"meta,omitempty"` // rosMsgType / videoCodec / httpMethod ...
-	RateLimitHz  float64        `json:"rateLimitHz"`     // 0 = 用全局默认；BE-04
+	RateLimitHz  float64        `json:"rateLimitHz"`    // 0 = 用全局默认；BE-04
 	Status       Status         `json:"status"`
 	LastError    string         `json:"lastError,omitempty"`
 	LastFrameAt  int64          `json:"lastFrameAt,omitempty"`
@@ -95,9 +95,9 @@ type Channel struct {
 // ChannelRuntime 为通道运行态视图（不落盘，仅 API/WS 返回）。
 type ChannelRuntime struct {
 	Channel
-	RefCount    int     `json:"refCount"`    // 订阅引用计数
+	RefCount    int     `json:"refCount"` // 订阅引用计数
 	FrameRateHz float64 `json:"frameRateHz"`
-	Dropped     uint64  `json:"dropped"`     // 累计丢帧数
+	Dropped     uint64  `json:"dropped"` // 累计丢帧数
 }
 
 // ————————————————— 通道 meta 键常量（禁止散落魔法字符串） —————————————————

@@ -70,7 +70,7 @@ func DenormalizeMsgType(version string, t string) string {
 // ROS2：type 可选；提供时若与实际不完全匹配会导致订阅静默失败，因此仅在确定时填写。
 func BuildSubscribeMessage(version string, topic, msgType string, opts SubscribeOptions) map[string]any {
 	msg := map[string]any{
-		"op":   OpSubscribe,
+		"op":    OpSubscribe,
 		"topic": topic,
 	}
 	if msgType != "" {

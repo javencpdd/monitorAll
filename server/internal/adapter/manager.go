@@ -47,8 +47,8 @@ type entry struct {
 	log     *slog.Logger
 
 	mu       sync.Mutex
-	refCount map[string]int          // channelID → 订阅数（跨 WS 连接累加）
-	active   map[string]ChannelSpec  // 已 StartChannel 的通道
+	refCount map[string]int         // channelID → 订阅数（跨 WS 连接累加）
+	active   map[string]ChannelSpec // 已 StartChannel 的通道
 	state    model.Status
 	lastErr  string
 	nextAt   time.Time

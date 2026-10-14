@@ -18,6 +18,7 @@ import (
 	"github.com/monitorall/monitorall/internal/config"
 	"github.com/monitorall/monitorall/internal/logx"
 	"github.com/monitorall/monitorall/internal/media"
+	"github.com/monitorall/monitorall/internal/version"
 )
 
 // Server 同时管理 HTTP 与 HTTPS 两个 http.Server。
@@ -33,6 +34,16 @@ type Server struct {
 	errCh   chan error
 	started bool
 	wg      sync.WaitGroup
+
+	// done 在 Shutdown 时关闭，是解除 Wait 阻塞的唯一信号源。
+	//
+	// ⚠️ 这里曾经写成 `case <-time.After(time.Hour): return nil` —— 想表达"永久阻塞"，
+	// 实际后果是**服务跑满 1 小时必然自动退出**：Wait 返回 nil → main 视作"服务自己停了"
+	// → 走完整套优雅关闭 → 进程正常退出，且只留一条 INFO 日志（不崩、不报错，极难察觉）。
+	// 已实证三次，误差 0 秒：10-11 00:13→01:13、10-12 08:10:30→09:10:30、09:19:58→10:19:58。
+	// 结论：**"永久阻塞"绝不能用定时器表达。**
+	done     chan struct{}
+	doneOnce sync.Once
 }
 
 // New 构造 Server（尚未监听）。
@@ -42,6 +53,7 @@ func New(cfg *config.Config, handler http.Handler) *Server {
 		handler: handler,
 		log:     logx.With("module", "server"),
 		errCh:   make(chan error, 2),
+		done:    make(chan struct{}),
 	}
 }
 
@@ -110,17 +122,25 @@ func (s *Server) Start() error {
 }
 
 // Wait 阻塞等待任一监听异常退出（正常关闭时 ctx 取消由调用方处理）。
+// Wait 阻塞直到**服务出错**（返回该错误）或 **Shutdown 被调用**（返回 nil）。
+//
+// ⚠️ 不要用定时器表达"永久阻塞" —— 见 done 字段上的注释（曾导致服务跑满 1 小时自动退出）。
+// 回归守卫：server_test.go 的 TestWaitBlocksUntilShutdown 与 TestWaitSourceHasNoTimerSentinel。
 func (s *Server) Wait() error {
 	select {
 	case err := <-s.errCh:
 		return err
-	case <-time.After(time.Hour):
+	case <-s.done:
 		return nil
 	}
 }
 
 // Shutdown 优雅关闭两个监听。
 func (s *Server) Shutdown(ctx context.Context) error {
+	// 先解除 Wait 的阻塞：Shutdown 是"服务要停了"的唯一信号源。
+	// 放在最前面，保证即使下面的关闭过程出错，等待方也不会被永久挂住。
+	s.doneOnce.Do(func() { close(s.done) })
+
 	var firstErr error
 	if s.httpSrv != nil {
 		if err := s.httpSrv.Shutdown(ctx); err != nil {
@@ -150,7 +170,10 @@ func (s *Server) PrintBanner(cert *media.CertInfo) {
 	httpsPort := portOf(s.cfg.Server.HTTPSAddr)
 
 	fmt.Println()
-	fmt.Printf("  MonitorAll v%s  (schema v%d)\n", config.Version, config.CurrentSchemaVersion)
+	// 打印【数据库结构】版本（唯一真源 version.SchemaVersion）。
+	// 此前这里打印的是 config.CurrentSchemaVersion（配置文件格式版本=1），与数据库实际版本漂移（H9）。
+	fmt.Printf("  MonitorAll v%s  (commit %s, schema v%d)\n",
+		config.Version, config.GitCommit, version.SchemaVersion)
 	fmt.Println("  ────────────────────────────────────────────────")
 	fmt.Printf("    HTTP   →  http://%s:%d\n", primary, httpPort)
 	if s.cfg.Server.TLSEnabled && cert != nil && cert.Enabled {

@@ -21,15 +21,15 @@ const (
 
 // 服务端 → 客户端。
 const (
-	OpWelcome        = "welcome"
-	OpSubscribed     = "subscribed"
-	OpUnsubscribed   = "unsubscribed"
-	OpFrames         = "frames"
-	OpChannelStatus  = "channelStatus"
-	OpSourceStatus   = "sourceStatus"
-	OpBackpressure   = "backpressure"
-	OpPing           = "ping"
-	OpError          = "error"
+	OpWelcome       = "welcome"
+	OpSubscribed    = "subscribed"
+	OpUnsubscribed  = "unsubscribed"
+	OpFrames        = "frames"
+	OpChannelStatus = "channelStatus"
+	OpSourceStatus  = "sourceStatus"
+	OpBackpressure  = "backpressure"
+	OpPing          = "ping"
+	OpError         = "error"
 )
 
 // WS 错误码字符串（op=error 的 code 字段）。
@@ -64,29 +64,29 @@ type SubscribeResult struct {
 
 // ServerMsg 为服务端下行消息（联合结构，未使用字段因 omitempty 不出现）。
 type ServerMsg struct {
-	Op                 string             `json:"op"`
-	ConnID             string             `json:"connId,omitempty"`
-	Protocol           int                `json:"protocol,omitempty"`
-	ServerTimeMs       int64              `json:"serverTimeMs,omitempty"`
+	Op                  string            `json:"op"`
+	ConnID              string            `json:"connId,omitempty"`
+	Protocol            int               `json:"protocol,omitempty"`
+	ServerTimeMs        int64             `json:"serverTimeMs,omitempty"`
 	HeartbeatIntervalMs int               `json:"heartbeatIntervalMs,omitempty"`
-	Ref                string             `json:"ref,omitempty"`
-	Results            []SubscribeResult  `json:"results,omitempty"`
-	ChannelIDs         []string           `json:"channelIds,omitempty"`
-	Items              []model.Frame      `json:"items,omitempty"`
-	Ts                 int64              `json:"ts,omitempty"`
-	ChannelID          string             `json:"channelId,omitempty"`
-	Status             model.Status       `json:"status,omitempty"`
-	LastError          string             `json:"lastError,omitempty"`
-	LastFrameAt        int64              `json:"lastFrameAt,omitempty"`
-	LatencyMs          int64              `json:"latencyMs,omitempty"`
-	DataSourceID       string             `json:"dataSourceId,omitempty"`
-	ReconnectInMs      int64              `json:"reconnectInMs,omitempty"`
-	NextRetryAt        int64              `json:"nextRetryAt,omitempty"`
-	Dropped            uint64             `json:"dropped,omitempty"`
-	WindowMs           int64              `json:"windowMs,omitempty"`
-	T                  int64              `json:"t,omitempty"`
-	Code               string             `json:"code,omitempty"`
-	Message            string             `json:"message,omitempty"`
+	Ref                 string            `json:"ref,omitempty"`
+	Results             []SubscribeResult `json:"results,omitempty"`
+	ChannelIDs          []string          `json:"channelIds,omitempty"`
+	Items               []model.Frame     `json:"items,omitempty"`
+	Ts                  int64             `json:"ts,omitempty"`
+	ChannelID           string            `json:"channelId,omitempty"`
+	Status              model.Status      `json:"status,omitempty"`
+	LastError           string            `json:"lastError,omitempty"`
+	LastFrameAt         int64             `json:"lastFrameAt,omitempty"`
+	LatencyMs           int64             `json:"latencyMs,omitempty"`
+	DataSourceID        string            `json:"dataSourceId,omitempty"`
+	ReconnectInMs       int64             `json:"reconnectInMs,omitempty"`
+	NextRetryAt         int64             `json:"nextRetryAt,omitempty"`
+	Dropped             uint64            `json:"dropped,omitempty"`
+	WindowMs            int64             `json:"windowMs,omitempty"`
+	T                   int64             `json:"t,omitempty"`
+	Code                string            `json:"code,omitempty"`
+	Message             string            `json:"message,omitempty"`
 }
 
 // NewWelcome 构造 welcome 消息。

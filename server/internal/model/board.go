@@ -20,6 +20,10 @@ type DisplayOptions struct {
 }
 
 // Card 为看板卡片实体。
+//
+// v3 新增三个字段（MapBoard 专用），全部使用指针 + omitempty：
+// 网格看板的卡片这些字段为 nil，序列化后【与 v3 之前字节级一致】，
+// 前端类型无需分支即可同时服务两种看板。
 type Card struct {
 	ID             string         `json:"id"`
 	DashboardID    string         `json:"dashboardId"`
@@ -29,7 +33,10 @@ type Card struct {
 	Unit           string         `json:"unit,omitempty"`
 	RenderConfig   map[string]any `json:"renderConfig"` // 由 RendererManifest.configSchema 驱动
 	DisplayOptions DisplayOptions `json:"displayOptions"`
-	Layout         Layout         `json:"layout"`
+	Layout         Layout         `json:"layout"`               // 仅网格看板使用（栅格单位）
+	NodeID         *string        `json:"nodeId,omitempty"`     // v3：所属地图节点，空/缺省 = 未锚定
+	AnchorMode     *string        `json:"anchorMode,omitempty"` // v3：node | free
+	MapGeom        *MapGeometry   `json:"mapGeom,omitempty"`    // v3：地图看板下的像素几何
 	CreatedAt      int64          `json:"createdAt"`
 	UpdatedAt      int64          `json:"updatedAt"`
 }
@@ -38,6 +45,7 @@ type Card struct {
 type Dashboard struct {
 	ID            string         `json:"id"`
 	Name          string         `json:"name"`
+	Kind          BoardKind      `json:"kind"`          // v3：grid | map，迁移后旧看板一律为 grid
 	Revision      int64          `json:"revision"`      // 乐观锁，每次保存 +1
 	SchemaVersion int            `json:"schemaVersion"` // 1
 	GridCols      int            `json:"gridCols"`      // 默认 12
@@ -70,7 +78,12 @@ const (
 	// DefaultDecimals 为默认小数位。
 	DefaultDecimals = 2
 	// DefaultCardW / DefaultCardH 为新建卡片的默认尺寸。
-	DefaultCardW = 3
+	//
+	// H7：此前后端为 3、前端 constants.ts 为 4，两处各写一份且注释还写着"与前端对齐"（谎报）。
+	// 差异只在"建卡不传 layout"时暴露，影响面小但属于典型的契约漂移。
+	// 现在以【前端渲染值 4】为准改后端：改 1 个常量、前端零回归；反过来改前端要动类型与落位计算。
+	// 根治方案是 /system/runtime 下发 defaults、前端不硬编码（v3.1）。
+	DefaultCardW = 4
 	DefaultCardH = 4
 )
 
@@ -100,12 +113,13 @@ func DefaultLayoutXY() Layout {
 	}
 }
 
-// NewDashboard 构造一个带缺省值的看板。
+// NewDashboard 构造一个带缺省值的看板（默认为网格看板）。
 func NewDashboard(name string) *Dashboard {
 	now := NowMs()
 	return &Dashboard{
 		ID:            NewDashboardID(),
 		Name:          name,
+		Kind:          BoardKindGrid,
 		Revision:      1,
 		SchemaVersion: CurrentSchemaVersionForEntity,
 		GridCols:      DefaultGridCols,

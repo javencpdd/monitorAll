@@ -43,6 +43,16 @@ if [ -n "${CONFIG_HOST:-}" ] && ! echo "$LAN_IPS" | grep -qx "$CONFIG_HOST"; the
 fi
 echo "───────────────────────────────────────────────"
 
+# ——— 构建期版本追溯 ———
+# 与 server/Makefile 的规则保持一致：非 git 环境回落到 unknown；工作区脏则加 -dirty 后缀，
+# 避免纯 commit hash 让人误以为跑的是干净版本。
+GIT_COMMIT="$(git rev-parse --short HEAD 2>/dev/null || true)"
+if [ -n "$GIT_COMMIT" ] && [ -n "$(git status --porcelain 2>/dev/null | head -1)" ]; then
+  GIT_COMMIT="${GIT_COMMIT}-dirty"
+fi
+export GIT_COMMIT="${GIT_COMMIT:-unknown}"
+echo "==> 构建版本: ${GIT_COMMIT}"
+
 # ——— 启动 ———
 if [ "$BUILD" = "1" ]; then
   echo "==> 构建镜像并启动（首次较慢，前端产物在构建阶段打包进镜像）…"

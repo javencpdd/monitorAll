@@ -12,12 +12,12 @@ import (
 
 // MediaMTXPathView 为 /mediamtx/paths 的返回项（含健康状态）。
 type MediaMTXPathView struct {
-	Name     string   `json:"name"`
-	Ready    bool     `json:"ready"`
-	Readers  int      `json:"readers"`
-	BytesSent int64   `json:"bytesSent"`
-	Tracks   []string `json:"tracks,omitempty"`
-	Source   string   `json:"source,omitempty"`
+	Name      string   `json:"name"`
+	Ready     bool     `json:"ready"`
+	Readers   int      `json:"readers"`
+	BytesSent int64    `json:"bytesSent"`
+	Tracks    []string `json:"tracks,omitempty"`
+	Source    string   `json:"source,omitempty"`
 	// WebrtcURL / HlsURL / FlvURL 为该路径编排出的播放地址（前端直连，不过后端）。
 	WebrtcURL string `json:"webrtcUrl,omitempty"`
 	HlsURL    string `json:"hlsUrl,omitempty"`

@@ -13,6 +13,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/monitorall/monitorall/internal/config"
+	"github.com/monitorall/monitorall/internal/logx"
 )
 
 // ————————————————— 底层 WebSocket 抽象（便于 mock 单测） —————————————————
@@ -75,11 +76,11 @@ const (
 
 // SubscribeOptions 为订阅附加参数（throttle_rate / queue_length / compression）。
 type SubscribeOptions struct {
-	Type         string `json:"-"`          // msgType，由 diff.go 决定是否填写
-	ThrottleRate int    `json:"-"`          // ms，= 1000/maxHz
-	QueueLength  int    `json:"-"`          // 队列长度，默认 1（丢弃积压）
-	FragmentSize int    `json:"-"`          // 分片大小，0 = 不限制
-	Compression  string `json:"-"`          // none | jpeg | cbor-raw
+	Type         string `json:"-"` // msgType，由 diff.go 决定是否填写
+	ThrottleRate int    `json:"-"` // ms，= 1000/maxHz
+	QueueLength  int    `json:"-"` // 队列长度，默认 1（丢弃积压）
+	FragmentSize int    `json:"-"` // 分片大小，0 = 不限制
+	Compression  string `json:"-"` // none | jpeg | cbor-raw
 }
 
 // MessageHandler 为话题消息处理器。
@@ -161,7 +162,7 @@ func (c *Client) Connect(ctx context.Context) error {
 
 	c.wg.Add(1)
 	go c.readLoop()
-	c.log.Info("rosbridge 已连接", "url", c.url, "version", c.version)
+	c.log.Info("rosbridge 已连接", "url", logx.RedactURL(c.url), "version", c.version)
 	return nil
 }
 
@@ -190,7 +191,7 @@ func (c *Client) readLoop() {
 			if done != nil {
 				close(done)
 			}
-			c.log.Warn("rosbridge 连接断开", "url", c.url, "err", err)
+			c.log.Warn("rosbridge 连接断开", "url", logx.RedactURL(c.url), "err", err)
 			return
 		}
 		c.dispatch(data)

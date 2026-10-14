@@ -152,7 +152,7 @@ export const mapManifest: RendererManifest = {
   configSchema: [
     {
       key: 'sourceCRS',
-      label: '输入坐标系（请确认）',
+      label: '输入坐标系（帧内未声明时生效）',
       type: 'select',
       options: [
         { label: 'WGS-84（GPS 原始 / ROS NavSatFix）', value: 'WGS-84' },
@@ -160,7 +160,7 @@ export const mapManifest: RendererManifest = {
         { label: 'BD-09（百度）', value: 'BD-09' },
       ],
       default: 'WGS-84',
-      help: '⚠ 选错会产生 300–600m 偏移。转换在前端离线完成，不调用高德官方接口',
+      help: '⚠ 通道帧自带坐标系时以帧为准，此处仅在帧内未声明时生效；选错会产生 300–600m 偏移。转换在前端离线完成，不调用高德官方接口',
     },
     {
       key: 'mapStyle',

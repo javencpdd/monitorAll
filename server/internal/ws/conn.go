@@ -27,17 +27,17 @@ type Conn struct {
 	// ctrl 为控制类消息队列（status/backpressure/error），优先于帧。
 	ctrl chan ServerMsg
 
-	mu           sync.Mutex
-	pending      []model.Frame
-	droppedByCh  map[string]uint64
+	mu          sync.Mutex
+	pending     []model.Frame
+	droppedByCh map[string]uint64
 
 	closeOnce sync.Once
 	closed    atomic.Bool
 	closeErr  atomic.Value
 
-	lastPongAt  atomic.Int64
-	missedPong  atomic.Int32
-	helloDone   atomic.Bool
+	lastPongAt atomic.Int64
+	missedPong atomic.Int32
+	helloDone  atomic.Bool
 }
 
 // newConn 构造一条连接（读/写泵由 Serve 启动）。
@@ -317,4 +317,3 @@ func (c *Conn) Close() {
 		_ = c.ws.Close()
 	})
 }
-

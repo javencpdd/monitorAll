@@ -13,6 +13,7 @@ import (
 	"github.com/monitorall/monitorall/internal/logx"
 	"github.com/monitorall/monitorall/internal/media"
 	"github.com/monitorall/monitorall/internal/store"
+	"github.com/monitorall/monitorall/internal/weather"
 	"github.com/monitorall/monitorall/internal/web"
 	"github.com/monitorall/monitorall/internal/ws"
 )
@@ -39,6 +40,8 @@ type Deps struct {
 	LANHosts []string
 	// Log 为 API 日志器。
 	Log *slog.Logger
+	// Weather 为天气查询服务（后端代理第三方，进程内唯一实例以复用缓存）。
+	Weather *weather.Service
 }
 
 // NewRouter 构建 Gin 引擎并注册全部路由。
@@ -58,7 +61,12 @@ func NewRouter(cfg *config.Config, st *store.SQLite, adm *adapter.Manager,
 		StartAt:  time.Now(),
 		LANHosts: lanHosts,
 		Log:      logx.With("module", "api"),
+		Weather:  weather.NewService(cfg.Weather.TimeoutMs),
 	}
+
+	// 启动自检：报告 cards.node_id 的脏引用（v3 软引用，无外键兜底）。
+	// 只报告不自动修 —— 自动改数据属于破坏性操作，必须人工确认后再执行。
+	deps.selfCheckMapNodes()
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
@@ -112,6 +120,19 @@ func NewRouter(cfg *config.Config, st *store.SQLite, adm *adapter.Manager,
 		v1.PUT("/cards/:id", deps.updateCard)
 		v1.DELETE("/cards/:id", deps.deleteCard)
 
+		// 地图看板（v3 MapBoard）
+		// 卡片 CRUD 复用上面的 /dashboards/:id/cards 与 /cards/:id，这里只有看板级与节点级端点。
+		v1.GET("/mapboards", deps.listMapBoards)
+		v1.POST("/mapboards", deps.createMapBoard)
+		v1.GET("/mapboards/:id", deps.getMapBoard)
+		v1.PUT("/mapboards/:id", deps.updateMapBoard)
+		v1.DELETE("/mapboards/:id", deps.deleteMapBoard)
+		v1.PUT("/mapboards/:id/geometry", deps.updateMapGeometry)
+		v1.GET("/mapboards/:id/nodes", deps.listMapNodes)
+		v1.POST("/mapboards/:id/nodes", deps.createMapNode)
+		v1.PUT("/mapboards/:id/nodes/:nodeId", deps.updateMapNode)
+		v1.DELETE("/mapboards/:id/nodes/:nodeId", deps.deleteMapNode)
+
 		// MediaMTX 路径发现与健康
 		v1.GET("/mediamtx/paths", deps.mediamtxPaths)
 
@@ -120,10 +141,19 @@ func NewRouter(cfg *config.Config, st *store.SQLite, adm *adapter.Manager,
 		v1.POST("/imports", deps.uploadImport)
 		v1.DELETE("/imports/:id", deps.deleteImport)
 
+		// 全局设置：品牌（顶栏）与天气（后端代理）
+		v1.GET("/settings", deps.getSettings)
+		v1.PUT("/settings", deps.putSettings)
+		v1.POST("/settings/logo", deps.uploadLogo)
+		v1.DELETE("/settings/logo", deps.deleteLogo)
+		v1.GET("/weather", deps.getWeather)
+
 		// 系统接口
 		v1.GET("/system/runtime", deps.runtime)
 		v1.GET("/system/lan", deps.lan)
 		v1.GET("/system/cert", deps.downloadCert)
+		// Logo 静态下发（与 /settings/logo 的上传配对；无文件时 404，前端回落纯文字）
+		v1.GET("/system/branding/logo", deps.serveBrandingLogo)
 	}
 
 	// 静态资源（go:embed 前端产物）+ SPA fallback

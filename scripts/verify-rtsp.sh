@@ -45,7 +45,7 @@ cleanup() {
 trap cleanup EXIT
 
 RTSP_BODY='{"name":"验证-海康RTSP","kind":"video","protocol":"rtsp","connParams":{
-  "rtmpUrl":"rtsp://admin:REDACTED-CAMERA-PASSWORD@192.168.2.69:554/Streaming/Channels/101",
+  "rtmpUrl":"rtsp://admin:your-password@192.168.2.69:554/Streaming/Channels/101",
   "mode":"pull","rtspTransport":"tcp","mediaMtxPath":"cam/ch101",
   "preferredProtocol":"hls","audio":false}}'
 

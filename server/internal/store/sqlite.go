@@ -219,6 +219,9 @@ func (s *SQLite) DeleteDataSource(id string) error {
 			if _, err := t.ExecContext(ctx, `DELETE FROM cards WHERE channel_id = ?`, chID); err != nil {
 				return err
 			}
+			if _, _, _, err := DetachMapNodesByChannel(ctx, t, chID); err != nil {
+				return apperr.Wrap(err, apperr.StoreError, "解绑引用通道的地图节点失败")
+			}
 		}
 		if _, err := t.ExecContext(ctx, `DELETE FROM channels WHERE data_source_id = ?`, id); err != nil {
 			return err
@@ -364,12 +367,18 @@ func (s *SQLite) UpdateChannel(ch *model.Channel) error {
 	})
 }
 
-// DeleteChannel 删除通道及其关联卡片。
+// DeleteChannel 删除通道、其关联卡片，并处理引用它的地图节点。
+//
+// 节点处置（C10 同族的"解绑优先"原则）：有兜底坐标 → 降级为静态节点保留；
+// 无兜底 → 节点随通道删除。不处理的话 map_nodes.channel_id 会变成永远指向空处的脏引用。
 func (s *SQLite) DeleteChannel(id string) error {
 	ctx := context.Background()
 	return s.tx(ctx, func(t *sql.Tx) error {
 		if _, err := t.ExecContext(ctx, `DELETE FROM cards WHERE channel_id = ?`, id); err != nil {
 			return err
+		}
+		if _, _, _, err := DetachMapNodesByChannel(ctx, t, id); err != nil {
+			return apperr.Wrap(err, apperr.StoreError, "解绑引用该通道的地图节点失败")
 		}
 		_, err := t.ExecContext(ctx, `DELETE FROM channels WHERE id = ?`, id)
 		return err
@@ -388,6 +397,9 @@ func (s *SQLite) DeleteChannelsBySource(dataSourceID string) error {
 			if _, err := t.ExecContext(ctx, `DELETE FROM cards WHERE channel_id = ?`, ch.ID); err != nil {
 				return err
 			}
+			if _, _, _, err := DetachMapNodesByChannel(ctx, t, ch.ID); err != nil {
+				return apperr.Wrap(err, apperr.StoreError, "解绑引用通道的地图节点失败")
+			}
 		}
 		_, err := t.ExecContext(ctx, `DELETE FROM channels WHERE data_source_id = ?`, dataSourceID)
 		return err
@@ -396,6 +408,16 @@ func (s *SQLite) DeleteChannelsBySource(dataSourceID string) error {
 
 // ————————————————— Dashboard CRUD —————————————————
 
+// dashColumns / cardColumns 为显式列清单。
+//
+// 禁止 SELECT *：迁移加列会让 Scan 的参数数量与列数错配，且这是"能启动但数据错"的静默失败。
+// 加列时必须同步改这两处常量与对应的 Scan。
+const dashColumns = `id, name, kind, revision, schema_version, grid_cols, row_height,
+	margin, global_config, created_at, updated_at`
+
+const cardColumns = `id, dashboard_id, channel_id, renderer_type, title, unit,
+	render_config, display_options, layout, node_id, anchor_mode, map_geom, created_at, updated_at`
+
 // scanDashboard 把一行映射为 model.Dashboard。
 func scanDashboard(rows *sql.Rows) (*model.Dashboard, error) {
 	var (
@@ -403,9 +425,12 @@ func scanDashboard(rows *sql.Rows) (*model.Dashboard, error) {
 		margin string
 		global string
 	)
-	if err := rows.Scan(&d.ID, &d.Name, &d.Revision, &d.SchemaVersion, &d.GridCols, &d.RowHeight,
+	if err := rows.Scan(&d.ID, &d.Name, &d.Kind, &d.Revision, &d.SchemaVersion, &d.GridCols, &d.RowHeight,
 		&margin, &global, &d.CreatedAt, &d.UpdatedAt); err != nil {
 		return nil, apperr.Wrap(err, apperr.StoreError, "扫描看板行失败")
+	}
+	if d.Kind == "" {
+		d.Kind = model.BoardKindGrid
 	}
 	d.Margin = [2]int{model.DefaultMarginX, model.DefaultMarginY}
 	if err := unmarshalJSON(margin, &d.Margin); err != nil {
@@ -420,8 +445,7 @@ func scanDashboard(rows *sql.Rows) (*model.Dashboard, error) {
 
 // ListDashboards 列出全部看板（不含 cards）。
 func (s *SQLite) ListDashboards() ([]model.Dashboard, error) {
-	rows, err := s.db.Query(`SELECT id, name, revision, schema_version, grid_cols, row_height,
-		margin, global_config, created_at, updated_at FROM dashboards ORDER BY created_at ASC`)
+	rows, err := s.db.Query(`SELECT ` + dashColumns + ` FROM dashboards ORDER BY created_at ASC`)
 	if err != nil {
 		return nil, apperr.Wrap(err, apperr.StoreError, "查询看板失败")
 	}
@@ -439,8 +463,7 @@ func (s *SQLite) ListDashboards() ([]model.Dashboard, error) {
 
 // GetDashboard 按 ID 读取看板。
 func (s *SQLite) GetDashboard(id string) (*model.Dashboard, error) {
-	rows, err := s.db.Query(`SELECT id, name, revision, schema_version, grid_cols, row_height,
-		margin, global_config, created_at, updated_at FROM dashboards WHERE id = ?`, id)
+	rows, err := s.db.Query(`SELECT `+dashColumns+` FROM dashboards WHERE id = ?`, id)
 	if err != nil {
 		return nil, apperr.Wrap(err, apperr.StoreError, "查询看板失败")
 	}
@@ -479,6 +502,9 @@ func (s *SQLite) CreateDashboard(d *model.Dashboard) error {
 	if d.GlobalConfig == nil {
 		d.GlobalConfig = map[string]any{}
 	}
+	if d.Kind == "" {
+		d.Kind = model.BoardKindGrid
+	}
 	marginJSON, err := marshalJSON(d.Margin)
 	if err != nil {
 		return err
@@ -490,14 +516,18 @@ func (s *SQLite) CreateDashboard(d *model.Dashboard) error {
 	ctx := context.Background()
 	return s.tx(ctx, func(t *sql.Tx) error {
 		_, err := t.ExecContext(ctx, `INSERT INTO dashboards
-			(id, name, revision, schema_version, grid_cols, row_height, margin, global_config, created_at, updated_at)
-			VALUES (?,?,?,?,?,?,?,?,?,?)`,
-			d.ID, d.Name, d.Revision, d.SchemaVersion, d.GridCols, d.RowHeight, marginJSON, globalJSON, d.CreatedAt, d.UpdatedAt)
+			(id, name, kind, revision, schema_version, grid_cols, row_height, margin, global_config, created_at, updated_at)
+			VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+			d.ID, d.Name, d.Kind, d.Revision, d.SchemaVersion, d.GridCols, d.RowHeight,
+			marginJSON, globalJSON, d.CreatedAt, d.UpdatedAt)
 		return err
 	})
 }
 
 // UpdateDashboard 更新看板元数据（含 revision 自增，由调用方校验乐观锁）。
+//
+// 注意：kind 【不在这里更新】 —— 看板种类创建后不可变。把它纳入更新路径意味着
+// "网格看板可以被改成地图看板"，而两套布局语义不兼容（栅格 vs 节点锚定），会产出无法解释的数据。
 func (s *SQLite) UpdateDashboard(d *model.Dashboard) error {
 	d.UpdatedAt = model.NowMs()
 	marginJSON, err := marshalJSON(d.Margin)
@@ -517,11 +547,17 @@ func (s *SQLite) UpdateDashboard(d *model.Dashboard) error {
 	})
 }
 
-// DeleteDashboard 删除看板及其全部卡片。
+// DeleteDashboard 删除看板、其全部卡片与全部地图节点（同一事务）。
+//
+// map_nodes 显式删除，不依赖外键级联：外键是第二道保险，一旦某处忘了开 pragma
+// 就会留下永远查不到的孤儿节点（H10 的教训）。
 func (s *SQLite) DeleteDashboard(id string) error {
 	ctx := context.Background()
 	return s.tx(ctx, func(t *sql.Tx) error {
 		if _, err := t.ExecContext(ctx, `DELETE FROM cards WHERE dashboard_id = ?`, id); err != nil {
+			return err
+		}
+		if _, err := t.ExecContext(ctx, `DELETE FROM map_nodes WHERE board_id = ?`, id); err != nil {
 			return err
 		}
 		_, err := t.ExecContext(ctx, `DELETE FROM dashboards WHERE id = ?`, id)
@@ -534,13 +570,16 @@ func (s *SQLite) DeleteDashboard(id string) error {
 // scanCard 把一行映射为 model.Card。
 func scanCard(rows *sql.Rows) (*model.Card, error) {
 	var (
-		c       model.Card
-		render  string
-		display string
-		layout  string
+		c          model.Card
+		render     string
+		display    string
+		layout     string
+		nodeID     string
+		anchorMode string
+		mapGeom    string
 	)
 	if err := rows.Scan(&c.ID, &c.DashboardID, &c.ChannelID, &c.RendererType, &c.Title, &c.Unit,
-		&render, &display, &layout, &c.CreatedAt, &c.UpdatedAt); err != nil {
+		&render, &display, &layout, &nodeID, &anchorMode, &mapGeom, &c.CreatedAt, &c.UpdatedAt); err != nil {
 		return nil, apperr.Wrap(err, apperr.StoreError, "扫描卡片行失败")
 	}
 	c.RenderConfig = map[string]any{}
@@ -555,13 +594,35 @@ func scanCard(rows *sql.Rows) (*model.Card, error) {
 	if err := unmarshalJSON(layout, &c.Layout); err != nil {
 		return nil, err
 	}
+	// 三个 MapBoard 字段用指针 + omitempty，且【仅当卡片已锚定】时才填充。
+	//
+	// 网格卡片的 node_id 恒为空串，此时三个字段必须保持 nil ——
+	// 否则 JSON 会多出 "anchorMode":"node"（列有默认值 'node'），破坏"与 v3 之前字节级一致"的承诺。
+	switch {
+	case nodeID != "":
+		// 已锚定的地图看板卡片：三个字段全部回填。
+		c.NodeID = &nodeID
+		if anchorMode != "" {
+			c.AnchorMode = &anchorMode
+		}
+		if mapGeom != "" && mapGeom != "{}" {
+			var g model.MapGeometry
+			if err := unmarshalJSON(mapGeom, &g); err != nil {
+				return nil, err
+			}
+			c.MapGeom = &g
+		}
+	case anchorMode != "" && anchorMode != string(model.AnchorNode):
+		// 已解绑（free）的卡片：保留这个标记，让"曾经锚定过"这件事在接口上可见。
+		// 网格卡片的 anchor_mode 恒为默认值 node，走不到这个分支 —— 因此 JSON 仍与 v3 之前一致。
+		c.AnchorMode = &anchorMode
+	}
 	return &c, nil
 }
 
 // ListCards 列出某看板下的全部卡片。
 func (s *SQLite) ListCards(dashboardID string) ([]model.Card, error) {
-	rows, err := s.db.Query(`SELECT id, dashboard_id, channel_id, renderer_type, title, unit,
-		render_config, display_options, layout, created_at, updated_at
+	rows, err := s.db.Query(`SELECT `+cardColumns+`
 		FROM cards WHERE dashboard_id = ? ORDER BY created_at ASC`, dashboardID)
 	if err != nil {
 		return nil, apperr.Wrap(err, apperr.StoreError, "查询卡片失败")
@@ -580,8 +641,7 @@ func (s *SQLite) ListCards(dashboardID string) ([]model.Card, error) {
 
 // ListAllCards 列出全部卡片。
 func (s *SQLite) ListAllCards() ([]model.Card, error) {
-	rows, err := s.db.Query(`SELECT id, dashboard_id, channel_id, renderer_type, title, unit,
-		render_config, display_options, layout, created_at, updated_at FROM cards ORDER BY created_at ASC`)
+	rows, err := s.db.Query(`SELECT ` + cardColumns + ` FROM cards ORDER BY created_at ASC`)
 	if err != nil {
 		return nil, apperr.Wrap(err, apperr.StoreError, "查询卡片失败")
 	}
@@ -599,8 +659,7 @@ func (s *SQLite) ListAllCards() ([]model.Card, error) {
 
 // GetCard 按 ID 读取卡片。
 func (s *SQLite) GetCard(id string) (*model.Card, error) {
-	rows, err := s.db.Query(`SELECT id, dashboard_id, channel_id, renderer_type, title, unit,
-		render_config, display_options, layout, created_at, updated_at FROM cards WHERE id = ?`, id)
+	rows, err := s.db.Query(`SELECT `+cardColumns+` FROM cards WHERE id = ?`, id)
 	if err != nil {
 		return nil, apperr.Wrap(err, apperr.StoreError, "查询卡片失败")
 	}
@@ -614,21 +673,44 @@ func (s *SQLite) GetCard(id string) (*model.Card, error) {
 	return scanCard(rows)
 }
 
-// cardJSON 预序列化卡片的三处 JSON 列。
-func cardJSON(c *model.Card) (render, display, layout string, err error) {
+// cardJSON 预序列化卡片的四处 JSON 列（v3 起包含 map_geom）。
+func cardJSON(c *model.Card) (render, display, layout, mapGeom string, err error) {
 	render, err = marshalJSON(c.RenderConfig)
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", "", err
 	}
 	display, err = marshalJSON(c.DisplayOptions)
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", "", err
 	}
 	layout, err = marshalJSON(c.Layout)
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", "", err
 	}
-	return render, display, layout, nil
+	// 网格卡片的 MapGeom 为 nil，必须写成 '{}' 而不是空串 —— 列上有
+	// CHECK(json_valid(map_geom))，空串会让写入失败（且这个失败很难联想到"卡片没绑节点"）。
+	mapGeom = "{}"
+	if c.MapGeom != nil {
+		mapGeom, err = marshalJSON(c.MapGeom)
+		if err != nil {
+			return "", "", "", "", err
+		}
+	}
+	return render, display, layout, mapGeom, nil
+}
+
+// cardMapColumns 返回卡片三个 MapBoard 列的落库值（node_id / anchor_mode / map_geom）。
+func cardMapColumns(c *model.Card) (nodeID, anchorMode string) {
+	if c.NodeID != nil {
+		nodeID = *c.NodeID
+	}
+	if c.AnchorMode != nil {
+		anchorMode = *c.AnchorMode
+	}
+	if anchorMode == "" {
+		anchorMode = string(model.AnchorNode)
+	}
+	return nodeID, anchorMode
 }
 
 // CreateCard 落库一张卡片。
@@ -641,17 +723,19 @@ func (s *SQLite) CreateCard(c *model.Card) error {
 		c.CreatedAt = now
 	}
 	c.UpdatedAt = now
-	render, display, layout, err := cardJSON(c)
+	render, display, layout, mapGeom, err := cardJSON(c)
 	if err != nil {
 		return err
 	}
+	nodeID, anchorMode := cardMapColumns(c)
 	ctx := context.Background()
 	return s.tx(ctx, func(t *sql.Tx) error {
 		_, err := t.ExecContext(ctx, `INSERT INTO cards
-			(id, dashboard_id, channel_id, renderer_type, title, unit, render_config, display_options, layout, created_at, updated_at)
-			VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+			(id, dashboard_id, channel_id, renderer_type, title, unit, render_config, display_options, layout,
+			 node_id, anchor_mode, map_geom, created_at, updated_at)
+			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 			c.ID, c.DashboardID, c.ChannelID, c.RendererType, c.Title, c.Unit,
-			render, display, layout, c.CreatedAt, c.UpdatedAt)
+			render, display, layout, nodeID, anchorMode, mapGeom, c.CreatedAt, c.UpdatedAt)
 		return err
 	})
 }
@@ -659,16 +743,20 @@ func (s *SQLite) CreateCard(c *model.Card) error {
 // UpdateCard 更新一张卡片。
 func (s *SQLite) UpdateCard(c *model.Card) error {
 	c.UpdatedAt = model.NowMs()
-	render, display, layout, err := cardJSON(c)
+	render, display, layout, mapGeom, err := cardJSON(c)
 	if err != nil {
 		return err
 	}
+	nodeID, anchorMode := cardMapColumns(c)
 	ctx := context.Background()
 	return s.tx(ctx, func(t *sql.Tx) error {
+		// node_id / anchor_mode / map_geom 一并写入：调用方（api.updateCard）从库里读出整张卡再改，
+		// 字段已被 scanCard 回填，因此"改标题"不会把节点绑定清掉。
 		_, err := t.ExecContext(ctx, `UPDATE cards SET dashboard_id = ?, channel_id = ?, renderer_type = ?,
-			title = ?, unit = ?, render_config = ?, display_options = ?, layout = ?, updated_at = ? WHERE id = ?`,
+			title = ?, unit = ?, render_config = ?, display_options = ?, layout = ?,
+			node_id = ?, anchor_mode = ?, map_geom = ?, updated_at = ? WHERE id = ?`,
 			c.DashboardID, c.ChannelID, c.RendererType, c.Title, c.Unit,
-			render, display, layout, c.UpdatedAt, c.ID)
+			render, display, layout, nodeID, anchorMode, mapGeom, c.UpdatedAt, c.ID)
 		return err
 	})
 }
@@ -690,8 +778,9 @@ func (s *SQLite) ReplaceCards(dashboardID string, cards []model.Card) error {
 			return err
 		}
 		stmt, err := t.PrepareContext(ctx, `INSERT INTO cards
-			(id, dashboard_id, channel_id, renderer_type, title, unit, render_config, display_options, layout, created_at, updated_at)
-			VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
+			(id, dashboard_id, channel_id, renderer_type, title, unit, render_config, display_options, layout,
+			 node_id, anchor_mode, map_geom, created_at, updated_at)
+			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
 		if err != nil {
 			return err
 		}
@@ -706,14 +795,81 @@ func (s *SQLite) ReplaceCards(dashboardID string, cards []model.Card) error {
 			}
 			c.UpdatedAt = model.NowMs()
 			c.DashboardID = dashboardID
-			render, display, layout, err := cardJSON(&c)
+			render, display, layout, mapGeom, err := cardJSON(&c)
 			if err != nil {
 				return err
 			}
+			nodeID, anchorMode := cardMapColumns(&c)
 			if _, err := stmt.ExecContext(ctx, c.ID, c.DashboardID, c.ChannelID, c.RendererType, c.Title,
-				c.Unit, render, display, layout, c.CreatedAt, c.UpdatedAt); err != nil {
+				c.Unit, render, display, layout, nodeID, anchorMode, mapGeom, c.CreatedAt, c.UpdatedAt); err != nil {
 				return err
 			}
+		}
+		return nil
+	})
+}
+
+// ReplaceCardsAndUpdateDashboard 把"全量换卡片"与"更新看板（含 revision 自增）"放进【同一个事务】。
+//
+// 历史问题（H16）：此前 api 层先 ReplaceCards 再 UpdateDashboard，是两个独立事务。
+// 第二步失败时 revision 已经 +1 而卡片没换 —— 用户看到"保存成功了但布局是旧的"，且不报任何错。
+func (s *SQLite) ReplaceCardsAndUpdateDashboard(d *model.Dashboard, cards []model.Card) error {
+	ctx := context.Background()
+	return s.tx(ctx, func(t *sql.Tx) error {
+		if _, err := t.ExecContext(ctx, `DELETE FROM cards WHERE dashboard_id = ?`, d.ID); err != nil {
+			return err
+		}
+		stmt, err := t.PrepareContext(ctx, `INSERT INTO cards
+			(id, dashboard_id, channel_id, renderer_type, title, unit, render_config, display_options, layout,
+			 node_id, anchor_mode, map_geom, created_at, updated_at)
+			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
+		if err != nil {
+			return err
+		}
+		defer stmt.Close()
+		for i := range cards {
+			c := cards[i]
+			if c.ID == "" {
+				c.ID = model.NewCardID()
+			}
+			if c.CreatedAt == 0 {
+				c.CreatedAt = model.NowMs()
+			}
+			c.UpdatedAt = model.NowMs()
+			c.DashboardID = d.ID
+			render, display, layout, mapGeom, err := cardJSON(&c)
+			if err != nil {
+				return err
+			}
+			nodeID, anchorMode := cardMapColumns(&c)
+			if _, err := stmt.ExecContext(ctx, c.ID, c.DashboardID, c.ChannelID, c.RendererType, c.Title,
+				c.Unit, render, display, layout, nodeID, anchorMode, mapGeom, c.CreatedAt, c.UpdatedAt); err != nil {
+				return err
+			}
+		}
+		marginJSON, err := marshalJSON(d.Margin)
+		if err != nil {
+			return err
+		}
+		globalJSON, err := marshalJSON(d.GlobalConfig)
+		if err != nil {
+			return err
+		}
+		// 用 SQL 层的 CAS 自增，杜绝"读 revision → 校验 → 写"的 TOCTOU 竞态。
+		res, err := t.ExecContext(ctx, `UPDATE dashboards SET name = ?, revision = ?, schema_version = ?,
+			grid_cols = ?, row_height = ?, margin = ?, global_config = ?, updated_at = ?
+			WHERE id = ? AND revision = ?`,
+			d.Name, d.Revision, d.SchemaVersion, d.GridCols, d.RowHeight, marginJSON, globalJSON,
+			d.UpdatedAt, d.ID, d.Revision-1)
+		if err != nil {
+			return err
+		}
+		n, err := res.RowsAffected()
+		if err != nil {
+			return apperr.Wrap(err, apperr.StoreError, "读取影响行数失败")
+		}
+		if n == 0 {
+			return apperr.New(apperr.RevisionConflict, "看板已被修改，请刷新后重试")
 		}
 		return nil
 	})

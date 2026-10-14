@@ -162,15 +162,15 @@ func TestNoDataPolicy(t *testing.T) {
 // TestMappingTable 校验 msgType → payloadType 映射覆盖关键类型。
 func TestMappingTable(t *testing.T) {
 	cases := map[string]model.PayloadType{
-		"std_msgs/Float32":          model.PayloadScalar,
-		"std_msgs/Bool":             model.PayloadScalar,
-		"sensor_msgs/BatteryState":  model.PayloadScalar,
-		"sensor_msgs/Imu":           model.PayloadTimeSeries,
-		"nav_msgs/Odometry":         model.PayloadTimeSeries,
-		"sensor_msgs/NavSatFix":     model.PayloadGeoPose,
-		"sensor_msgs/Image":         model.PayloadImage,
+		"std_msgs/Float32":            model.PayloadScalar,
+		"std_msgs/Bool":               model.PayloadScalar,
+		"sensor_msgs/BatteryState":    model.PayloadScalar,
+		"sensor_msgs/Imu":             model.PayloadTimeSeries,
+		"nav_msgs/Odometry":           model.PayloadTimeSeries,
+		"sensor_msgs/NavSatFix":       model.PayloadGeoPose,
+		"sensor_msgs/Image":           model.PayloadImage,
 		"sensor_msgs/CompressedImage": model.PayloadImage,
-		"unknown_msgs/Whatever":     model.PayloadJSON,
+		"unknown_msgs/Whatever":       model.PayloadJSON,
 	}
 	for in, want := range cases {
 		if got := PayloadTypeFor(in); got != want {
@@ -222,7 +222,7 @@ func TestBuildScalarAndImage(t *testing.T) {
 // TestBuildTimeSeries 校验数值展平。
 func TestBuildTimeSeries(t *testing.T) {
 	msg := map[string]any{
-		"twist":   map[string]any{"twist": map[string]any{"linear": map[string]any{"x": 0.5}}},
+		"twist":    map[string]any{"twist": map[string]any{"linear": map[string]any{"x": 0.5}}},
 		"child_id": "base",
 	}
 	ts := BuildTimeSeries(msg, 1758000000000)

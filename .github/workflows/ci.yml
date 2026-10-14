@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+# 取消同一分支上旧的运行，省算力
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: 后端（格式 / vet / 测试）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: gofmt（不允许有未格式化文件）
+        working-directory: server
+        run: |
+          out=$(gofmt -l ./internal ./cmd)
+          if [ -n "$out" ]; then echo "以下文件需要 gofmt:"; echo "$out"; exit 1; fi
+      - name: go vet
+        working-directory: server
+        run: go vet ./...
+      - name: go test
+        working-directory: server
+        run: go test ./... -count=1
+
+  frontend:
+    name: 前端（类型 / 构建 / 源码守卫）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: npm ci
+        working-directory: web
+        run: npm ci
+      - name: vue-tsc 类型检查
+        working-directory: web
+        run: npx vue-tsc --noEmit
+      - name: 源码级回归守卫
+        working-directory: web
+        run: npm test
+      - name: 构建
+        working-directory: web
+        run: npm run build

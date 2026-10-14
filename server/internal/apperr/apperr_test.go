@@ -9,22 +9,22 @@ import (
 // TestHTTPStatusMapping 校验 16 个错误码与 HTTP 状态码的映射（架构 §7.2）。
 func TestHTTPStatusMapping(t *testing.T) {
 	cases := map[Code]int{
-		OK:                    http.StatusOK,
-		BadRequest:            http.StatusBadRequest,
-		InvalidParam:          http.StatusBadRequest,
-		InvalidURL:            http.StatusBadRequest,
-		UnsupportedType:       http.StatusBadRequest,
-		NotFound:              http.StatusNotFound,
-		RevisionConflict:      http.StatusConflict,
-		RendererIncompatible:  http.StatusBadRequest,
-		SourceConnectFailed:   http.StatusBadGateway,
-		AdapterError:          http.StatusInternalServerError,
-		MediaMTXUnreachable:   http.StatusBadGateway,
-		SampleTimeout:         http.StatusGatewayTimeout,
-		StoreError:            http.StatusInternalServerError,
-		SecretDecryptFailed:   http.StatusInternalServerError,
-		ChannelUnavailable:    http.StatusServiceUnavailable,
-		Internal:              http.StatusInternalServerError,
+		OK:                   http.StatusOK,
+		BadRequest:           http.StatusBadRequest,
+		InvalidParam:         http.StatusBadRequest,
+		InvalidURL:           http.StatusBadRequest,
+		UnsupportedType:      http.StatusBadRequest,
+		NotFound:             http.StatusNotFound,
+		RevisionConflict:     http.StatusConflict,
+		RendererIncompatible: http.StatusBadRequest,
+		SourceConnectFailed:  http.StatusBadGateway,
+		AdapterError:         http.StatusInternalServerError,
+		MediaMTXUnreachable:  http.StatusBadGateway,
+		SampleTimeout:        http.StatusGatewayTimeout,
+		StoreError:           http.StatusInternalServerError,
+		SecretDecryptFailed:  http.StatusInternalServerError,
+		ChannelUnavailable:   http.StatusServiceUnavailable,
+		Internal:             http.StatusInternalServerError,
 	}
 	for code, status := range cases {
 		if got := HTTPStatus(code); got != status {

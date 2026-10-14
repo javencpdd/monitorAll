@@ -18,6 +18,11 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
+      # 把构建期 git 提交号传进镜像（见 Dockerfile 的 ARG GIT_COMMIT）。
+      # 不传则二进制里是 unknown —— 那样「Docker 打二进制再裸跑」这条推荐发布形态
+      # 就会丢掉版本追溯，回滚时认不出跑的是哪一版。start.sh 会自动算出并导出。
+      args:
+        GIT_COMMIT: "${GIT_COMMIT:-unknown}"
     container_name: monitorall
     restart: unless-stopped
     ports:

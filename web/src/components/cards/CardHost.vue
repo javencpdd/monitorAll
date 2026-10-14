@@ -10,8 +10,8 @@ import type { Card, CardVisualStatus } from '@/types'
 import { getManifest, maxPointsOf, mergeConfig, resolveComponent } from '@/renderers'
 import { DEFAULT_RING_CAPACITY } from '@/utils/constants'
 import { useCardStatus } from '@/composables/useCardStatus'
+import { useBoardContext } from '@/composables/boardContext'
 import { useFrameStore } from '@/stores/frame'
-import { useDashboardStore } from '@/stores/dashboard'
 import { useDatasourceStore } from '@/stores/datasource'
 import { useUiStore } from '@/stores/ui'
 import { useDialog } from 'naive-ui'
@@ -23,7 +23,6 @@ import EmptyState from '@/components/base/EmptyState.vue'
 const props = defineProps<{ card: Card }>()
 
 const frameStore = useFrameStore()
-const dashboardStore = useDashboardStore()
 const datasourceStore = useDatasourceStore()
 const ui = useUiStore()
 const dialog = useDialog()
@@ -32,7 +31,12 @@ const dialog = useDialog()
 const runtimeStatus = ref<CardVisualStatus | undefined>(undefined)
 const { info, hasFrames } = useCardStatus(() => props.card, { override: () => runtimeStatus.value })
 
-const editMode = computed<boolean>(() => dashboardStore.editMode)
+// 容器契约：网格看板 inject 不到 → 缺省回落 dashboardStore（行为与改造前 100% 一致）；
+// 地图看板 provide kind='map' 的实现 → 同一套渲染器直接复用，零复制（H3 / C2）。
+// ⚠️ 变量名不要叫 BoardContext（大写开头会被模板当成组件，note/03 §3.1）。
+const board = useBoardContext()
+
+const editMode = computed<boolean>(() => board.editMode.value)
 const channel = computed(() => datasourceStore.getChannel(props.card.channelId))
 const sourceLabel = computed<string>(() => {
   const source = datasourceStore.getSource(channel.value?.dataSourceId)
@@ -72,7 +76,7 @@ function confirmRemove(): void {
     negativeText: '取消',
     onPositiveClick: async () => {
       try {
-        await dashboardStore.removeCard(props.card.id)
+        await board.removeCard(props.card.id)
         ui.success('卡片已删除')
       } catch (err) {
         ui.handleError(err, '删除失败')

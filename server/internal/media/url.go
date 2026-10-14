@@ -49,6 +49,24 @@ func (r *StreamInfo) IsRTMP() bool {
 	return r != nil && (r.Scheme == "rtmp" || r.Scheme == "rtmps")
 }
 
+// IsLocalPublishURL 判断该流地址是否是「推给本机 MediaMTX」的 RTMP 推流：
+// 仅 rtmp / rtmps 可能是推流（RTSP 一律 false），且端口与主机都指向本机。
+//
+// 抽到 media 包是因为两处要用同一口径：adapter/video 决定注册给 MediaMTX 的 source
+// 是不是 publisher，api 层做同路径冲突检测时判断两个源的上游身份是否相同。
+// 各写一份必然漂移 —— 漂移的后果是「同一个流被判成两个上游」，误报或漏报冲突。
+func IsLocalPublishURL(raw string, rtmpPort int, lanHost string) bool {
+	info, err := ParseStreamURL(raw)
+	if err != nil || !info.IsRTMP() {
+		return false
+	}
+	if info.Port != rtmpPort {
+		return false
+	}
+	host := info.Host
+	return host == "127.0.0.1" || host == "localhost" || (lanHost != "" && host == lanHost)
+}
+
 // defaultPortFor 按协议返回缺省端口（RTSP 554 / RTMP 1935）。
 func defaultPortFor(scheme string) int {
 	if scheme == "rtsp" || scheme == "rtsps" {
@@ -154,9 +172,17 @@ func BuildPublishURLs(cfg *config.Config, publicHost, path string) map[string]st
 }
 
 // PickProtocol 按首选协议与可用地址集合挑选实际协议：首选不可用时依次降级。
-// 降级顺序：webrtc → flv（若配置）→ hls。
+//
+// 降级顺序：webrtc → hls → flv。
+// ⚠️ 必须与前端 web/src/utils/video.ts 的 fallbackOrder 保持一致（C12 / H4）。
+// 此前后端是 webrtc → flv → hls，与前端不一致：FLV 需要额外的 HTTP-FLV 网关（本项目未部署），
+// 一旦 webrtc 不可用，后端会挑一个常态化不可用的 flv，而前端以为会降到 hls。
+//
+// 注意：这是一次【语义一致性修复，不是修一个正在发生的线上 bug】。
+// BuildPlayURLs 无条件生成 webrtc 与 hls，且 webrtc 永远在 urls 里，因此降级分支当前实际不可达；
+// 只有当 webrtc 变成条件生成时两版才会出现真实分歧。
 func PickProtocol(preferred string, urls map[string]string) string {
-	order := []string{config.VideoProtocolWebRTC, config.VideoProtocolFLV, config.VideoProtocolHLS}
+	order := []string{config.VideoProtocolWebRTC, config.VideoProtocolHLS, config.VideoProtocolFLV}
 	// 首选置于队首
 	ordered := make([]string, 0, len(order))
 	if preferred != "" {

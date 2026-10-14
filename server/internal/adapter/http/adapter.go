@@ -16,6 +16,7 @@ import (
 	"github.com/monitorall/monitorall/internal/adapter"
 	"github.com/monitorall/monitorall/internal/apperr"
 	"github.com/monitorall/monitorall/internal/config"
+	"github.com/monitorall/monitorall/internal/logx"
 	"github.com/monitorall/monitorall/internal/model"
 	"github.com/tidwall/gjson"
 )
@@ -299,7 +300,8 @@ func (a *Adapter) recordFailure(msg string) {
 	if threshold <= 0 {
 		threshold = config.DefaultFailureThreshold
 	}
-	a.log.Warn("HTTP 轮询失败", "url", a.params.URL, "err", msg)
+	// URL 可能带 token 之类的查询参数凭据，脱敏后再落日志
+	a.log.Warn("HTTP 轮询失败", "url", logx.RedactURL(a.params.URL), "err", msg)
 }
 
 // resetFailures 成功后清零失败计数（HTTP 偶发失败不应闪状态）。

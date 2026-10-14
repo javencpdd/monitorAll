@@ -53,22 +53,22 @@ const (
 
 // httpStatusMap 错误码 → HTTP 状态码。
 var httpStatusMap = map[Code]int{
-	OK:                    http.StatusOK,
-	BadRequest:            http.StatusBadRequest,
-	InvalidParam:          http.StatusBadRequest,
-	InvalidURL:            http.StatusBadRequest,
-	UnsupportedType:       http.StatusBadRequest,
-	NotFound:              http.StatusNotFound,
-	RevisionConflict:      http.StatusConflict,
-	RendererIncompatible:  http.StatusBadRequest,
-	SourceConnectFailed:   http.StatusBadGateway,
-	AdapterError:          http.StatusInternalServerError,
-	MediaMTXUnreachable:   http.StatusBadGateway,
-	SampleTimeout:         http.StatusGatewayTimeout,
-	StoreError:            http.StatusInternalServerError,
-	SecretDecryptFailed:   http.StatusInternalServerError,
-	ChannelUnavailable:    http.StatusServiceUnavailable,
-	Internal:              http.StatusInternalServerError,
+	OK:                   http.StatusOK,
+	BadRequest:           http.StatusBadRequest,
+	InvalidParam:         http.StatusBadRequest,
+	InvalidURL:           http.StatusBadRequest,
+	UnsupportedType:      http.StatusBadRequest,
+	NotFound:             http.StatusNotFound,
+	RevisionConflict:     http.StatusConflict,
+	RendererIncompatible: http.StatusBadRequest,
+	SourceConnectFailed:  http.StatusBadGateway,
+	AdapterError:         http.StatusInternalServerError,
+	MediaMTXUnreachable:  http.StatusBadGateway,
+	SampleTimeout:        http.StatusGatewayTimeout,
+	StoreError:           http.StatusInternalServerError,
+	SecretDecryptFailed:  http.StatusInternalServerError,
+	ChannelUnavailable:   http.StatusServiceUnavailable,
+	Internal:             http.StatusInternalServerError,
 }
 
 // messageMap 错误码默认文案（未显式给 message 时使用）。
@@ -121,6 +121,11 @@ func Wrap(err error, c Code, msg string) *AppError {
 	e := New(c, msg)
 	e.Err = err
 	return e
+}
+
+// Wrapf 带格式化参数地包装底层 error。
+func Wrapf(err error, c Code, format string, args ...any) *AppError {
+	return Wrap(err, c, fmt.Sprintf(format, args...))
 }
 
 // WithDetail 追加字段级明细，返回自身以便链式调用。

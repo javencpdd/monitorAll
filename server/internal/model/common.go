@@ -17,8 +17,8 @@ const (
 	PayloadGeoPose     PayloadType = "geo_pose"
 	PayloadTable       PayloadType = "table"
 	PayloadJSON        PayloadType = "json"
-	PayloadLogLine     PayloadType = "log_line"      // [EXT] P1
-	PayloadStateEnum   PayloadType = "state_enum"    // [EXT] P1
+	PayloadLogLine     PayloadType = "log_line"       // [EXT] P1
+	PayloadStateEnum   PayloadType = "state_enum"     // [EXT] P1
 	PayloadHistogram   PayloadType = "histogram_bins" // [EXT] P1
 	PayloadPointCloud  PayloadType = "point_cloud"    // [EXT] P2
 )
@@ -28,12 +28,12 @@ type Status string
 
 // 七种状态。
 const (
-	StatusIdle         Status = "idle"         // 新建未连接 / 无订阅
+	StatusIdle         Status = "idle" // 新建未连接 / 无订阅
 	StatusConnecting   Status = "connecting"
 	StatusOnline       Status = "online"
 	StatusReconnecting Status = "reconnecting"
 	StatusError        Status = "error"
-	StatusDegraded     Status = "degraded"     // 仅视频：WebRTC 不可用已降级
+	StatusDegraded     Status = "degraded" // 仅视频：WebRTC 不可用已降级
 	StatusOffline      Status = "offline"
 )
 
@@ -53,10 +53,10 @@ type Protocol string
 
 // 全部协议（rtsp 为扩展点）。
 const (
-	ProtoRTMP     Protocol = "rtmp"
-	ProtoRTSP     Protocol = "rtsp"      // [EXT]
-	ProtoROS1     Protocol = "ros1"
-	ProtoROS2     Protocol = "ros2"
+	ProtoRTMP       Protocol = "rtmp"
+	ProtoRTSP       Protocol = "rtsp" // [EXT]
+	ProtoROS1       Protocol = "ros1"
+	ProtoROS2       Protocol = "ros2"
 	ProtoHTTPPoll   Protocol = "http-poll"
 	ProtoFileReplay Protocol = "file-replay" // 离线 JSON/JSONL 文件回放
 )

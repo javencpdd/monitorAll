@@ -29,6 +29,26 @@ type MediaMTXRuntime struct {
 	PortWebRTC   int    `json:"portWebrtc"`
 }
 
+// BrandingRuntime 为前端首屏渲染顶栏所需的品牌信息。
+//
+// 为什么要在 runtime 里下发、而不是让前端再调一次 /api/v1/settings：
+// runtime 是首屏第一个请求，晚一步拿到就会出现"先闪一下默认的 MonitorAll，
+// 再变成自定义名"的闪烁。品牌名是用户一定会改的项，这个闪烁每次刷新都可见。
+type BrandingRuntime struct {
+	Title    string `json:"title"`
+	Subtitle string `json:"subtitle"`
+	LogoURL  string `json:"logoUrl"`
+}
+
+// WeatherRuntime 为前端首屏决定是否渲染天气挂件所需的最小信息。
+//
+// 只下发 enabled 与 provider：坐标 / 缓存 / 超时一律不下发 —— 坐标属于部署位置信息，
+// 且将来换需要 Key 的服务商时，任何多余字段都是潜在的泄露面。
+type WeatherRuntime struct {
+	Enabled  bool   `json:"enabled"`
+	Provider string `json:"provider"`
+}
+
 // RuntimeConfig 为前端启动所需的运行期配置。
 type RuntimeConfig struct {
 	AMapKey          string          `json:"amapKey"`
@@ -41,6 +61,15 @@ type RuntimeConfig struct {
 	LanHosts         []string        `json:"lanHosts"`
 	MediaMTX         MediaMTXRuntime `json:"mediaMtx"`
 	ServerTimeMs     int64           `json:"serverTimeMs"`
+	Branding         BrandingRuntime `json:"branding"`
+	Weather          WeatherRuntime  `json:"weather"`
+	// Version / Commit 为二进制身份，供前端「关于」分组做排障（与启动横幅同源）。
+	//
+	// 只给这两项、【不给 dataDir】：本端点无鉴权，dataDir 会泄露服务端文件系统路径，
+	// 是三者里唯一提供新信息的；而"我跑的是哪一版"这个排障问题，version + commit 已经够定位
+	// （两个不同版本的二进制长得一样，回滚时靠 commit 认人，见 config.GitCommit 的注释）。
+	Version string `json:"version"`
+	Commit  string `json:"commit"`
 }
 
 // HealthzResp 为健康检查响应。
@@ -117,6 +146,10 @@ func (d *Deps) runtime(c *gin.Context) {
 	if len(hosts) == 0 && d.Cfg.Server.LANHost != "" {
 		hosts = []string{d.Cfg.Server.LANHost}
 	}
+	// 品牌与天气开关走同一套「DB > yaml > 默认」合并逻辑（见 settings.go）。
+	// 读取失败不能让整个 runtime 挂掉：那是前端首屏的第一个请求，
+	// 挂掉等于整个页面打不开，而品牌信息失败只应该退化成默认值。
+	branding, weatherRT := d.runtimeBranding(c)
 	OK(c, RuntimeConfig{
 		AMapKey:          d.Cfg.Web.AMapKey,
 		AMapSecurityCode: d.Cfg.Web.AMapSecurityCode,
@@ -128,7 +161,40 @@ func (d *Deps) runtime(c *gin.Context) {
 		LanHosts:         hosts,
 		MediaMTX:         d.mediaMTXRuntime(),
 		ServerTimeMs:     model.NowMs(),
+		Branding:         branding,
+		Weather:          weatherRT,
+		Version:          config.Version,
+		Commit:           config.GitCommit,
 	})
+}
+
+// runtimeBranding 组装 runtime 里的品牌与天气段（失败时回落配置值，绝不返回空对象）。
+func (d *Deps) runtimeBranding(c *gin.Context) (BrandingRuntime, WeatherRuntime) {
+	fromCfg := BrandingRuntime{
+		Title:    d.Cfg.Branding.Title,
+		Subtitle: d.Cfg.Branding.Subtitle,
+		LogoURL:  d.Cfg.Branding.LogoURL,
+	}
+	weatherFromCfg := WeatherRuntime{
+		Enabled:  d.Cfg.Weather.Enabled,
+		Provider: d.Cfg.Weather.Provider,
+	}
+	if d.Store == nil {
+		return fromCfg, weatherFromCfg
+	}
+	p, err := d.loadSettings(c)
+	if err != nil {
+		d.Log.Warn("读取全局设置失败，runtime 已回落配置文件", "err", err)
+		return fromCfg, weatherFromCfg
+	}
+	return BrandingRuntime{
+			Title:    p.Branding.Title,
+			Subtitle: p.Branding.Subtitle,
+			LogoURL:  p.Branding.LogoURL,
+		}, WeatherRuntime{
+			Enabled:  p.Weather.Enabled,
+			Provider: p.Weather.Provider,
+		}
 }
 
 // mediaMTXRuntime 汇总前端修正播放地址所需的 MediaMTX 信息。

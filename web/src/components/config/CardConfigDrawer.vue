@@ -176,8 +176,11 @@ async function apply(): Promise<void> {
         renderConfig: renderConfig.value,
         displayOptions,
         layout: dashboardStore.nextFreeLayout(rendererType.value),
+        // 地图看板：必须带上目标节点，否则卡片是"未锚定"孤儿卡（不渲染也不订阅）。
+        // 网格看板下 nodeId 为空，行为与改造前完全一致。
+        ...(ui.cardDrawer.nodeId ? { nodeId: ui.cardDrawer.nodeId } : {}),
       })
-      ui.success('卡片已添加')
+      ui.success(ui.cardDrawer.nodeId ? '卡片已添加并挂到该节点' : '卡片已添加')
     }
     ui.closeCardDrawer()
   } catch (err) {
@@ -305,7 +308,9 @@ const hintMap = computed(() => sampleFrame.value?.schemaHint)
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 30;
+  /* 必须高于地图右下角「坐标标准」徽标(z-index:200)，
+     否则徽标会浮在抽屉底栏上，把「下一步」按钮挡住 —— 真实发生过。 */
+  z-index: 300;
   display: flex;
   flex-direction: column;
   background: var(--ma-bg-elevated);

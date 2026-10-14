@@ -26,9 +26,18 @@ const ui = useUiStore()
 const currentId = computed<string | undefined>(() => (route.params.id as string | undefined) ?? undefined)
 
 async function ensureBoard(): Promise<void> {
-  const target = await dashboardStore.ensureSelected(currentId.value)
+  const target = await dashboardStore.ensureSelected(currentId.value, 'grid')
   if (target && target !== currentId.value) {
     await router.replace({ name: 'dashboard', params: { id: target } })
+    return // 交给下一次路由触发的 ensureBoard 继续（避免此刻在错误看板上继续渲染）
+  }
+  // ⭐ kind 守卫：地图看板必须走 /mapboard，**不能按网格渲染**。
+  // 少了这一条，刷新 / 直接访问网格路由但 id 指向地图看板时，页面会是一片空白 ——
+  // 用户看到的是"这个看板不存在"，而实际上是"被错误的视图渲染了"。
+  const current = dashboardStore.current
+  if (current?.kind === 'map') {
+    await router.replace({ name: 'mapboard', params: { id: current.id } })
+    return
   }
   datasourceStore.ensureAllChannels().catch(() => undefined)
 }

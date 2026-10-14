@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	_ "modernc.org/sqlite" // 注册 "sqlite" 数据库驱动（纯 Go，免 CGO）
@@ -64,7 +65,25 @@ type Store interface {
 	DeleteCard(id string) error
 	ReplaceCards(dashboardID string, cards []model.Card) error
 	DeleteCardsByChannel(channelID string) error
+
+	// 地图节点（v3 MapBoard）
+	ListMapNodes(boardID string) ([]model.MapNode, error)
+	GetMapNode(id string) (*model.MapNode, error)
+	CountMapNodes(boardID string) (int, error)
+	CreateMapNode(boardID string, n *model.MapNode, expectRevision int64) (*MapNodeMutationResult, error)
+	UpdateMapNode(boardID string, n *model.MapNode, expectRevision int64) (*MapNodeMutationResult, error)
+	DeleteMapNode(boardID, nodeID string, cascade bool, expectRevision int64) (*MapNodeMutationResult, error)
+	// SaveCardGeometry 批量保存卡片像素几何（不进 revision 域）
+	SaveCardGeometry(boardID string, items map[string]*model.MapGeometry) (*GeometryResult, error)
+	// FindDirtyNodeRefs 启动自检：列出 cards.node_id 的脏引用（只报告，不自动修）
+	FindDirtyNodeRefs() ([]DirtyNodeRef, error)
+	// ReplaceCardsAndUpdateDashboard 全量保存（换卡片 + 看板 revision 自增）单事务
+	ReplaceCardsAndUpdateDashboard(d *model.Dashboard, cards []model.Card) error
 }
+
+// 编译期断言：SQLite 必须完整实现 Store。
+// 没有这条断言时，接口声明与实现会各自漂移而不报错 —— 接口就退化成了一份会过期的注释。
+var _ Store = (*SQLite)(nil)
 
 // secretRow 为 secret_meta 表的一行（敏感字段密文）。
 type secretRow struct {
@@ -79,8 +98,20 @@ func Open(sc config.StoreConfig, secretKeyFile string) (*SQLite, error) {
 		sc.DSN = "./data/monitorall.db"
 	}
 	dsn := sc.DSN
+	// 外键与 busy_timeout 必须**无条件**进 DSN，不能只放在 WAL 分支里。
+	//
+	// 背景（H10）：`PRAGMA foreign_keys=ON` 曾只写在 `if sc.WAL` 的查询串中。
+	// 虽然 `ensurePragmas()` 会在打开后补一次并校验，但它只作用于**打开时那一条连接**；
+	// 而下面的 `SetConnMaxLifetime(time.Hour)` 到期后会新建连接 —— `wal:false` 时
+	// DSN 里没有该 pragma，新连接的外键就是关的，且不报任何错。
+	// 表现为删看板留下孤儿节点、删通道留下脏引用，排查极其困难。
+	sep := "?"
+	if strings.Contains(dsn, "?") {
+		sep = "&"
+	}
+	dsn += sep + "_pragma=foreign_keys(ON)&_pragma=busy_timeout(5000)"
 	if sc.WAL {
-		dsn += "?_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)&_pragma=synchronous(NORMAL)&_pragma=foreign_keys(ON)"
+		dsn += "&_pragma=journal_mode(WAL)&_pragma=synchronous(NORMAL)"
 	}
 	db, err := sql.Open("sqlite", dsn)
 	if err != nil {
@@ -93,6 +124,12 @@ func Open(sc config.StoreConfig, secretKeyFile string) (*SQLite, error) {
 
 	st := &SQLite{db: db, dsn: sc.DSN}
 	if err := st.Ping(context.Background()); err != nil {
+		_ = db.Close()
+		return nil, err
+	}
+	// 外键约束必须无条件开启：此前它只写在 WAL=true 的 DSN 查询串里（H10），
+	// 部署一旦关闭 WAL，v3 依赖的 map_nodes 两个外键会静默失效。
+	if err := st.ensurePragmas(context.Background()); err != nil {
 		_ = db.Close()
 		return nil, err
 	}

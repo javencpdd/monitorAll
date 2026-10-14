@@ -21,6 +21,7 @@ const (
 	PrefixDashboard  = "db_"
 	PrefixTemp       = "tmp_"
 	PrefixImport     = "im_"
+	PrefixMapNode    = "mn_"
 )
 
 // IDRandomLen 为随机部分长度（base36 字符数）。
@@ -63,6 +64,9 @@ func NewTempID() string { return newID(PrefixTemp) }
 
 // NewImportID 生成导入文件 ID（im_ 前缀）。
 func NewImportID() string { return newID(PrefixImport) }
+
+// NewMapNodeID 生成地图节点 ID（mn_ 前缀）。
+func NewMapNodeID() string { return newID(PrefixMapNode) }
 
 // ————————————————— 通用工具 —————————————————
 

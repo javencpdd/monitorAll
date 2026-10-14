@@ -24,7 +24,20 @@ export const useUiStore = defineStore('ui', () => {
   /** 后端下发的运行时配置（含高德 Key / WS 地址 / 可用视频后端）。 */
   const runtime = ref<RuntimeConfig | null>(null)
   const lan = ref<LanInfo | null>(null)
-  const cardDrawer = ref<{ open: boolean; cardId?: string; mode: 'create' | 'edit'; channelId?: string }>({
+  const cardDrawer = ref<{
+    open: boolean
+    cardId?: string
+    mode: 'create' | 'edit'
+    channelId?: string
+    /**
+     * 新建卡片时要挂到的地图节点。
+     *
+     * ⚠️ 地图看板下**必须**带它：不带的卡片是"未锚定"孤儿卡，
+     * 而孤儿卡按设计不渲染也不订阅 —— 用户会看到"我建了卡片但图上没有"，
+     * 而接口返回 200、没有任何报错。这是本项目最容易踩的静默失败之一。
+     */
+    nodeId?: string
+  }>({
     open: false,
     cardId: undefined,
     mode: 'edit',
@@ -129,8 +142,13 @@ export const useUiStore = defineStore('ui', () => {
     ws.disconnect()
   }
 
-  function openCardDrawer(cardId?: string, mode: 'create' | 'edit' = 'edit', channelId?: string): void {
-    cardDrawer.value = { open: true, cardId, mode, ...(channelId ? { channelId } : {}) }
+  function openCardDrawer(
+    cardId?: string,
+    mode: 'create' | 'edit' = 'edit',
+    channelId?: string,
+    nodeId?: string,
+  ): void {
+    cardDrawer.value = { open: true, cardId, mode, ...(channelId ? { channelId } : {}), ...(nodeId ? { nodeId } : {}) }
   }
   function closeCardDrawer(): void {
     cardDrawer.value = { open: false, cardId: undefined, mode: 'edit' }

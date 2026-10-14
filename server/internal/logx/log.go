@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"net/url"
 	"os"
 	"path/filepath"
 	"sort"
@@ -15,6 +16,40 @@ import (
 
 	"github.com/monitorall/monitorall/internal/config"
 )
+
+// RedactURL 抹掉 URL 里的凭据，用于日志：`rtsp://admin:pw@host:554/x` → `rtsp://redacted@host:554/x`。
+//
+// 为什么必须有：数据源的 rtspUrl / rtmpUrl / httpUrl 常带内联凭据
+// （摄像头尤其如此）。原样写进日志等于把口令落盘，而日志文件一旦被
+// 提交/备份/外发，口令就跟着走。
+// 本项目真实发生过：logs/monitorall.log 里出现 59 次明文摄像头口令，
+// 且 logs/ 曾被 git 跟踪 → 口令进了仓库历史。
+//
+// 抹哪些、为什么不只抹 userinfo：凭据只可能藏在两处 ——
+//  1. userinfo（`rtsp://admin:pw@host`）；
+//  2. query / fragment（`http://host/api?token=...`），这是 token 最常待的地方。
+//
+// 两处都清掉。日志的用途是"这是哪个源"，host + path 足够定位；
+// 为保留 query 的调试信息而承担泄露风险不值得。
+//
+// 保守原则：解析不了 URL 时返回占位符而不是原文 —— 猜错会泄露，占位只会丢信息。
+func RedactURL(raw string) string {
+	if raw == "" {
+		return raw
+	}
+	u, err := url.Parse(raw)
+	if err != nil || u.Host == "" {
+		return "<unparsable-url>"
+	}
+	if u.User != nil {
+		// 用纯字母做占位符：`***` 会被 url.User 百分号编码成 %2A%2A%2A，日志里很难看
+		u.User = url.User("redacted")
+	}
+	u.RawQuery = ""
+	u.Fragment = ""
+	u.RawFragment = ""
+	return u.String()
+}
 
 // levelVar 保存当前日志级别，便于运行期调整。
 var (

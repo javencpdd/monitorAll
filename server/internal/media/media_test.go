@@ -4,8 +4,11 @@ import (
 	"context"
 	"crypto/x509"
 	"encoding/pem"
+	"io"
+	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/monitorall/monitorall/internal/apperr"
@@ -72,7 +75,7 @@ func TestBuildPlayURLs(t *testing.T) {
 	}
 }
 
-// TestPickProtocol 校验协议降级顺序：webrtc → flv（若配置）→ hls。
+// TestPickProtocol 校验协议降级顺序：webrtc → hls → flv（C12 / H4，与前端 utils/video.ts 一致）。
 func TestPickProtocol(t *testing.T) {
 	only := map[string]string{"hls": "http://x/index.m3u8"}
 	if got := PickProtocol("webrtc", only); got != "hls" {
@@ -81,6 +84,12 @@ func TestPickProtocol(t *testing.T) {
 	all := map[string]string{"webrtc": "w", "hls": "h"}
 	if got := PickProtocol("webrtc", all); got != "webrtc" {
 		t.Fatalf("首选可用时应选 webrtc: %s", got)
+	}
+	// 锁住新顺序的关键用例：webrtc 缺失、hls 与 flv 都在时必须是 hls。
+	// 改动前（webrtc → flv → hls）这里会返回 flv —— FLV 需要额外网关，本项目常态化不可用。
+	noWebrtc := map[string]string{"hls": "h", "flv": "f"}
+	if got := PickProtocol("webrtc", noWebrtc); got != "hls" {
+		t.Fatalf("webrtc 不可用时应降级到 hls（不是 flv）: %s", got)
 	}
 }
 
@@ -268,7 +277,7 @@ func TestCertFilePermissions(t *testing.T) {
 
 // TestParseStreamURLRTSP 校验 RTSP 摄像头地址解析：默认端口 554、保留用户名密码、多段路径。
 func TestParseStreamURLRTSP(t *testing.T) {
-	const raw = "rtsp://admin:REDACTED-CAMERA-PASSWORD@192.168.2.69:554/Streaming/Channels/101"
+	const raw = "rtsp://admin:your-password@192.168.2.69:554/Streaming/Channels/101"
 	info, err := ParseStreamURL(raw)
 	if err != nil {
 		t.Fatalf("RTSP 解析失败: %v", err)
@@ -344,5 +353,250 @@ func TestPathAddRTSPTransport(t *testing.T) {
 	_ = c.PathAdd(context.Background(), "cam/102", "publisher")
 	if _, ok := c.(*mockClient).addedExtra["cam/102"]["rtspTransport"]; ok {
 		t.Fatal("未传可选参数时不应写入 rtspTransport")
+	}
+}
+
+// ————————————————— mediaMtxPath 格式校验 —————————————————
+
+// TestValidateMediaMTXPath 表驱动校验 MediaMTX 路径名：
+// 合法路径放行，完整地址 / 连续斜杠 / 查询串 / 空格一律拒绝（40001）。
+func TestValidateMediaMTXPath(t *testing.T) {
+	cases := []struct {
+		name    string
+		in      string
+		want    string // 期望返回的路径（合法时）；wantErr 为真时忽略
+		wantErr bool
+	}{
+		{name: "两段路径", in: "live/cam1", want: "live/cam1"},
+		{name: "单段路径", in: "cam1", want: "cam1"},
+		{name: "含减号", in: "live/m20pro-f", want: "live/m20pro-f"},
+		{name: "含点与下划线", in: "live/cam_1.2", want: "live/cam_1.2"},
+		{name: "多段路径", in: "Streaming/Channels/101", want: "Streaming/Channels/101"},
+		{name: "首尾空格被裁掉", in: "  live/cam1  ", want: "live/cam1"},
+		{name: "空值放行", in: "", want: ""},
+		{name: "纯空格按空值处理", in: "   ", want: ""},
+
+		{name: "完整 RTMP 地址", in: "rtmp://172.31.68.227:1936/live/m20pro-f", wantErr: true},
+		{name: "完整 RTSP 地址", in: "rtsp://admin:pwd@192.168.2.69:554/Streaming/Channels/101", wantErr: true},
+		{name: "单斜杠的 rtmp 前缀", in: "rtmp:/172.31.68.227/live/x", wantErr: true},
+		{name: "http 前缀", in: "http://host/live/a", wantErr: true},
+		{name: "https 前缀", in: "https://host/live/a", wantErr: true},
+		{name: "连续斜杠", in: "live//cam", wantErr: true},
+		{name: "带查询串", in: "live/cam?x=1", wantErr: true},
+		{name: "带片段", in: "live/cam#frag", wantErr: true},
+		{name: "含空格", in: "live/cam 1", wantErr: true},
+		{name: "含冒号端口", in: "live/cam:1936", wantErr: true},
+		{name: "以斜杠开头", in: "/live/cam1", wantErr: true},
+		{name: "以斜杠结尾", in: "live/cam1/", wantErr: true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := ValidateMediaMTXPath(tc.in)
+			if tc.wantErr {
+				if err == nil {
+					t.Fatalf("输入 %q 应被拒绝", tc.in)
+				}
+				if apperr.CodeOf(err) != apperr.InvalidParam {
+					t.Fatalf("输入 %q 错误码应为 40001，实际 %d", tc.in, apperr.CodeOf(err))
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("输入 %q 不应被拒绝: %v", tc.in, err)
+			}
+			if got != tc.want {
+				t.Fatalf("输入 %q 返回 %q，期望 %q", tc.in, got, tc.want)
+			}
+		})
+	}
+}
+
+// TestValidateMediaMTXPathMessage 校验报错信息可行动：
+// 必须给出「当前值 → 建议值」，让运维一眼知道该怎么改，而不是甩一句“路径非法”。
+func TestValidateMediaMTXPathMessage(t *testing.T) {
+	_, err := ValidateMediaMTXPath("rtmp://172.31.68.227:1936/live/m20pro-f")
+	if err == nil {
+		t.Fatal("完整地址应被拒绝")
+	}
+	msg := err.Error()
+	for _, want := range []string{
+		`rtmp://172.31.68.227:1936/live/m20pro-f`, // 原样回显当前值
+		`"live/m20pro-f"`,                         // 给出可直接使用的建议值
+	} {
+		if !strings.Contains(msg, want) {
+			t.Fatalf("报错信息缺少 %s: %s", want, msg)
+		}
+	}
+	// 连续斜杠 / 查询串也要能救出建议值
+	if _, err := ValidateMediaMTXPath("live//cam"); err == nil || !strings.Contains(err.Error(), `"live/cam"`) {
+		t.Fatalf("live//cam 的建议值应为 live/cam: %v", err)
+	}
+	if _, err := ValidateMediaMTXPath("live/cam?x=1"); err == nil || !strings.Contains(err.Error(), `"live/cam"`) {
+		t.Fatalf("live/cam?x=1 的建议值应为 live/cam: %v", err)
+	}
+}
+
+// ————————————————— PathAdd：已存在路径的重建 —————————————————
+
+// seqStep 为一次预置的 HTTP 响应。
+type seqStep struct {
+	code int
+	body string
+}
+
+// seqTransport 按配置顺序回放响应，并记录每次请求的 method + path + body。
+//
+// 为什么不用 mockClient：mockClient 实现的是 Client 接口（PathsList/PathAdd/Health），
+// 而「已存在时读 source → 比对 → delete → 重新 add」是 httpClient 内部的 MediaMTX
+// 配置编排，有意不进 Client 接口（否则 adapter/video 的 recordClient 等实现者都要补
+// 两个与它们无关的方法）。所以在 HTTP 传输层打桩：既能表达「先 400 再 200」的响应序列，
+// 又能顺带断言三个 endpoint 的真实 URL 形态（路径段里的 '/' 不能被 escape）。
+type seqTransport struct {
+	steps  []seqStep
+	calls  []string // "METHOD /path"
+	bodies []string // 请求体（GET 为空串）
+}
+
+func (t *seqTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	var body string
+	if r.Body != nil {
+		b, _ := io.ReadAll(r.Body)
+		body = string(b)
+	}
+	t.calls = append(t.calls, r.Method+" "+r.URL.Path)
+	t.bodies = append(t.bodies, body)
+
+	step := seqStep{code: http.StatusOK}
+	if len(t.steps) > 0 {
+		step = t.steps[0]
+		t.steps = t.steps[1:]
+	}
+	header := http.Header{}
+	if step.body != "" {
+		header.Set("Content-Type", "application/json")
+	}
+	return &http.Response{
+		StatusCode: step.code,
+		Header:     header,
+		Body:       io.NopCloser(strings.NewReader(step.body)),
+		Request:    r,
+	}, nil
+}
+
+// newSeqClient 构造一个按 steps 回放响应的 httpClient。
+func newSeqClient(steps ...seqStep) (*httpClient, *seqTransport) {
+	tr := &seqTransport{steps: steps}
+	return &httpClient{base: "http://mtx.test", hc: &http.Client{Transport: tr}}, tr
+}
+
+// alreadyExists 为 MediaMTX 对「路径已存在」的真实响应。
+var alreadyExists = seqStep{code: http.StatusBadRequest, body: `{"error":"path already exists"}`}
+
+// confWithSource 为 paths/get 的响应体（source 为字符串）。
+func confWithSource(src string) seqStep {
+	return seqStep{code: http.StatusOK, body: `{"name":"live/cam1","source":"` + src + `"}`}
+}
+
+// pathAddOK 为 paths/add 的成功响应。
+var pathAddOK = seqStep{code: http.StatusOK, body: `{}`}
+
+// TestPathAddAlreadyExistsSameSource 已存在且 source 一致 → 不删除、不重建，返回 nil。
+// 这是「多数据源共用同一路径 / 重连重启重复注册」必须保持的行为。
+func TestPathAddAlreadyExistsSameSource(t *testing.T) {
+	c, tr := newSeqClient(alreadyExists, confWithSource(SourcePublisher))
+	if err := c.PathAdd(context.Background(), "live/cam1", SourcePublisher); err != nil {
+		t.Fatalf("source 一致时应返回 nil: %v", err)
+	}
+	want := []string{
+		"POST /v3/config/paths/add/live/cam1",
+		"GET /v3/config/paths/get/live/cam1",
+	}
+	if got := strings.Join(tr.calls, "|"); got != strings.Join(want, "|") {
+		t.Fatalf("调用序列不符: %s", got)
+	}
+}
+
+// TestPathAddAlreadyExistsSourceChanged 已存在且 source 变更 → 先 delete 再 add，返回 nil。
+//
+// 这条是本次修复的核心：旧实现把 400 already exists 一律当成功，
+// 导致 publish→pull 变更后路径配置永远停在旧的 publisher（HLS 404）。
+func TestPathAddAlreadyExistsSourceChanged(t *testing.T) {
+	const newSource = "rtmp://172.31.68.227:1936/live/cam1"
+	c, tr := newSeqClient(alreadyExists, confWithSource(SourcePublisher), pathAddOK, pathAddOK)
+	if err := c.PathAdd(context.Background(), "live/cam1", newSource); err != nil {
+		t.Fatalf("重建成功时应返回 nil: %v", err)
+	}
+	want := []string{
+		"POST /v3/config/paths/add/live/cam1",
+		"GET /v3/config/paths/get/live/cam1",
+		"DELETE /v3/config/paths/delete/live/cam1",
+		"POST /v3/config/paths/add/live/cam1",
+	}
+	if got := strings.Join(tr.calls, "|"); got != strings.Join(want, "|") {
+		t.Fatalf("调用序列不符（应为 add→get→delete→add）: %s", got)
+	}
+	// 重建时提交给 MediaMTX 的必须是新的 source，且带 sourceOnDemand=true（拉流源）
+	last := tr.bodies[len(tr.bodies)-1]
+	if !strings.Contains(last, newSource) {
+		t.Fatalf("重建请求未带新 source: %s", last)
+	}
+	if !strings.Contains(last, `"sourceOnDemand":true`) {
+		t.Fatalf("拉流源应带 sourceOnDemand=true: %s", last)
+	}
+	// publisher 时不能带 sourceOnDemand=true（MediaMTX 会 400）
+	c2, tr2 := newSeqClient(pathAddOK)
+	if err := c2.PathAdd(context.Background(), "live/cam1", SourcePublisher); err != nil {
+		t.Fatalf("PathAdd 失败: %v", err)
+	}
+	if strings.Contains(tr2.bodies[0], `"sourceOnDemand":true`) {
+		t.Fatalf("publisher 不应带 sourceOnDemand=true: %s", tr2.bodies[0])
+	}
+}
+
+// TestPathAddRebuildDeleteFails 重建时 delete 失败 → 必须返回错误，不能静默成功。
+func TestPathAddRebuildDeleteFails(t *testing.T) {
+	c, tr := newSeqClient(alreadyExists, confWithSource(SourcePublisher),
+		seqStep{code: http.StatusInternalServerError, body: `{"error":"boom"}`})
+	err := c.PathAdd(context.Background(), "live/cam1", "rtsp://cam/101")
+	if err == nil {
+		t.Fatal("delete 失败时应返回错误")
+	}
+	if apperr.CodeOf(err) != apperr.MediaMTXUnreachable {
+		t.Fatalf("错误码应为 50003，实际 %d", apperr.CodeOf(err))
+	}
+	// delete 失败后不应再尝试 add
+	for _, call := range tr.calls {
+		if call == "POST /v3/config/paths/add/live/cam1" && len(tr.calls) > 3 {
+			t.Fatalf("delete 失败后不应继续 add: %v", tr.calls)
+		}
+	}
+	_ = tr
+}
+
+// TestPathAddRebuildGetFails 读不到现有配置 → 无法判断是否需要重建，返回错误而非假装成功。
+func TestPathAddRebuildGetFails(t *testing.T) {
+	c, _ := newSeqClient(alreadyExists, seqStep{code: http.StatusNotFound, body: `{"error":"path configuration not found"}`})
+	if err := c.PathAdd(context.Background(), "live/cam1", "publisher"); err == nil {
+		t.Fatal("paths/get 失败时应返回错误")
+	}
+}
+
+// TestPathAddFirstTime 首次注册成功 → 只发一次 add，不触发 get/delete。
+func TestPathAddFirstTime(t *testing.T) {
+	c, tr := newSeqClient(pathAddOK)
+	if err := c.PathAdd(context.Background(), "live/cam1", SourcePublisher); err != nil {
+		t.Fatalf("首次 PathAdd 失败: %v", err)
+	}
+	if len(tr.calls) != 1 || tr.calls[0] != "POST /v3/config/paths/add/live/cam1" {
+		t.Fatalf("首次注册只应调用一次 add: %v", tr.calls)
+	}
+}
+
+// TestPathAddDeleteIdempotent 删除时目标已不存在（404 not found）→ 视为删除成功，继续重建。
+func TestPathAddDeleteIdempotent(t *testing.T) {
+	c, _ := newSeqClient(alreadyExists, confWithSource(SourcePublisher),
+		seqStep{code: http.StatusNotFound, body: `{"error":"path not found"}`}, pathAddOK)
+	if err := c.PathAdd(context.Background(), "live/cam1", "rtmp://cam/1"); err != nil {
+		t.Fatalf("delete 幂等失败时应继续重建: %v", err)
 	}
 }

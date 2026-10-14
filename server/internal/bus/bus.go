@@ -17,11 +17,11 @@ import (
 
 // ChannelStatusEvent 为通道状态变更事件（对应 WS op=channelStatus）。
 type ChannelStatusEvent struct {
-	ChannelID   string        `json:"channelId"`
-	Status      model.Status  `json:"status"`
-	LastError   string        `json:"lastError,omitempty"`
-	LastFrameAt int64         `json:"lastFrameAt,omitempty"`
-	LatencyMs   int64         `json:"latencyMs,omitempty"`
+	ChannelID   string       `json:"channelId"`
+	Status      model.Status `json:"status"`
+	LastError   string       `json:"lastError,omitempty"`
+	LastFrameAt int64        `json:"lastFrameAt,omitempty"`
+	LatencyMs   int64        `json:"latencyMs,omitempty"`
 }
 
 // SourceStatusEvent 为数据源状态变更事件（对应 WS op=sourceStatus）。
@@ -68,8 +68,8 @@ type Bus struct {
 	sinks     map[string]FrameSink
 	startedAt time.Time
 
-	sink      Sink
-	sinkMu    sync.RWMutex
+	sink   Sink
+	sinkMu sync.RWMutex
 
 	cancel context.CancelFunc
 	wg     sync.WaitGroup
@@ -345,35 +345,35 @@ func (b *Bus) PublishSourceStatus(ev SourceStatusEvent) {
 
 // BrokerStats 为通道运行态统计（供 ChannelRuntime 使用）。
 type BrokerStats struct {
-	RefCount    int           `json:"refCount"`
-	FrameRateHz float64       `json:"frameRateHz"`
-	Dropped     uint64        `json:"dropped"`
-	LastFrameAt int64         `json:"lastFrameAt"`
-	LastSeq     uint64        `json:"lastSeq"`
-	LatencyMs   int64         `json:"latencyMs"`
-	Status      model.Status  `json:"status"`
-	LastError   string        `json:"lastError"`
+	RefCount    int          `json:"refCount"`
+	FrameRateHz float64      `json:"frameRateHz"`
+	Dropped     uint64       `json:"dropped"`
+	LastFrameAt int64        `json:"lastFrameAt"`
+	LastSeq     uint64       `json:"lastSeq"`
+	LatencyMs   int64        `json:"latencyMs"`
+	Status      model.Status `json:"status"`
+	LastError   string       `json:"lastError"`
 }
 
 // Broker 为单通道的帧集散地。
 type Broker struct {
 	ID string
 
-	mu             sync.RWMutex
-	subs           map[string]struct{}
-	limiter        *Limiter
-	ring           *ringBuffer
-	payloadType    model.PayloadType
-	status         model.Status
-	lastError      string
-	lastFrameAt    int64
-	latencyMs      int64
-	totalDropped   atomic.Uint64
-	windowDropped  atomic.Uint64
-	deliveredCount atomic.Uint64
+	mu              sync.RWMutex
+	subs            map[string]struct{}
+	limiter         *Limiter
+	ring            *ringBuffer
+	payloadType     model.PayloadType
+	status          model.Status
+	lastError       string
+	lastFrameAt     int64
+	latencyMs       int64
+	totalDropped    atomic.Uint64
+	windowDropped   atomic.Uint64
+	deliveredCount  atomic.Uint64
 	rateWindowStart atomic.Int64
 	rateWindowCount atomic.Uint64
-	frameRateHz    atomic.Uint64 // 存 Hz*100 避免浮点原子操作
+	frameRateHz     atomic.Uint64 // 存 Hz*100 避免浮点原子操作
 }
 
 // newBroker 构造一个通道 Broker。

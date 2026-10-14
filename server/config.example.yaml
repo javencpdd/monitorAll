@@ -60,12 +60,40 @@ httpPoll:
   failureThreshold: 3         # 连续失败 3 次才置 reconnecting
 
 web:
-  amapKey: "REDACTED-AMAP-KEY-CURRENT"                 # 高德 JS API Key（地图渲染器必需）；留空则地图卡显示配置指引
+  # ⚠️ 本文件是【模板】，请复制为 config.yaml 后再填真实值；不要直接改本文件。
+  #    真实 Key 属凭据，禁止提交进版本库（历史上曾明文入库，已移出）。
+  #    推荐注入方式（applyEnv 已支持，优先级高于 yaml）：
+  #      MONITORALL_WEB_AMAPKEY=<key>  MONITORALL_WEB_AMAPSECURITYCODE=<code>
+  amapKey: ""                                                 # 高德 JS API Key（地图渲染器必需）；留空则地图卡显示配置指引
   amapSecurityCode: ""                                        # 高德安全密钥 securityJsCode（与 Key 同页展示）。2021-12-02 后申请的 Key 必填；
                                                               # 缺失时地图样式切换（暗色等）会静默失败回落标准样式
   amapForceWebGL: true                                        # 无 GPU / 软件渲染 / 手机 WebView 环境必须开：否则高德不启用 WebGL 绘制，
                                                               # 报"浏览器版本过低"且 setMapStyle 一律不生效（卫星图层不受影响）
   theme: "dark"
+
+# 顶栏品牌。运行期可在「设置」页改（改后存进数据库，优先级高于本文件）。
+branding:
+  title: "MonitorAll"         # 顶栏主标题；留空或只填空白 → 回落 "MonitorAll"
+  subtitle: "多源异构监控看板"  # 顶栏副标题
+  logoUrl: ""                 # 顶栏图标；留空 = 不显示图标（纯文字）
+                              # 只允许 http:// https:// 或 /api/v1/system/branding/logo
+                              # （javascript: / data: 一律拒绝，防存储型 XSS）
+                              # 上传接口：POST /api/v1/settings/logo（字段 file，≤200KB，仅 PNG/JPEG/WebP）
+
+# 顶栏当日天气。运行期可在「设置」页改（存进数据库，优先级高于本文件）。
+weather:
+  enabled: false              # 默认【关闭】—— 开启后会向第三方发请求，必须显式开启。
+                              # 开启但未填坐标时，设置接口会直接报 400（不会静默失败）
+  provider: "open-meteo"      # 目前唯一支持：open-meteo（免 Key）；其它值一律 400
+  lat: 0                      # 纬度，WGS-84（与地图节点 fallback_lat 同一口径，不是高德的 GCJ-02）
+  lon: 0                      # 经度，WGS-84
+                              # (0,0) 被视为「未填写」，开启天气前必须填真实坐标
+  label: ""                   # 可选地点名，如 "深圳南山"；留空则只显示温度
+  refreshMin: 10              # 缓存分钟数（1~120）；同坐标同服务商在此窗口内不重复出网
+  timeoutMs: 5000             # 请求第三方天气接口的超时（毫秒）
+                              # 天气由【后端代理】查询，浏览器不直连第三方：页面是 https 时
+                              # 第三方若给 http 会被浏览器按混合内容静默拦截，且将来接需要 Key 的
+                              # 服务商时密钥不能下发到前端
 
 log:
   level: "info"               # debug | info | warn | error

@@ -29,6 +29,7 @@ import (
 	"github.com/monitorall/monitorall/internal/media"
 	appsrv "github.com/monitorall/monitorall/internal/server"
 	"github.com/monitorall/monitorall/internal/store"
+	"github.com/monitorall/monitorall/internal/version"
 	"github.com/monitorall/monitorall/internal/ws"
 )
 
@@ -42,7 +43,8 @@ func main() {
 	flag.Parse()
 
 	if *printVersion {
-		fmt.Printf("monitorall %s (schema v%d)\n", config.Version, config.CurrentSchemaVersion)
+		fmt.Printf("monitorall %s (commit %s, schema v%d)\n",
+			config.Version, config.GitCommit, version.SchemaVersion)
 		return
 	}
 
@@ -140,6 +142,12 @@ func main() {
 	case err := <-errCh:
 		if err != nil && !errors.Is(err, context.Canceled) {
 			log.Error("服务异常退出", "err", err)
+		} else {
+			// 金丝雀分支：Wait 的契约是"只在出错或 Shutdown 后返回"。
+			// 走到这里说明**还没收到退出信号，监听就自己结束了** —— 历史上正是
+			// `time.After(time.Hour)` 冒充"永久阻塞"导致的"服务跑满 1 小时静默下线"。
+			// 这条日志就是那个 bug 复发时的报警器，别删。
+			log.Warn("未收到退出信号但监听已结束（可能是 Wait 契约被破坏）", "err", err)
 		}
 	case <-ctx.Done():
 		log.Info("收到退出信号，开始优雅关闭")

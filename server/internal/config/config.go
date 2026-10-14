@@ -18,8 +18,24 @@ import (
 // Version 为后端版本号，启动横幅与 /api/v1/system/runtime 使用。
 const Version = "1.0.0"
 
-// CurrentSchemaVersion 为持久化结构的当前版本（meta.schema_version）。
-const CurrentSchemaVersion = 1
+// GitCommit 为构建时的 git 提交号（含 dirty 后缀），由 Makefile 通过 ldflags 注入：
+//
+//	-X github.com/monitorall/monitorall/internal/config.GitCommit=...
+//
+// 为什么需要：两个不同版本的二进制长得一模一样，回滚时无法确认机器上跑的是哪一版。
+// "可回滚"的前提是"能认出自己在哪"（部署侧 R2/R3 之外第三个会让回滚失败的隐蔽原因）。
+//
+// 未注入时保持 "unknown"，而不是报错或假装是干净版本 —— 解压出来的源码包没有 .git，
+// 构建必须照常成功（见 Makefile 里的 $(shell ...) 惰性求值）。
+var GitCommit = "unknown"
+
+// CurrentConfigSchemaVersion 为【配置文件格式】版本（config.yaml 的 schemaVersion 字段）。
+//
+// ⚠️ 它与【数据库结构】版本 version.SchemaVersion 是两个不同概念，不要互相赋值或互相校验。
+// 历史问题（H9）：此前两者都叫 CurrentSchemaVersion 且各写一份（本文件=1、store=2），
+// 已实际漂移，导致启动横幅打印错误的 "schema v1"。现按语义拆开，数据库版本统一收敛到
+// internal/version.SchemaVersion，横幅改为打印数据库版本。
+const CurrentConfigSchemaVersion = 1
 
 // EnvPrefix 为环境变量覆盖的前缀。
 const EnvPrefix = "MONITORALL_"
@@ -30,13 +46,13 @@ const WSProtocolVersion = 1
 // ————————————————— 默认端口与地址 —————————————————
 
 const (
-	DefaultHTTPAddr         = ":8080"
-	DefaultHTTPSAddr        = ":8443"
-	DefaultCertDir          = "./data/cert"
-	DefaultDataDir          = "./data"
-	DefaultSecretKeyFile    = "./data/secret.key"
-	DefaultReadTimeoutMs    = 15000
-	DefaultWriteTimeoutMs   = 15000
+	DefaultHTTPAddr          = ":8080"
+	DefaultHTTPSAddr         = ":8443"
+	DefaultCertDir           = "./data/cert"
+	DefaultDataDir           = "./data"
+	DefaultSecretKeyFile     = "./data/secret.key"
+	DefaultReadTimeoutMs     = 15000
+	DefaultWriteTimeoutMs    = 15000
 	DefaultShutdownTimeoutMs = 10000
 )
 
@@ -86,15 +102,15 @@ const (
 	// RTSPTransportAuto 为 RTSP 拉流传输方式：自动协商。
 	RTSPTransportAuto = "automatic"
 
-	DefaultMediaMTXMode        = MediaMTXModeEmbedded
-	DefaultMediaMTXAPIBase     = "http://mediamtx:9997"
-	DefaultMediaMTXPublicHost  = ""
+	DefaultMediaMTXMode         = MediaMTXModeEmbedded
+	DefaultMediaMTXAPIBase      = "http://mediamtx:9997"
+	DefaultMediaMTXPublicHost   = ""
 	DefaultMediaMTXPublicScheme = PublicSchemeAuto
-	DefaultPortRTMP            = 1936
-	DefaultPortHLS             = 8888
-	DefaultPortWebRTC          = 8889
-	DefaultMediaMTXEncryption  = EncryptionAuto
-	DefaultMediaMTXFLVBase     = ""
+	DefaultPortRTMP             = 1936
+	DefaultPortHLS              = 8888
+	DefaultPortWebRTC           = 8889
+	DefaultMediaMTXEncryption   = EncryptionAuto
+	DefaultMediaMTXFLVBase      = ""
 
 	// DefaultRTMPPort 为 RTMP URL 未显式给端口时的缺省值。
 	DefaultRTMPPort = 1935
@@ -111,16 +127,16 @@ const (
 // ————————————————— 总线默认参数 —————————————————
 
 const (
-	DefaultMaxHz               = 20
-	DefaultImageMaxHz          = 10
-	DefaultVideoStatusHz       = 0.5
-	DefaultFrameBatchMs        = 20
-	DefaultFrameBatchMax       = 64
-	DefaultConnQueueDepth      = 256
-	DefaultRingCapacity        = 1200
+	DefaultMaxHz                = 20
+	DefaultImageMaxHz           = 10
+	DefaultVideoStatusHz        = 0.5
+	DefaultFrameBatchMs         = 20
+	DefaultFrameBatchMax        = 64
+	DefaultConnQueueDepth       = 256
+	DefaultRingCapacity         = 1200
 	DefaultBackpressureNotifyMs = 1000
-	DefaultPingIntervalMs      = 15000
-	DefaultWriteWaitMs         = 3000
+	DefaultPingIntervalMs       = 15000
+	DefaultWriteWaitMs          = 3000
 )
 
 // ————————————————— 适配器默认参数 —————————————————
@@ -142,15 +158,68 @@ const (
 	DefaultFailureThreshold = 3
 )
 
+// ————————————————— 品牌（顶栏）默认值 —————————————————
+
+const (
+	// DefaultBrandingTitle 为顶栏主标题默认值（也是 Title 被清空时的回落值）。
+	DefaultBrandingTitle = "MonitorAll"
+	// DefaultBrandingSubtitle 为顶栏副标题默认值。
+	DefaultBrandingSubtitle = "多源异构监控看板"
+	// DefaultBrandingLogoURL 为默认无 Logo（前端回落成纯文字）。
+	DefaultBrandingLogoURL = ""
+
+	// BrandingTitleMaxRunes / SubtitleMaxRunes / LabelMaxRunes 为文本长度上限（按「字符」计，
+	// 不是字节 —— 中文一个字 3 字节，按字节算会让中文用户只能填 13 个字）。
+	BrandingTitleMaxRunes    = 40
+	BrandingSubtitleMaxRunes = 60
+	WeatherLabelMaxRunes     = 40
+
+	// BrandingLogoPrefix 为后端自有 Logo 端点的前缀：LogoURL 要么指向外部 http(s)，
+	// 要么指向本端点。javascript: / data: 这类 scheme 一律拒绝（存储型 XSS）。
+	BrandingLogoPrefix = "/api/v1/system/branding/logo"
+)
+
+// ————————————————— 天气默认值与白名单 —————————————————
+
+const (
+	// WeatherProviderOpenMeteo 为当前唯一支持的天气服务商（免 Key、允许服务端直连）。
+	WeatherProviderOpenMeteo = "open-meteo"
+
+	// DefaultWeatherEnabled 为默认关闭：开启后会向第三方发请求，属于"改变了对外行为"，
+	// 必须显式开启而不是默认开。
+	DefaultWeatherEnabled = false
+	// DefaultWeatherRefreshMin 为天气缓存分钟数。
+	DefaultWeatherRefreshMin = 10
+	// DefaultWeatherTimeoutMs 为请求第三方天气接口的超时。
+	DefaultWeatherTimeoutMs = 5000
+
+	// WeatherRefreshMinMin / WeatherRefreshMinMax 为缓存分钟数的夹取区间。
+	WeatherRefreshMinMin = 1
+	WeatherRefreshMinMax = 120
+)
+
+// WeatherProviders 为允许的服务商白名单（PUT /api/v1/settings 按此校验，禁止任意填）。
+var WeatherProviders = []string{WeatherProviderOpenMeteo}
+
+// IsWeatherProviderAllowed 判断服务商是否在白名单内。
+func IsWeatherProviderAllowed(p string) bool {
+	for _, v := range WeatherProviders {
+		if v == p {
+			return true
+		}
+	}
+	return false
+}
+
 // ————————————————— Web / 日志默认值 —————————————————
 
 const (
-	DefaultTheme       = "dark"
-	DefaultLogLevel    = "info"
-	DefaultLogFormat   = "json"
-	DefaultLogFile     = ""
-	DefaultMaxSizeMb   = 50
-	DefaultMaxBackups  = 7
+	DefaultTheme      = "dark"
+	DefaultLogLevel   = "info"
+	DefaultLogFormat  = "json"
+	DefaultLogFile    = ""
+	DefaultMaxSizeMb  = 50
+	DefaultMaxBackups = 7
 )
 
 // ————————————————— WebSocket 常量 —————————————————
@@ -174,15 +243,57 @@ const (
 
 // Config 是全部配置的根结构，yaml 键名与 config.example.yaml 严格一致。
 type Config struct {
-	SchemaVersion int             `yaml:"schemaVersion"`
-	Server        ServerConfig    `yaml:"server"`
-	Store         StoreConfig     `yaml:"store"`
-	MediaMTX      MediaMTXConfig  `yaml:"mediamtx"`
-	Bus           BusConfig       `yaml:"bus"`
-	Adapter       AdapterConfig   `yaml:"adapter"`
-	HTTPPoll      HTTPPollConfig  `yaml:"httpPoll"`
-	Web           WebConfig       `yaml:"web"`
-	Log           LogConfig       `yaml:"log"`
+	// SchemaVersion 为【配置文件格式】版本，与数据库结构版本 version.SchemaVersion 无关。
+	SchemaVersion int            `yaml:"schemaVersion"`
+	Server        ServerConfig   `yaml:"server"`
+	Store         StoreConfig    `yaml:"store"`
+	MediaMTX      MediaMTXConfig `yaml:"mediamtx"`
+	Bus           BusConfig      `yaml:"bus"`
+	Adapter       AdapterConfig  `yaml:"adapter"`
+	HTTPPoll      HTTPPollConfig `yaml:"httpPoll"`
+	Web           WebConfig      `yaml:"web"`
+	Log           LogConfig      `yaml:"log"`
+	// Branding 为顶栏品牌（标题/副标题/Logo）。运行期可在 DB 里覆盖，见 internal/api/settings.go。
+	Branding BrandingConfig `yaml:"branding"`
+	// Weather 为顶栏天气挂件配置。默认关闭，开启后由后端代理查询（浏览器不直连第三方）。
+	Weather WeatherConfig `yaml:"weather"`
+}
+
+// BrandingConfig 为顶栏品牌配置。
+type BrandingConfig struct {
+	Title    string `yaml:"title"`
+	Subtitle string `yaml:"subtitle"`
+	LogoURL  string `yaml:"logoUrl"`
+}
+
+// WeatherConfig 为天气挂件配置。
+type WeatherConfig struct {
+	// Enabled 为总开关，默认 false —— 开启后会向第三方发请求，必须显式开启。
+	Enabled bool `yaml:"enabled"`
+	// Provider 为服务商，必须是 WeatherProviders 白名单之一。
+	Provider string `yaml:"provider"`
+	// Lat / Lon 为 WGS-84 坐标（与 map_nodes.fallback_lat/lon 同一口径）。
+	Lat float64 `yaml:"lat"`
+	Lon float64 `yaml:"lon"`
+	// Label 为可选显示名（如"深圳南山"），留空则前端只显示温度。
+	Label string `yaml:"label"`
+	// RefreshMin 为缓存分钟数（同坐标同服务商在此窗口内不重复出网）。
+	RefreshMin int `yaml:"refreshMin"`
+	// TimeoutMs 为请求第三方接口的超时（含连接与读取）。
+	TimeoutMs int `yaml:"timeoutMs"`
+}
+
+// CoordsSet 判断坐标是否已填写。
+//
+// (0,0) 视为「未设置」：它是几内亚湾里的一个合法坐标，但作为"用户忘了填"的默认值远更常见，
+// 且 UI 需要据此提示"请先填写坐标"。因此这里用 0 做哨兵 —— 真正要看几内亚湾天气的用户不存在。
+// 注意这与 map_nodes 的口径不同（那边 (0,0) 是合法坐标、用 NULL 表达"无兜底"）：
+// 全局天气只有一个坐标、没有"空"的 SQL 表达，只能靠哨兵值。
+func (w WeatherConfig) CoordsSet() bool { return w.Lat != 0 || w.Lon != 0 }
+
+// CoordsValid 判断坐标是否落在合法经纬度区间内。
+func (w WeatherConfig) CoordsValid() bool {
+	return w.Lat >= -90 && w.Lat <= 90 && w.Lon >= -180 && w.Lon <= 180
 }
 
 // ServerConfig 为 HTTP/HTTPS 双监听与数据目录相关配置。
@@ -221,16 +332,16 @@ type MediaMTXConfig struct {
 
 // BusConfig 为帧总线与限流相关配置。
 type BusConfig struct {
-	DefaultMaxHz          float64 `yaml:"defaultMaxHz"`
-	ImageMaxHz            float64 `yaml:"imageMaxHz"`
-	VideoStatusHz         float64 `yaml:"videoStatusHz"`
-	FrameBatchMs          int     `yaml:"frameBatchMs"`
-	FrameBatchMax         int     `yaml:"frameBatchMax"`
-	ConnQueueDepth        int     `yaml:"connQueueDepth"`
-	RingCapacity          int     `yaml:"ringCapacity"`
-	BackpressureNotifyMs  int     `yaml:"backpressureNotifyMs"`
-	PingIntervalMs        int     `yaml:"pingIntervalMs"`
-	WriteWaitMs           int     `yaml:"writeWaitMs"`
+	DefaultMaxHz         float64 `yaml:"defaultMaxHz"`
+	ImageMaxHz           float64 `yaml:"imageMaxHz"`
+	VideoStatusHz        float64 `yaml:"videoStatusHz"`
+	FrameBatchMs         int     `yaml:"frameBatchMs"`
+	FrameBatchMax        int     `yaml:"frameBatchMax"`
+	ConnQueueDepth       int     `yaml:"connQueueDepth"`
+	RingCapacity         int     `yaml:"ringCapacity"`
+	BackpressureNotifyMs int     `yaml:"backpressureNotifyMs"`
+	PingIntervalMs       int     `yaml:"pingIntervalMs"`
+	WriteWaitMs          int     `yaml:"writeWaitMs"`
 }
 
 // AdapterConfig 为适配器生命周期与重连相关配置。
@@ -245,9 +356,9 @@ type AdapterConfig struct {
 
 // HTTPPollConfig 为 HTTP 轮询适配器的默认参数。
 type HTTPPollConfig struct {
-	MinIntervalMs     int `yaml:"minIntervalMs"`
-	DefaultTimeoutMs  int `yaml:"defaultTimeoutMs"`
-	FailureThreshold  int `yaml:"failureThreshold"`
+	MinIntervalMs    int `yaml:"minIntervalMs"`
+	DefaultTimeoutMs int `yaml:"defaultTimeoutMs"`
+	FailureThreshold int `yaml:"failureThreshold"`
 }
 
 // WebConfig 为前端运行所需配置。
@@ -263,8 +374,8 @@ type WebConfig struct {
 	// 会被判定为"性能不足"从而**不启用 WebGL 绘制**，控制台报"浏览器版本过低"，
 	// 表现为底图能出、但 mapStyle/setMapStyle 一律不生效（卫星图层这类纯瓦片不受影响）。
 	// 置为 true 可强制启用 WebGL 渲染（高德官方给出的解法）。
-	AMapForceWebGL bool `yaml:"amapForceWebGL"`
-	Theme         string `yaml:"theme"`
+	AMapForceWebGL bool   `yaml:"amapForceWebGL"`
+	Theme          string `yaml:"theme"`
 }
 
 // LogConfig 为日志配置。
@@ -279,7 +390,7 @@ type LogConfig struct {
 // DefaultConfig 返回全量默认配置（不含环境变量覆盖）。
 func DefaultConfig() *Config {
 	return &Config{
-		SchemaVersion: CurrentSchemaVersion,
+		SchemaVersion: CurrentConfigSchemaVersion,
 		Server: ServerConfig{
 			HTTPAddr:          DefaultHTTPAddr,
 			HTTPSAddr:         DefaultHTTPSAddr,
@@ -309,16 +420,16 @@ func DefaultConfig() *Config {
 			FLVBase:      DefaultMediaMTXFLVBase,
 		},
 		Bus: BusConfig{
-			DefaultMaxHz:          DefaultMaxHz,
-			ImageMaxHz:            DefaultImageMaxHz,
-			VideoStatusHz:         DefaultVideoStatusHz,
-			FrameBatchMs:          DefaultFrameBatchMs,
-			FrameBatchMax:         DefaultFrameBatchMax,
-			ConnQueueDepth:        DefaultConnQueueDepth,
-			RingCapacity:          DefaultRingCapacity,
-			BackpressureNotifyMs:  DefaultBackpressureNotifyMs,
-			PingIntervalMs:        DefaultPingIntervalMs,
-			WriteWaitMs:           DefaultWriteWaitMs,
+			DefaultMaxHz:         DefaultMaxHz,
+			ImageMaxHz:           DefaultImageMaxHz,
+			VideoStatusHz:        DefaultVideoStatusHz,
+			FrameBatchMs:         DefaultFrameBatchMs,
+			FrameBatchMax:        DefaultFrameBatchMax,
+			ConnQueueDepth:       DefaultConnQueueDepth,
+			RingCapacity:         DefaultRingCapacity,
+			BackpressureNotifyMs: DefaultBackpressureNotifyMs,
+			PingIntervalMs:       DefaultPingIntervalMs,
+			WriteWaitMs:          DefaultWriteWaitMs,
 		},
 		Adapter: AdapterConfig{
 			HealthIntervalMs:  DefaultHealthIntervalMs,
@@ -346,6 +457,20 @@ func DefaultConfig() *Config {
 			File:       DefaultLogFile,
 			MaxSizeMb:  DefaultMaxSizeMb,
 			MaxBackups: DefaultMaxBackups,
+		},
+		Branding: BrandingConfig{
+			Title:    DefaultBrandingTitle,
+			Subtitle: DefaultBrandingSubtitle,
+			LogoURL:  DefaultBrandingLogoURL,
+		},
+		Weather: WeatherConfig{
+			Enabled:    DefaultWeatherEnabled,
+			Provider:   WeatherProviderOpenMeteo,
+			Lat:        0,
+			Lon:        0,
+			Label:      "",
+			RefreshMin: DefaultWeatherRefreshMin,
+			TimeoutMs:  DefaultWeatherTimeoutMs,
 		},
 	}
 }
@@ -441,6 +566,15 @@ func (c *Config) applyDefaults() {
 	c.Log.Format = firstNonEmpty(c.Log.Format, def.Log.Format)
 	c.Log.MaxSizeMb = firstPositive(c.Log.MaxSizeMb, def.Log.MaxSizeMb)
 	c.Log.MaxBackups = firstPositive(c.Log.MaxBackups, def.Log.MaxBackups)
+
+	c.Branding.Title = firstNonEmpty(c.Branding.Title, def.Branding.Title)
+	c.Branding.Subtitle = firstNonEmpty(c.Branding.Subtitle, def.Branding.Subtitle)
+	// LogoURL 故意走 firstNonEmpty：yaml 里显式留空与"不写"等价，都表示无 Logo。
+	c.Branding.LogoURL = firstNonEmpty(c.Branding.LogoURL, def.Branding.LogoURL)
+
+	c.Weather.Provider = firstNonEmpty(c.Weather.Provider, def.Weather.Provider)
+	c.Weather.RefreshMin = firstPositive(c.Weather.RefreshMin, def.Weather.RefreshMin)
+	c.Weather.TimeoutMs = firstPositive(c.Weather.TimeoutMs, def.Weather.TimeoutMs)
 }
 
 // PublicScheme 依据 publicScheme 与后端是否启用 TLS 计算最终 scheme。
@@ -563,6 +697,7 @@ func EnsureDirs(cfg *Config) error {
 	dirs := []string{
 		cfg.Server.DataDir,
 		filepath.Join(cfg.Server.DataDir, "imports"),
+		filepath.Join(cfg.Server.DataDir, "branding"),
 		cfg.Server.CertDir,
 		filepath.Dir(cfg.Store.DSN),
 		filepath.Dir(cfg.Server.SecretKeyFile),

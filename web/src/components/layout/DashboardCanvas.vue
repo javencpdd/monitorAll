@@ -7,21 +7,22 @@
  *   - 查看模式禁用拖拽/resize；编辑模式才显示虚线框与缩放手柄
  *   - 布局变更后 → dashboardStore.saveLayoutNow（轻量保存，901 冲突独立处理）
  */
-import { computed, onMounted, onUpdated, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { Layout } from 'grid-layout-plus'
 import { GridItem, GridLayout } from 'grid-layout-plus'
 import { useDashboardStore } from '@/stores/dashboard'
-import { useUiStore } from '@/stores/ui'
 import { GRID_COLS, MARGIN, MIN_CARD_H, MIN_CARD_W, ROW_HEIGHT } from '@/utils/constants'
 import EmptyState from '@/components/base/EmptyState.vue'
+import { useCardCreate } from '@/composables/useCardCreate'
 import CardHost from '@/components/cards/CardHost.vue'
+import DiagLayer from '@/components/diag/DiagLayer.vue'
 import type { Card } from '@/types'
 
 /** 单个网格项的几何（从库导出类型推导，避免依赖未导出的 LayoutItem）。 */
 type LayoutItem = Layout[number]
 
 const dashboardStore = useDashboardStore()
-const ui = useUiStore()
+const { openCreate: openCardCreate } = useCardCreate()
 
 /**
  * 网格几何的本地真源。
@@ -141,7 +142,8 @@ function onDrop(e: DragEvent): void {
   if (!editMode.value) return
   const channelId = e.dataTransfer?.getData('text/plain')
   if (!channelId) return
-  ui.openCardDrawer(undefined, 'create', channelId)
+  // 走统一出口（地图看板下会自动处理"必须挂到节点"）
+  openCardCreate(channelId)
 }
 
 function onDragOver(e: DragEvent): void {
@@ -156,50 +158,20 @@ function onDragLeave(): void {
 }
 
 function openCreateWizard(): void {
-  ui.openCardDrawer(undefined, 'create')
+  openCardCreate()
 }
-
-/** 【临时诊断】定位「卡片建了却不显示」：把 store 与 DOM 的真实状态亮在画布上，定位后删除。 */
-const canvasEl = ref<HTMLElement | null>(null)
-const domInfo = ref('（探测中）')
-
-function probeDom(): void {
-  const el = canvasEl.value
-  if (!el) return
-  const layout = el.querySelector('.vgl-layout') as HTMLElement | null
-  const items = el.querySelectorAll('.vgl-item')
-  const first = items[0] as HTMLElement | undefined
-  domInfo.value =
-    `容器=${layout ? `${layout.offsetWidth}x${layout.offsetHeight}` : '无'}` +
-    ` 项数=${items.length}` +
-    ` 首项=${first ? `${first.offsetWidth}x${first.offsetHeight}` : '无'}` +
-    ` 首项样式=${first ? (first.getAttribute('style') || '').slice(0, 90) : '无'}`
-}
-
-onMounted(() => {
-  // 挂载后布局尺寸可能要等一拍才稳定，多探几次
-  for (const ms of [300, 1000, 2500]) window.setTimeout(probeDom, ms)
-})
-onUpdated(probeDom)
-
-const dbg = computed(
-  () =>
-    `[诊断] 看板=${dashboardStore.current?.name ?? '未加载'} · 卡片=${dashboardStore.cards.length}张` +
-    ` · 加载中=${dashboardStore.loading ? '是' : '否'} · 错误=${dashboardStore.error || '无'}` +
-    ` || DOM: ${domInfo.value}`,
-)
 </script>
 
 <template>
   <div
-    ref="canvasEl"
     class="ma-canvas"
     :class="{ 'ma-canvas--dragging': dragOver }"
     @dragover="onDragOver"
     @dragleave="onDragLeave"
     @drop="onDrop"
   >
-    <div class="ma-canvas__dbg">{{ dbg }}</div>
+    <!-- H6：正式可开关诊断层（默认 off，URL ?diag=1/2 或 Ctrl+Shift+D） -->
+    <diag-layer title="网格看板" />
     <grid-layout
       v-if="dashboardStore.cards.length > 0"
       :layout="layoutRef"
@@ -268,18 +240,6 @@ const dbg = computed(
 .ma-canvas__hint {
   display: block;
 }
-
-.ma-canvas__dbg {
-  position: absolute;
-  top: 2px;
-  right: 10px;
-  z-index: 30;
-  pointer-events: none;
-  font-size: 11px;
-  color: var(--ma-text-3, #8a8f98);
-  opacity: 0.85;
-}
-
 .ma-canvas__err {
   display: block;
   margin-bottom: 8px;
