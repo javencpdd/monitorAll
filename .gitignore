@@ -5,9 +5,28 @@
 data/secret.key
 server/data/secret.key
 
+# 私钥 / 证书：自动生成的 EC 私钥与 TLS 材料绝不入库。
+# 历史教训：auto.key 与 mediamtx/auto.key 曾被发现入库（各 1 个提交），
+# 且 logs/monitorall.log 里出现过 59 次明文摄像头口令（已进过 3 个提交）。
+*.key
+*.pem
+!*.example
+
+# 运行日志：可能含内联凭据（rtsp://admin:pw@host）与设备信息，禁止入库。
+# 已用 sed 清洗过存量日志，但历史提交里的仍然可查 —— 彻底清除需改写历史或轮换凭据。
+logs/
+*.log
+
+# 运行配置：可能含真实的高德 Key / 安全密钥等凭据，禁止入库。
+# 只跟踪 config.example.yaml 模板；真实配置由部署方本地创建，
+# 或用 MONITORALL_WEB_AMAPKEY / MONITORALL_WEB_AMAPSECURITYCODE 环境变量注入。
+server/config.yaml
+data/config.yaml
+
 # Runtime data and generated certificates
 data/*.db
 data/*.db-*
+data/backup/
 data/cert/*
 server/data/*.db
 server/data/*.db-*
@@ -22,3 +41,5 @@ web/dist/
 server/bin/*
 
 .workbuddy/*
+# 系统/文件管理器垃圾目录：曾把 191 个旧构建产物提交进来（其中含明文凭据）
+.Trash-*/
