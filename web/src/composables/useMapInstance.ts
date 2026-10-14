@@ -25,7 +25,7 @@ import {
   type ProjectableMap,
   type Size,
 } from '@/utils/projector'
-import { loadAMap, type AMapNamespace, type AMapMap } from '@/utils/amapLoader'
+import { loadAMap, getAMapLoadError, type AMapNamespace, type AMapMap } from '@/utils/amapLoader'
 import { useUiStore } from '@/stores/ui'
 import { bump, setFact } from '@/utils/diag'
 
@@ -154,7 +154,9 @@ async function ensure(
     }
     if (my !== token) return null // 过期：下面创建实例后再 destroy
     if (!ns) {
-      error.value = '高德 Key 无效或 SDK 加载失败'
+      // 有 Key 却加载失败：用 loader 捕获的真实原因（Key 类型/安全密钥/网络等），
+      // 不再写死"高德 Key 无效"——那句话在"Key 其实已配但被高德拒绝"时会误导用户去改配置。
+      error.value = getAMapLoadError() || '高德 Key 无效或 SDK 加载失败'
       status.value = 'fallback'
       setFact('mapError', error.value)
       return makeVirtual(view)
@@ -190,6 +192,7 @@ async function ensure(
     setFact('mapMode', 'amap')
     setFact('amapInstances', 1)
     setFact('mapError', '')
+    error.value = '' // 成功即清空：避免上一次降级的旧原因残留，被 fallback→ready 后的界面误读
     bump('mapCreates')
     return p
   })()

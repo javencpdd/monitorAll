@@ -25,6 +25,20 @@ const showTable = ref(true)
 const crsText = computed<string>(() => describeCrs(store.view.sourceCRS))
 
 /**
+ * 由 MapBoardSurface 传入 useMapInstance 捕获的降级原因。
+ *
+ * "无底图"必须分两种，提示完全不同（否则用户已配 Key 却看到"去配 Key"会被带偏）：
+ *   - 没配 Key（loadError 为空）→ 引导去配置；
+ *   - 配了 Key 但高德拒绝加载（loadError 非空）→ 展示真实失败原因，并给出排查方向。
+ */
+const props = defineProps<{ error?: string }>()
+
+/** 是否已配置高德 Key（与 ui.amapReady 同源）。 */
+const keyConfigured = computed<boolean>(() => ui.amapKey.length > 0)
+/** 已配 Key 仍降级时的真实失败原因；没配 Key 时恒为空（走配置引导分支）。 */
+const loadError = computed<string>(() => (keyConfigured.value ? props.error || '' : ''))
+
+/**
  * 兜底坐标格式化。
  *
  * 为什么必须包一层：`MapNodeView.fallbackLat/Lon` 的类型是 `number | null`
@@ -70,10 +84,24 @@ function onWheel(e: WheelEvent): void {
   <div class="mb-fallback" @pointerdown="onPointerDown" @wheel="onWheel">
     <div class="mb-fallback__banner">
       <strong>无底图模式</strong>
-      <span class="ma-text-3">未配置高德 Key，地图按相对位置示意 —— 节点、卡片、拖拽与出视野隐藏均可用</span>
-      <a class="ma-text-xs" :href="ui.amapKey ? 'https://lbs.amap.com/' : 'javascript:void(0)'" target="_blank" rel="noreferrer">
-        配置 server/config.yaml 的 web.amapKey 后重启即可显示底图
-      </a>
+
+      <!-- 已配 Key 但高德拒绝加载：展示真实原因（Key 类型 / 安全密钥 / 网络），别再误导用户去改配置 -->
+      <template v-if="loadError">
+        <span class="ma-text-3">高德底图加载失败：{{ loadError }}</span>
+        <span class="ma-text-3">
+          请对照浏览器控制台 [amap] 日志排查：Key 须为「Web 端(JS API)」类型（非「Web 服务」）、
+          安全密钥 web.amapSecurityCode 须与该 Key 配对、域名白名单须放行当前访问地址。
+        </span>
+        <a class="ma-text-xs" href="https://lbs.amap.com/" target="_blank" rel="noreferrer">前往高德控制台</a>
+      </template>
+
+      <!-- 没配 Key：按相对位置示意，引导配置 -->
+      <template v-else>
+        <span class="ma-text-3">未配置高德 Key，地图按相对位置示意 —— 节点、卡片、拖拽与出视野隐藏均可用</span>
+        <a class="ma-text-xs" :href="ui.amapKey ? 'https://lbs.amap.com/' : 'javascript:void(0)'" target="_blank" rel="noreferrer">
+          配置 server/config.yaml 的 web.amapKey 后重启即可显示底图
+        </a>
+      </template>
     </div>
 
     <!-- 节点坐标数值表：没有底图时，这是用户判断"谁在哪"的唯一依据 -->

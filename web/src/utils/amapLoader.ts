@@ -83,6 +83,25 @@ export interface AMapLoadFailure {
 
 let loadPromise: Promise<AMapNamespace | null> | null = null
 let cachedKey: string | null = null
+/** 最近一次加载失败的真实原因（loadAMap 返回 null 时由它解释"为什么"）。成功/重试前清空。 */
+let lastLoadError = ''
+
+/** 把 loader 抛出的任意错误归一成可读串（AMap 有时把错误码放在对象字段上）。 */
+function describeLoadError(err: unknown): string {
+  if (err instanceof Error && err.message) return err.message
+  if (typeof err === 'string' && err) return err
+  if (err && typeof err === 'object') {
+    const o = err as { message?: unknown; code?: unknown; error?: unknown }
+    const m = [o.message, o.code, o.error].find((v) => typeof v === 'string' && v) as string | undefined
+    if (m) return m
+  }
+  return '未知错误'
+}
+
+/** 供 UI 读取最近一次加载失败原因（loadAMap 返回 null 时）。 */
+export function getAMapLoadError(): string {
+  return lastLoadError
+}
 
 function readBuildTimeKey(): string {
   return import.meta.env.VITE_AMAP_KEY ?? ''
@@ -104,6 +123,7 @@ export function loadAMap(key: string, securityCode = '', forceWebGL = true): Pro
   if (effectiveKey.length === 0) {
     return Promise.resolve(null)
   }
+  lastLoadError = '' // 每次真实尝试前清空，避免把上一次失败原因带给本次成功/缓存命中
   const cacheId = `${effectiveKey}|${securityCode}`
   if (loadPromise && cachedKey === cacheId) return loadPromise
   cachedKey = cacheId
@@ -131,9 +151,11 @@ export function loadAMap(key: string, securityCode = '', forceWebGL = true): Pro
     })
     .then((amap) => amap as AMapNamespace)
     .catch((err: unknown) => {
-      // 加载失败（无外网 / Key 无效）：重置单例以便重试，错误交由调用方展示
+      // 加载失败（无外网 / Key 无效 / Key 类型不对 / 安全密钥不匹配）：重置单例以便重试，
+      // 并把真实原因存起来供 UI 展示（getAMapLoadError），不再只打 console 让用户无从下手。
       loadPromise = null
       cachedKey = null
+      lastLoadError = describeLoadError(err)
       console.warn('[amap] 高德 JS API 加载失败：', err)
       return null
     })

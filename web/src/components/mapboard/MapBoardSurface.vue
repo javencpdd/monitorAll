@@ -342,7 +342,7 @@ defineExpose({ cullText: crsText })
       <map-node-layer v-if="!isVirtual" />
       <map-preview-dot v-if="!isVirtual && store.previewPoint" />
       <map-card-layer v-if="!isVirtual" />
-      <map-fallback-board v-else />
+      <map-fallback-board v-else :error="map.error.value" />
     </div>
 
     <!-- 底图样式切换（仅高德模式；虚拟模式没有底图可切） -->

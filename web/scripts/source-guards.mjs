@@ -29,6 +29,9 @@
  *   R. 视频异常诊断链路：后端 VideoPayload 必须带 Detail/PublishURL 且 emitStatus 真的填充；
  *      前端失败态必须消费 detail（优先诊断、回落通用文案），推流地址可一键复制，
  *      拉流上游地址必须脱敏后展示（RTSP 内联口令不得明文上屏）
+ *   S. 地图降级必须展示真实失败原因：loader 捕获真实错误并可读取；useMapInstance 的 !ns 分支
+ *      消费它（不写死文案）；surface 把 error 传进 fallback；fallback 区分「没配 Key」与
+ *      「配了但高德拒绝加载」两种，后者展示真实错误（防止已配 Key 却被提示"去配 Key"误导）
  */
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
@@ -41,7 +44,7 @@ const WEB = new URL('..', import.meta.url).pathname
 const SRC = join(WEB, 'src')
 
 let pass = 0
-const total = 18
+const total = 19
 function check(name, fn) {
   try {
     fn()
@@ -678,6 +681,43 @@ check('R. 视频异常诊断链路：后端下发 detail/publishUrl，前端失�
   assert.ok(
     /import\s*\{\s*copyText\s*\}\s*from\s*'@\/utils\/clipboard'/.test(vr),
     'VideoRenderer 没有从 @/utils/clipboard 导入 copyText —— 非安全上下文下复制必失败',
+  )
+})
+
+// S. 地图降级必须展示真实失败原因（"已配 Key 却加载失败" ≠ "没配 Key"）
+check('S. 无底图横幅区分「没配 Key」与「配了但加载失败」并展示真实错误', () => {
+  // ① amapLoader：catch 必须把真实错误存下来并可读取（不是只 console.warn 一吞了之）
+  const loader = read(join(SRC, 'utils/amapLoader.ts'))
+  assert.ok(/export function getAMapLoadError\(/.test(loader), 'amapLoader 未导出 getAMapLoadError —— UI 拿不到失败原因')
+  assert.ok(
+    /lastLoadError\s*=\s*describeLoadError\(err\)/.test(loader),
+    'amapLoader 的 catch 没有把真实错误写进 lastLoadError —— 界面上只会一句 console.warn，用户无从下手',
+  )
+
+  // ② useMapInstance：!ns 分支必须消费真实错误，而不是写死"高德 Key 无效"
+  const umi = read(join(SRC, 'composables/useMapInstance.ts'))
+  assert.ok(
+    /getAMapLoadError\(\)/.test(umi),
+    'useMapInstance 没有调用 getAMapLoadError() —— 会退回写死的"高德 Key 无效"，把已配 Key 的用户带偏',
+  )
+
+  // ③ surface 必须把 map.error 传进 fallback（否则真实原因到不了横幅）
+  const surf = read(join(SRC, 'components/mapboard/MapBoardSurface.vue'))
+  assert.ok(
+    /<map-fallback-board[^>]*:error=/.test(surf),
+    'MapBoardSurface 没有把 :error 传给 map-fallback-board —— 真实失败原因传不到横幅',
+  )
+
+  // ④ fallback：必须有 error prop + loadError 计算 + 展示真实错误，且保留"没配 Key"引导分支
+  const fb = read(join(SRC, 'components/mapboard/MapFallbackBoard.vue'))
+  assert.ok(/defineProps<\{\s*error\?:\s*string\s*\}>/.test(fb), 'MapFallbackBoard 未声明 error prop')
+  assert.ok(/const loadError = computed/.test(fb), 'MapFallbackBoard 缺 loadError 计算属性')
+  const fbTpl = fb.slice(fb.indexOf('<template>'))
+  assert.ok(/\{\{\s*loadError\s*\}\}/.test(fbTpl), '横幅没有插值展示 loadError —— 真实错误上不了屏')
+  assert.ok(/高德底图加载失败/.test(fbTpl), '横幅缺"加载失败"分支文案')
+  assert.ok(
+    /v-else/.test(fbTpl) && /未配置高德 Key/.test(fbTpl),
+    '横幅丢了"未配置 Key"引导分支 —— 不能为了显示错误就把没配 Key 的提示删掉',
   )
 })
 
